@@ -24,6 +24,9 @@ tuple = Tuple
 magnitude :: (Floating a, Num a) => Tuple a -> a
 magnitude (Tuple x y z w) = sqrt ((x^2) + (y^2) + (z^2) + (w^2))
 
+normalize :: (Floating a, Num a) => Tuple a -> Tuple a
+normalize t@(Tuple x y z w) = tuple (x / magnitude t) (y / magnitude t) (z / magnitude t) (w / magnitude t) 
+
 data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a }
  deriving (Show)
 
