@@ -48,7 +48,9 @@ scene = do
  let s1 = fst $ tick (runScenario e) p
      s2 = fst $ tick (runScenario e) s1
      s3 = fst $ tick (runScenario e) s2
- tick (runScenario e) s3
+     s4 = fst $ tick (runScenario e) s3
+     s5 = fst $ tick (runScenario e) s4
+ [s1, s2, s3, s4, s5]
 
 newtype Scenario s a = Scenario { tick :: s -> (a, s) } 
 
@@ -74,7 +76,7 @@ instance Monad (Scenario s) where
 
 tick2 :: (Fractional a) =>  Environment a -> Projectile a -> Projectile a
 tick2 env proj = let pos = position proj + velocity proj 
-                in let vel =  velocity proj + gravity env + wind env
+                     vel =  velocity proj + gravity env + wind env
                    in Projectile pos vel 
 
 p = Projectile (point 0.0 1.0 0.0) (normalize (vector 1.0 1.0 0.0))
