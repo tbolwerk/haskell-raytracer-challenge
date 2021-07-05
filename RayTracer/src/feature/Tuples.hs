@@ -3,9 +3,8 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANUGAGE DatatypeContexts #-}
-epsilon = 0.00001
 
-newtype Scalar a = Scalar { getScalar :: Double } 
+epsilon = 0.00001
 
 isPoint :: (Fractional a, Num a, Eq a) => Tuple a -> Bool
 isPoint tuple = getW tuple == 1
@@ -21,6 +20,9 @@ vector x y z = Tuple x y z 0
 
 tuple :: Num a =>  a -> a -> a -> a -> Tuple a
 tuple = Tuple
+
+magnitude :: (Floating a, Num a) => Tuple a -> a
+magnitude (Tuple x y z w) = sqrt ((x^2) + (y^2) + (z^2) + (w^2))
 
 data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a }
  deriving (Show)
@@ -45,6 +47,8 @@ instance (Num a) => Num (Tuple a) where
 instance (Fractional a) => Fractional (Tuple a) where
  a / b = (fmap (/) a) <*> b
  
+
+
 a1 = Tuple 3 (-2) 5 1
 a2 = Tuple (-2) 3  1 0
 
@@ -60,6 +64,4 @@ v2 = vector 5 6 7
 a = tuple 1.0 (-2.0) 3.0 (-4.0)
 
 
-f :: Monoid a =>a ->  (a,a) 
-f = pure 
 
