@@ -42,26 +42,14 @@ data Environment a = Environment { gravity :: Tuple a, wind :: Tuple a }
 --- a = Enviroment
 
 runScenario :: (Environment Double) -> Scenario (Projectile Double) (Projectile Double)
-runScenario env = (Scenario $ \s -> (tick2 env s, s)) 
+runScenario env = (Scenario $ \s -> (tick2 env s, tick2 env s)) 
 
-scene :: (Projectile Double) -> (Projectile Double)
-scene proj = fst $ tick (runScenario e) proj
+scene = do 
+ let s1 = fst $ tick (runScenario e) p
+     s2 = fst $ tick (runScenario e) s1
+     s3 = fst $ tick (runScenario e) s2
+ tick (runScenario e) s3
 
-iterCountM :: (Monad m) => Int -> (a -> m a) -> m a -> m [a]
-iterCountM 0 _ _ = return []
-iterCountM k step start = do
-    first <- start
-    rest <- iterCountM (k-1) step (step first)
-    return (first:rest)
-
-main = do
- let res x = do
-     let a = fst $ tick (runScenario e) p
-     print a
-     return a
- results <- forM [1..5] res
- print results
- 
 newtype Scenario s a = Scenario { tick :: s -> (a, s) } 
 
 instance Functor (Scenario s) where
