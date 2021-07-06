@@ -27,7 +27,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Lib,
+      Tuples
   other-modules:
       Paths_RayTracer
   hs-source-dirs:

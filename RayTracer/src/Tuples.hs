@@ -1,8 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
-
 module Tuples where
-  
-import Control.Monad
 
 epsilon = 0.00001
 
@@ -32,58 +29,6 @@ dot (Tuple x1 y1 z1 w1) (Tuple x2 y2 z2 w2) = (x1 * x2) + (y1 * y2) + (z1 * z2) 
 
 cross :: (Eq a,Floating a, Num a) => Tuple a -> Tuple a -> Tuple a
 cross (Tuple x1 y1 z1 0) (Tuple x2 y2 z2 0) = vector ((y1 * z2) - (z1 * y2))  ((x1 * z2) - (z1 * x2))  ((x1 * y2) - (x2 * y1))
-
-
-
-
-data Projectile a = Projectile { position :: Tuple a, velocity :: Tuple a} 
- deriving Show
-
-data Environment a = Environment { gravity :: Tuple a, wind :: Tuple a }
---- s = Projectile
---- a = Enviroment
-tick2 :: (Fractional a) =>  Environment a -> Projectile a -> Projectile a
-tick2 env proj = let pos = position proj + velocity proj 
-                     vel =  velocity proj + gravity env + wind env
-                   in Projectile pos vel 
-
-p = Projectile (point 0.0 1.0 0.0) (normalize (vector 1.0 1.0 0.0))
-e = Environment (vector 0.0 (-0.1) 0.0) (vector (-0.001) 0 0)
-
-runScenario :: (Environment Double) -> Scenario (Projectile Double) (Projectile Double)
-runScenario env = (Scenario $ \s0 -> let s1 = tick2 env s0
-                                     in (s1, s0)) 
-
-scene :: [Projectile Double] 
-scene = do 
- let s1 = fst $ tick (runScenario e) p
-     s2 = fst $ tick (runScenario e) s1
-     s3 = fst $ tick (runScenario e) s2
-     s4 = fst $ tick (runScenario e) s3
-     s5 = fst $ tick (runScenario e) s4
- [s1, s2, s3, s4, s5]
-
-newtype Scenario s a = Scenario { tick :: s -> (a, s) } 
-
-instance Functor (Scenario s) where
- fmap f x = Scenario $ \s0 ->  let (a, s1) = (tick x s0)
-                               in (f a, s1)
-
-instance Applicative (Scenario s) where
- pure a = Scenario $ \s -> (a, s)
- sf <*> sa = Scenario $ \s0 -> let (fs, s1) = (tick sf s0)
-                                   (a, s2) = (tick sa s1)
-                               in (fs a, s2) 
-
-
-instance Monad (Scenario s) where
- return a = pure a
- sa >>= asb = Scenario $ \s0 -> let (a, s1) = tick sa s0
-                                in (tick (asb a) s1)
-
-
-
-
 
 data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a }
  deriving (Show)
