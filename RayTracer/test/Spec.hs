@@ -10,6 +10,7 @@ main = do
      (T.quickCheck prop_Tuple_Equal)
      (T.quickCheck prop_Tuple_Addition)
      (T.quickCheck prop_Tuple_Subtraction)
+     (T.quickCheck prop_Tuple_Negate)
 
 {- 
 Scenario: A tuple with w = 1.0 is a point
@@ -79,3 +80,7 @@ prop_Tuple_Subtraction (x1, y1, z1, w1) (x2, y2, z2, w2) = (t1 - t2) == predicat
           t2 = Tuples.tuple x2 y2 z2 w2
           predicate = Tuples.tuple (x1 - x2) (y1 - y2) (z1 - z2) (w1 - w2)
 
+prop_Tuple_Negate :: TupleInput -> Bool
+prop_Tuple_Negate (x, y, z, w) = (negate t) == predicate
+ where t = Tuples.tuple x y z w
+       predicate = Tuples.vector 0 0 0 - Tuples.tuple x y z w
