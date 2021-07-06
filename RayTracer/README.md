@@ -12,5 +12,5 @@
 in root folder 
 run: 
 >> cabal new-repl
->> :l Scene
+>> :l app/Scene
 >> :main

@@ -44,7 +44,6 @@ instance Applicative (Scenario s) where
                                    (a, s2) = (tick sa s1)
                                in (fs a, s2) 
 
-
 instance Monad (Scenario s) where
  return a = pure a
  sa >>= asb = Scenario $ \s0 -> let (a, s1) = tick sa s0
