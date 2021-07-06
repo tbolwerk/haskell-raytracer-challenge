@@ -29,7 +29,9 @@ scene env n = sequence (replicate n (runScenario env))
 
 main :: IO ()
 main = do
-  let result = map position (fst $ tick (scene e 1000) p)
+  putStrLn "Enter the number of iterations: "
+  n <- getLine
+  let result = map position (fst $ tick (scene e (read n)) p)
   print result
 
 newtype Scenario s a = Scenario { tick :: s -> (a, s) } 

@@ -15,6 +15,9 @@ main = do
      (T.quickCheck prop_Tuple_Scalar_Division)
      (T.quickCheck prop_Tuple_Magnitude)
      (T.quickCheck prop_Tuple_Normalize)
+     (T.quickCheck prop_Tuple_Dot_Product)
+     (T.quickCheck prop_Vector_Cross_Product)
+     
 
 {- 
 Scenario: A tuple with w = 1.0 is a point
@@ -112,3 +115,15 @@ prop_Tuple_Normalize (x,y,z,w) = skipIf || normalize v == predicate
           isNullAndNegative a = a <= 0
           v = Tuples.tuple x y z w
           predicate = Tuples.tuple (x / Tuples.magnitude v) (y / Tuples.magnitude v) (z / Tuples.magnitude v) (w / Tuples.magnitude v)
+
+prop_Tuple_Dot_Product :: TupleInput -> TupleInput -> Bool
+prop_Tuple_Dot_Product (x1,y1,z1,w1) (x2,y2,z2,w2) = dot t1 t2 == predicate
+    where t1 = Tuples.tuple x1 y1 z1 w1
+          t2 = Tuples.tuple x2 y2 z2 w2
+          predicate = (x1 * x2) + (y1 * y2) + (z1 * z2) + (w1 * w2)
+
+prop_Vector_Cross_Product :: TupleInput -> TupleInput -> Bool
+prop_Vector_Cross_Product (x1,y1,z1,_) (x2,y2,z2,_) = Tuples.cross t1 t2 == predicate
+  where t1 = Tuples.vector x1 y1 z1 
+        t2 = Tuples.vector x2 y2 z2
+        predicate = Tuples.vector ((y1 * z2) - (z1 * y2)) ((z1 * x2) - (x1 * z2)) ((x1 * y2) - (y1 * x2)) 
