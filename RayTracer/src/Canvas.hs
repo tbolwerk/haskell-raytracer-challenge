@@ -13,6 +13,7 @@ pixel x y col = Pixel (x,y) col
 data Pixel = Pixel { getPosition :: Position , getColor :: Color }
  deriving Show
 
+-- Probably should be a monad for canvas
 --- State monad
 --- s = Pixels
 --- a = Canvas

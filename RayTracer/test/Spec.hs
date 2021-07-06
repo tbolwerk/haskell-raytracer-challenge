@@ -4,7 +4,7 @@ import Canvas
 import Colors
 
 type TupleInput = (Double,Double,Double,Double)
-type CanvasInput = (Double, Double)
+type CanvasInput = (Int, Int)
 main :: IO ()
 main = do
      (T.quickCheck prop_Point)
@@ -20,6 +20,8 @@ main = do
      (T.quickCheck prop_Tuple_Dot_Product)
      (T.quickCheck prop_Vector_Cross_Product)
      (T.quickCheck prop_Canvas_Create)
+     (T.quickCheck prop_Canvas_PixelAt)
+     (T.quickCheck prop_Canvas_WritePixel)
      
 
 {- 
@@ -139,3 +141,15 @@ prop_Canvas_Create (width, height) = (getWidth c == width) &&
   where c = canvas width height
         isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0
         predicate = all (\x -> isBlack (getColor x)) (pixels c)
+
+prop_Canvas_PixelAt :: CanvasInput -> Bool
+prop_Canvas_PixelAt (width, height) = (width <= 0 || height <= 0) || isBlack (getColor (pixelAt c 0 0))
+    where c = canvas width height
+          isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0
+
+prop_Canvas_WritePixel :: CanvasInput -> Bool
+prop_Canvas_WritePixel (width, height) = (width <= 0 || height <= 0) || (not (isBlack (getColor (pixelAt nc 0 0))) && getColor (pixelAt nc 0 0) == red)
+    where c = canvas width height
+          nc = writePixel c 0 0 red 
+          red = color 1 0 0 0
+          isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0

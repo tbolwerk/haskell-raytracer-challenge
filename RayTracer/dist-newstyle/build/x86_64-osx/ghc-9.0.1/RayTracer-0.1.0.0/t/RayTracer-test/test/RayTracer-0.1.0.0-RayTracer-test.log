@@ -12,5 +12,7 @@ Test suite RayTracer-test: RUNNING...
 +++ OK, passed 100 tests.
 +++ OK, passed 100 tests.
 +++ OK, passed 100 tests.
++++ OK, passed 100 tests.
++++ OK, passed 100 tests.
 Test suite RayTracer-test: PASS
 Test suite logged to: /Users/twanbolwerk/Documents/dev/the-raytracer-challenge-by-twan-bolwerk/RayTracer/dist-newstyle/build/x86_64-osx/ghc-9.0.1/RayTracer-0.1.0.0/t/RayTracer-test/test/RayTracer-0.1.0.0-RayTracer-test.log
