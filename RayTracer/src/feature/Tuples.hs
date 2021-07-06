@@ -1,8 +1,7 @@
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
-{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANUGAGE DatatypeContexts #-}
+
+module Tuples where
+  
 import Control.Monad
 
 epsilon = 0.00001
@@ -34,16 +33,28 @@ dot (Tuple x1 y1 z1 w1) (Tuple x2 y2 z2 w2) = (x1 * x2) + (y1 * y2) + (z1 * z2) 
 cross :: (Eq a,Floating a, Num a) => Tuple a -> Tuple a -> Tuple a
 cross (Tuple x1 y1 z1 0) (Tuple x2 y2 z2 0) = vector ((y1 * z2) - (z1 * y2))  ((x1 * z2) - (z1 * x2))  ((x1 * y2) - (x2 * y1))
 
+
+
+
 data Projectile a = Projectile { position :: Tuple a, velocity :: Tuple a} 
  deriving Show
 
 data Environment a = Environment { gravity :: Tuple a, wind :: Tuple a }
 --- s = Projectile
 --- a = Enviroment
+tick2 :: (Fractional a) =>  Environment a -> Projectile a -> Projectile a
+tick2 env proj = let pos = position proj + velocity proj 
+                     vel =  velocity proj + gravity env + wind env
+                   in Projectile pos vel 
+
+p = Projectile (point 0.0 1.0 0.0) (normalize (vector 1.0 1.0 0.0))
+e = Environment (vector 0.0 (-0.1) 0.0) (vector (-0.001) 0 0)
 
 runScenario :: (Environment Double) -> Scenario (Projectile Double) (Projectile Double)
-runScenario env = (Scenario $ \s -> (tick2 env s, tick2 env s)) 
+runScenario env = (Scenario $ \s0 -> let s1 = tick2 env s0
+                                     in (s1, s0)) 
 
+scene :: [Projectile Double] 
 scene = do 
  let s1 = fst $ tick (runScenario e) p
      s2 = fst $ tick (runScenario e) s1
@@ -74,14 +85,6 @@ instance Monad (Scenario s) where
 
 
 
-tick2 :: (Fractional a) =>  Environment a -> Projectile a -> Projectile a
-tick2 env proj = let pos = position proj + velocity proj 
-                     vel =  velocity proj + gravity env + wind env
-                   in Projectile pos vel 
-
-p = Projectile (point 0.0 1.0 0.0) (normalize (vector 1.0 1.0 0.0))
-e = Environment (vector 0.0 (-0.1) 0.0) (vector (-0.001) 0 0)
-
 data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a }
  deriving (Show)
 
@@ -104,19 +107,3 @@ instance (Num a, Fractional a) => Num (Tuple a) where
 
 instance (Fractional a) => Fractional (Tuple a) where
  a / b = (fmap (/) a) <*> b
- 
-
-
-a1 = Tuple 3 (-2) 5 1
-a2 = Tuple (-2) 3  1 0
-
-p1 = point 3.0 2.0 1.0
-p2 = point 5.0 6.0 7.0 
-
-v1 = vector 3 2 1
-v2 = vector 5 6 7
-
-a = tuple 1.0 (-2.0) 3.0 (-4.0)
-
-
-
