@@ -11,6 +11,8 @@ main = do
      (T.quickCheck prop_Tuple_Addition)
      (T.quickCheck prop_Tuple_Subtraction)
      (T.quickCheck prop_Tuple_Negate)
+     (T.quickCheck prop_Tuple_Scalar_Multiplication)
+     (T.quickCheck prop_Tuple_Scalar_Division)
 
 {- 
 Scenario: A tuple with w = 1.0 is a point
@@ -84,3 +86,20 @@ prop_Tuple_Negate :: TupleInput -> Bool
 prop_Tuple_Negate (x, y, z, w) = (negate t) == predicate
  where t = Tuples.tuple x y z w
        predicate = Tuples.vector 0 0 0 - Tuples.tuple x y z w
+
+prop_Tuple_Scalar_Multiplication :: TupleInput -> Double -> Bool
+prop_Tuple_Scalar_Multiplication (x,y,z,w) s = t * (pure s) == predicate
+ where t = Tuples.tuple x y z w
+       predicate = Tuples.tuple (x * s) (y * s) (z * s) (w * s)
+
+prop_Tuple_Scalar_Division :: TupleInput -> Double -> Bool
+prop_Tuple_Scalar_Division (x,y,z,w) s = skipIfNull || (t / (pure s) == predicate)
+ where skipIfNull = isNull x && isNull y && isNull z && isNull w && isNull s
+       isNull a = a == 0
+       t = Tuples.tuple x y z w
+       predicate = Tuples.tuple (x / s) (y / s) (z / s) (w / s)
+
+prop_Tuple_Magnitude :: TupleInput -> Bool
+prop_Tuple_Magnitude (x,y,z,w) = Tuples.magnitude v == predicate
+    where v = Tuples.vector x y z
+          predicate = sqrt ((x^2) + (y^2) + (z^2)) 
