@@ -12,17 +12,16 @@ data Projectile a = Projectile { position :: Tuple a, velocity :: Tuple a}
 data Environment a = Environment { gravity :: Tuple a, wind :: Tuple a }
 --- s = Projectile
 --- a = Enviroment
-tick2 :: (Fractional a) =>  Environment a -> Projectile a -> Projectile a
-tick2 env proj = let pos = position proj + velocity proj 
-                     vel =  velocity proj + gravity env + wind env
-                   in Projectile pos vel 
 
 p = Projectile (point 0.0 1.0 0.0) (normalize (vector 1.0 1.0 0.0))
 e = Environment (vector 0.0 (-0.1) 0.0) (vector (-0.001) 0 0)
 
 runScenario :: (Environment Double) -> Scenario (Projectile Double) (Projectile Double)
-runScenario env = (Scenario $ \s0 -> let s1 = tick2 env s0
+runScenario env = (Scenario $ \s0 -> let s1 = run env s0
                                      in (s0, s1)) 
+                            where run env proj = let pos = position proj + velocity proj 
+                                                     vel =  velocity proj + gravity env + wind env
+                                                 in Projectile pos vel 
 
 scene :: (Environment Double) -> Int -> Scenario (Projectile Double) [Projectile Double]
 scene env n = sequence (replicate n (runScenario env))
