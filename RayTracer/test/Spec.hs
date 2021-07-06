@@ -22,6 +22,7 @@ main = do
      (T.quickCheck prop_Canvas_Create)
      (T.quickCheck prop_Canvas_PixelAt)
      (T.quickCheck prop_Canvas_WritePixel)
+     (T.quickCheck prop_Canvas_PPM_EndsWithNewLine)
      
 
 {- 
@@ -155,3 +156,8 @@ prop_Canvas_WritePixel (width, height) = (width <= 0 || height <= 0) || (black /
           black = color 0 0 0 0
           actualColor = getColor (pixelAt nc 0 0)
 
+prop_Canvas_PPM_EndsWithNewLine :: CanvasInput -> Bool
+prop_Canvas_PPM_EndsWithNewLine (width, height) = (width <= 0 || height <= 0) || predicate
+ where c = canvas width height 
+       predicate = last (canvasToString c) == '\n'
+       

@@ -23,10 +23,18 @@ data Canvas a = Canvas { getWidth :: a, getHeight :: a, pixels :: Array (Int,Int
  deriving Show
 
 canvas :: Int -> Int -> Canvas Int 
-canvas width height = Canvas width height (pixelArray ((0,0), (width,height)) [ pixel x y (color 0.5 0.8 0.2 1) | x <- [0..width], y <- [0..height] ])
+canvas width height = Canvas width height (pixelArray ((0,0), (width,height)) [ pixel x y (color 0 0 0 1) | x <- [0..width], y <- [0..height] ])
 
 writePixel :: Canvas Int -> Int -> Int -> Color -> Canvas Int
 writePixel c x y col = Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y), pixel x y col)])
+
+filterOutOfBound :: ((Int, Int), (Int, Int)) -> [(Int, Int)] -> [(Int, Int)]
+filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\(x,y) -> x >= lx && y >= ly && x <= hx && y <= hy) cords
+
+
+
+writePixels :: Canvas Int -> [(Int, Int)] -> Color -> Canvas Int
+writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map (\x -> (x, pixel (fst x) (snd x) col))) (filterOutOfBound ((0,0), (getWidth c, getHeight c)) cords))
 
 pixelAt :: Canvas Int -> Int -> Int -> Pixel
 pixelAt c x y = (!) (pixels c) (x,y) 
@@ -35,7 +43,11 @@ pixelArray :: ((Int, Int), (Int, Int)) -> [Pixel] -> Array (Int,Int) Pixel
 pixelArray bounds pixels = array bounds [(getPosition p, p) | p <- pixels]
 
 createPPM :: Canvas Int -> FilePath -> IO ()
-createPPM c path = writeFile path ("P3\n" ++ ((show (getWidth c)) ++ " " ++ (show (getHeight c))) ++ "\n" ++ "255\n" ++ pixelData c)
+createPPM c path = writeFile path content
+ where content = canvasToString c
+
+canvasToString :: Canvas Int -> String
+canvasToString c = ("P3\n" ++ ((show (getWidth c)) ++ " " ++ (show (getHeight c))) ++ "\n" ++ "255\n" ++ pixelData c ++ "\n")
 
 pixelData :: Canvas Int -> String
 pixelData c = format (foldMap (\x -> (show (rgbCode x))) p)
