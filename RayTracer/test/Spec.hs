@@ -1,8 +1,10 @@
 import Test.QuickCheck as T
 import Tuples
+import Canvas
+import Colors
 
 type TupleInput = (Double,Double,Double,Double)
-
+type CanvasInput = (Double, Double)
 main :: IO ()
 main = do
      (T.quickCheck prop_Point)
@@ -17,6 +19,7 @@ main = do
      (T.quickCheck prop_Tuple_Normalize)
      (T.quickCheck prop_Tuple_Dot_Product)
      (T.quickCheck prop_Vector_Cross_Product)
+     (T.quickCheck prop_Canvas_Create)
      
 
 {- 
@@ -127,3 +130,12 @@ prop_Vector_Cross_Product (x1,y1,z1,_) (x2,y2,z2,_) = Tuples.cross t1 t2 == pred
   where t1 = Tuples.vector x1 y1 z1 
         t2 = Tuples.vector x2 y2 z2
         predicate = Tuples.vector ((y1 * z2) - (z1 * y2)) ((z1 * x2) - (x1 * z2)) ((x1 * y2) - (y1 * x2)) 
+
+
+prop_Canvas_Create :: CanvasInput -> Bool
+prop_Canvas_Create (width, height) = (getWidth c == width) && 
+                                     (getHeight c == height) &&
+                                     predicate
+  where c = canvas width height
+        isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0
+        predicate = all (\x -> isBlack (getColor x)) (pixels c)
