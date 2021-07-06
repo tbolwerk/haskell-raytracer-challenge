@@ -31,8 +31,16 @@ main :: IO ()
 main = do
   putStrLn "Enter the number of iterations: "
   n <- getLine
-  let result = map position (fst $ tick (scene e (read n)) p)
-  print result
+  putStrLn "Enter the number of scalar multiplier for velocity of projectile: "
+  v <- getLine
+  let result = map position (fst $ tick (scene e (read n)) (Projectile (position p) ((velocity p)* (pure (read v)))))
+  let hit = filter (\x -> getY x > 0) result
+  print hit
+  if getY (last hit) > 0 && length hit == (read n)
+      then putStrLn "Try more iterations or higher velocity"
+      else do
+          putStrLn "Took # iterations:"
+          print (length hit)
 
 newtype Scenario s a = Scenario { tick :: s -> (a, s) } 
 
