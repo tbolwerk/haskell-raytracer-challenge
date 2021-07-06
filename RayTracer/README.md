@@ -14,3 +14,7 @@ run:
 >> cabal new-repl
 >> :l app/Scene
 >> :main
+
+## How to test:
+run:
+>> cabal test
