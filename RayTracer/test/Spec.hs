@@ -1,9 +1,13 @@
 import Test.QuickCheck as T
 import Tuples
+
+type TupleInput = (Double,Double,Double,Double)
+
 main :: IO ()
 main = do
      (T.quickCheck prop_Point)
      (T.quickCheck prop_Vector)
+     (T.quickCheck prop_Tuple_Equal)
 
 {- 
 Scenario: A tuple with w = 1.0 is a point
@@ -19,8 +23,8 @@ Scenario: point x y z creates tuple with w = 1
     Given p <- point (4.3, -4.2, 3.1)
     Then p = tuple (4.3, -4.2, 3.1, 1.0)
 -}
-prop_Point :: Double -> Double -> Double -> Double -> Bool
-prop_Point x y z w = Tuples.isPoint t && predicate && not (Tuples.isVector t)
+prop_Point :: TupleInput -> Bool
+prop_Point (x, y, z, w) = Tuples.isPoint t && predicate && not (Tuples.isVector t)
      where predicate = 
                    let wPredicate = Tuples.getW t == 1
                        xPredicate = Tuples.getX t == x
@@ -41,8 +45,8 @@ Scenario: vector x y z creates tuple with w = 0.0
     Given p <- vector (4.3, -4.2, 3.1)
     Then p = tuple (4.3, -4.2, 3.1, 0.0)
 -}
-prop_Vector :: Double -> Double -> Double -> Double -> Bool
-prop_Vector x y z w = Tuples.isVector t && predicate && not (Tuples.isPoint t)
+prop_Vector :: TupleInput -> Bool
+prop_Vector (x, y, z, w) = Tuples.isVector t && predicate && not (Tuples.isPoint t)
  where predicate = 
                    let wPredicate = Tuples.getW t == 0
                        xPredicate = Tuples.getX t == x
@@ -50,3 +54,13 @@ prop_Vector x y z w = Tuples.isVector t && predicate && not (Tuples.isPoint t)
                        zPredicate = Tuples.getZ t == z
                     in all (==True) [wPredicate, xPredicate, yPredicate, zPredicate]
        t = Tuples.vector x y z
+
+prop_Tuple_Equal :: TupleInput -> TupleInput -> Bool
+prop_Tuple_Equal (x1, y1, z1, w1) (x2, y2, z2, w2) = let xPredicate = predicate x1 x2
+                                                         yPredicate = predicate y1 y2
+                                                         zPredicate = predicate z1 z2
+                                                         wPredicate = predicate w1 w2
+                                                      in if (all (==True) [xPredicate, yPredicate, zPredicate, wPredicate])
+                                                           then tuple x1 y1 z1 w1 == tuple x2 y2 z2 w2
+                                                           else tuple x1 y1 z1 w1 /= tuple x2 y2 z2 w2
+ where predicate a b = (abs (a - b) < 0.00001)
