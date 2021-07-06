@@ -31,10 +31,8 @@ writePixel c x y col = Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y),
 filterOutOfBound :: ((Int, Int), (Int, Int)) -> [(Int, Int)] -> [(Int, Int)]
 filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\(x,y) -> x >= lx && y >= ly && x <= hx && y <= hy) cords
 
-
-
 writePixels :: Canvas Int -> [(Int, Int)] -> Color -> Canvas Int
-writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map (\x -> (x, pixel (fst x) (snd x) col))) (filterOutOfBound ((0,0), (getWidth c, getHeight c)) cords))
+writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map (\cord@(x,y) -> (cord, pixel x y col))) (filterOutOfBound ((0,0), (getWidth c, getHeight c)) cords))
 
 pixelAt :: Canvas Int -> Int -> Int -> Pixel
 pixelAt c x y = (!) (pixels c) (x,y) 
@@ -49,13 +47,17 @@ createPPM c path = writeFile path content
 canvasToString :: Canvas Int -> String
 canvasToString c = ("P3\n" ++ ((show (getWidth c)) ++ " " ++ (show (getHeight c))) ++ "\n" ++ "255\n" ++ pixelData c ++ "\n")
 
+
+
 pixelData :: Canvas Int -> String
 pixelData c = format (foldMap (\x -> (show (rgbCode x))) p)
  where p = pixels c
        rgbCode pixel = show ((clamp . getRed) col) ++ space ++ show ((clamp . getGreen) col) ++ space ++ show ((clamp . getBlue) col)
          where col = getColor pixel
 
-myCanvas = canvas 800 640
+myCanvas = canvas 425 850
+
+newCanvas = writePixels myCanvas [(0, 0), (1, 1), (2,2), (3,3), (4,4)] (color 1 1 1 1)
 
 clamp :: Double -> Int
 clamp double | double <= 0 = 0

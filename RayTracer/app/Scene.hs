@@ -42,6 +42,7 @@ main = do
       v = "11.25"
       result = map position (fst $ tick (scene e (read n)) (Projectile (position p) ((velocity p)* (pure (read v)))))
       hit = filter (\x -> getY x > 0) result
+--   print (mapProjectile myCanvas hit)
   print (mapProjectile myCanvas hit)
   let newCanvas = (writePixels myCanvas (mapProjectile myCanvas hit) (color 1 1 1 1))
   createPPM newCanvas "projectile.ppm"
