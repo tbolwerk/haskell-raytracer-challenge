@@ -8,6 +8,8 @@ main = do
      (T.quickCheck prop_Point)
      (T.quickCheck prop_Vector)
      (T.quickCheck prop_Tuple_Equal)
+     (T.quickCheck prop_Tuple_Addition)
+     (T.quickCheck prop_Tuple_Subtraction)
 
 {- 
 Scenario: A tuple with w = 1.0 is a point
@@ -64,3 +66,16 @@ prop_Tuple_Equal (x1, y1, z1, w1) (x2, y2, z2, w2) = let xPredicate = predicate 
                                                            then tuple x1 y1 z1 w1 == tuple x2 y2 z2 w2
                                                            else tuple x1 y1 z1 w1 /= tuple x2 y2 z2 w2
  where predicate a b = (abs (a - b) < 0.00001)
+
+prop_Tuple_Addition :: TupleInput -> TupleInput -> Bool
+prop_Tuple_Addition (x1, y1, z1, w1) (x2, y2, z2, w2) = (t1 + t2) == predicate
+    where t1 = Tuples.tuple x1 y1 z1 w1
+          t2 = Tuples.tuple x2 y2 z2 w2
+          predicate = Tuples.tuple (x1 + x2) (y1 + y2) (z1 + z2) (w1 + w2)
+
+prop_Tuple_Subtraction :: TupleInput -> TupleInput -> Bool
+prop_Tuple_Subtraction (x1, y1, z1, w1) (x2, y2, z2, w2) = (t1 - t2) == predicate
+    where t1 = Tuples.tuple x1 y1 z1 w1
+          t2 = Tuples.tuple x2 y2 z2 w2
+          predicate = Tuples.tuple (x1 - x2) (y1 - y2) (z1 - z2) (w1 - w2)
+
