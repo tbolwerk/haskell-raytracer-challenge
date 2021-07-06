@@ -1,5 +1,5 @@
 import Test.QuickCheck
-import ../feature/Tuple
+import Tuple
 --TODO: [ ] Create test with QuickCheck
 --- A tuple with w = 1.0 is a point
 --- A tuple with w = 0.0 is a vector
