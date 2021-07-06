@@ -1,6 +1,21 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Tuples where
+{- 
+This module is part of chapter 1 of The Ray Tracer Challenge
 
+This is the library for tuples, one of the backbones of a Raytracer. Used in all kinds of calculations.
+
+For example when light hits an object. 
+
+Some keynotions are
+  vector = tuple (x y z 0) 
+   w = 0
+  point = tuple (x y z 1)
+   w = 1
+
+  vector is used for motions and forcer, hence the w = 0
+  point is visable and rather small object, therefore the w = 1
+-}   
 epsilon = 0.00001
 
 isPoint :: (Fractional a, Num a, Eq a) => Tuple a -> Bool
