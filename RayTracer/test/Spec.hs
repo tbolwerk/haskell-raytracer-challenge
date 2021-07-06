@@ -148,8 +148,10 @@ prop_Canvas_PixelAt (width, height) = (width <= 0 || height <= 0) || isBlack (ge
           isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0
 
 prop_Canvas_WritePixel :: CanvasInput -> Bool
-prop_Canvas_WritePixel (width, height) = (width <= 0 || height <= 0) || (not (isBlack (getColor (pixelAt nc 0 0))) && getColor (pixelAt nc 0 0) == red)
+prop_Canvas_WritePixel (width, height) = (width <= 0 || height <= 0) || (black /= actualColor) && (actualColor == red)
     where c = canvas width height
           nc = writePixel c 0 0 red 
           red = color 1 0 0 0
-          isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0
+          black = color 0 0 0 0
+          actualColor = getColor (pixelAt nc 0 0)
+
