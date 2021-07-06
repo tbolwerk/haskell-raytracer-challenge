@@ -14,6 +14,10 @@ Scenario: A tuple with w = 1.0 is a point
          a.w = 1.0
          a is a point
          a is not a vector
+
+Scenario: point x y z creates tuple with w = 1
+    Given p <- point (4.3, -4.2, 3.1)
+    Then p = tuple (4.3, -4.2, 3.1, 1.0)
 -}
 prop_Point :: Double -> Double -> Double -> Double -> Bool
 prop_Point x y z w = Tuples.isPoint t && predicate && not (Tuples.isVector t)
@@ -33,6 +37,9 @@ Scenario: A tuple with w = 0.0 is a vector
          a.w = 0.0
          a is not a point
          a is a vector
+Scenario: vector x y z creates tuple with w = 0.0
+    Given p <- vector (4.3, -4.2, 3.1)
+    Then p = tuple (4.3, -4.2, 3.1, 0.0)
 -}
 prop_Vector :: Double -> Double -> Double -> Double -> Bool
 prop_Vector x y z w = Tuples.isVector t && predicate && not (Tuples.isPoint t)
