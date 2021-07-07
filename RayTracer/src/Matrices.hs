@@ -1,4 +1,14 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-
+Part of chapter 3 of the raytracer challenge.
+
+A lot of matrix calculus comes in handy here.
+
+Used some references of:
+https://semath.info/src/inverse-cofactor-ex4.html
+https://www.wisfaq.nl/show3archive.asp?id=23989&j=2004
+-}
+
 module Matrices where
 import Data.Array
 import Tuples
@@ -164,4 +174,13 @@ matrixScalarMultiply :: (Num a,Fractional a) => Matrix a -> a -> Matrix a
 matrixScalarMultiply m s = Matrix (getNRows m) (getNCols m) (accum (\e a -> a e) (getArray m) [((i,j), (*s)) | j <- [0..getNCols m -1], i <- [0..getNRows m -1]])
 
 a10 :: Matrix Double
-a10 = listToMatrix [-2,-8,3,5,-3,1,7,3,1,2,-9,6,-6,7,7,-9]
+a10 = listToMatrix [-5,2,6,-8,1,-5,1,8,7,7,-6,-7,1,-3,7,4]
+
+inverse :: (Num a, Show a, Fractional a) => Matrix a -> Matrix a
+inverse m = matrix (getNRows m) (getNCols m) (\(i,j) -> (cofactor m i j) / determinant m)
+
+
+inverseTest :: Bool
+inverseTest = a4 == a4'
+  where  c4 = a4 * b4
+         a4' = c4 * (inverse b4)
