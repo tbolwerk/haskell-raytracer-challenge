@@ -30,7 +30,8 @@ library
       Lib,
       Tuples,
       Colors,
-      Canvas
+      Canvas,
+      Matrices
   other-modules:
       Paths_RayTracer
   hs-source-dirs:

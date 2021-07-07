@@ -42,10 +42,10 @@ main :: IO ()
 main = do
 --   putStrLn "Enter the number of iterations: "
 --   n <- getLine
---   putStrLn "Enter the number of scalar multiplier for velocity of projectile: "
---   v <- getLine
+  putStrLn "Enter the number of scalar multiplier for velocity of projectile: "
+  v <- getLine
   let n = "1000"
-      v = "11.25"
+    --   v = "11.25"
       result = map position (fst $ tick (scene e (read n)) (Projectile (position p) ((velocity p)* (pure (read v)))))
       hit = filter (\x -> getY x > 0) result
 --   print (mapProjectile myCanvas hit)
