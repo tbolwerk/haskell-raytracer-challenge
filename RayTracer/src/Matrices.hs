@@ -20,6 +20,18 @@ instance (Num a, Fractional a) => Num (Matrix a) where
 celCalc :: (Num a, Fractional a) => Matrix a -> Matrix a -> Int -> Int -> a
 celCalc a b i j = sum (zipWith (*) (getRow a i 0) (getCol b j 0))
 
+getRow :: Matrix a -> Int -> Int -> [a]
+getRow m rowNumber index | bound /= index -1 = (arr ! (index,rowNumber)) : getRow m rowNumber (index+1)
+                         | otherwise = []
+    where arr = getArray m
+          (_,(_,bound)) = bounds arr
+
+getCol :: Matrix a -> Int -> Int -> [a]
+getCol m colNumber index | bound /= index -1 = (arr ! (colNumber,index)) : getCol m colNumber (index+1)
+                         | otherwise = []
+    where arr = getArray m
+          (_,(_,bound)) = bounds arr
+
 type Column = Int
 type Row = Int
 
@@ -31,16 +43,7 @@ j increments column
 matrix :: Row -> Column -> ((Row, Column) -> a) -> Matrix a
 matrix r c f = Matrix r c (array ((0,0), (c-1, r-1)) [((i,j), f (i,j)) | j <- [0..r-1], i <- [0..c-1]])
 
-getRow :: Matrix a -> Int -> Int -> [a]
-getRow m rowNumber index | (snd (snd (bounds arr))) /= index -1 = (arr ! (index,rowNumber)) : getRow m rowNumber (index+1)
-                         | otherwise = []
-    where arr = getArray m
 
-
-getCol :: Matrix a -> Int -> Int -> [a]
-getCol m colNumber index | (snd (snd (bounds arr))) /= index -1 = (arr ! (colNumber,index)) : getCol m colNumber (index+1)
-                            | otherwise = []
-    where arr = getArray m
 get :: Matrix a -> (Row, Column) -> a
 get m (i,j) = (getArray m) ! (i,j)
 
