@@ -15,13 +15,13 @@ j increments column
 -}
 
 matrix :: Row -> Column -> ((Int, Int) -> a) -> Matrix a
-matrix r c f = Matrix r c (array ((0,0), (c-1, r-1)) [((i,j), f (i,j)) | i <- [0..c-1], j <- [0..r-1]])
+matrix r c f = Matrix r c (array ((0,0), (c-1, r-1)) [((i,j), f (i,j)) | j <- [0..r-1], i <- [0..c-1]])
 
 get :: Matrix a -> (Int, Int) -> a
 get m (i,j) = (getArray m) ! (i,j)
 
 set :: Matrix a -> (Int, Int) -> a -> Matrix a
-set m (i,j) v = Matrix  (getNRows m) (getNCols m) ((getArray m) // [((i,j), v)])
+set m (i,j) v = Matrix  (getNRows m) (getNCols m) ((getArray m) // [((i, j), v)])
 
 myM = matrix 4 4 (\(i,j) -> case j of
                                 0 -> fromIntegral i + 1
