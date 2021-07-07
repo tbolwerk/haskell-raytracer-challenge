@@ -23,7 +23,9 @@ data Canvas a = Canvas { getWidth :: a, getHeight :: a, pixels :: Array (Int,Int
  deriving Show
 
 canvas :: Int -> Int -> Canvas Int 
-canvas width height = Canvas width height (pixelArray ((0,0), (width,height)) [ pixel x y (color 0 0 0 1) | x <- [0..width], y <- [0..height] ])
+canvas width height = Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 0 0 0 1) | x <- [0..w], y <- [0..h] ])
+ where w = width - 1
+       h = height - 1
 
 writePixel :: Canvas Int -> Int -> Int -> Color -> Canvas Int
 writePixel c x y col = Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y), pixel x y col)])
@@ -34,8 +36,12 @@ filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\(x,y) -> x >= lx && y >= 
 writePixels :: Canvas Int -> [(Int, Int)] -> Color -> Canvas Int
 writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map (\cord@(x,y) -> (cord, pixel x y col))) (filterOutOfBound ((0,0), (getWidth c, getHeight c)) cords))
 
+pixelAtCord :: Array (Int, Int) Pixel -> (Int , Int) -> Pixel
+pixelAtCord pixels (x,y) = (!) pixels (x,y) 
+
+
 pixelAt :: Canvas Int -> Int -> Int -> Pixel
-pixelAt c x y = (!) (pixels c) (x,y) 
+pixelAt c x y  = (!) (pixels c) (x,y) 
 
 pixelArray :: ((Int, Int), (Int, Int)) -> [Pixel] -> Array (Int,Int) Pixel
 pixelArray bounds pixels = array bounds [(getPosition p, p) | p <- pixels]
@@ -45,19 +51,26 @@ createPPM c path = writeFile path content
  where content = canvasToString c
 
 canvasToString :: Canvas Int -> String
-canvasToString c = ("P3\n" ++ ((show (getWidth c)) ++ " " ++ (show (getHeight c))) ++ "\n" ++ "255\n" ++ pixelData c ++ "\n")
+canvasToString c = ("P3\n" ++ ((show (getWidth c + 1)) ++ " " ++ (show (getHeight c + 1))) ++ "\n" ++ "255\n" ++ pixelData c ++ "\n")
 
-
+colorDepth = 255
 
 pixelData :: Canvas Int -> String
-pixelData c = format (foldMap (\x -> (show (rgbCode x))) p)
+pixelData c = format (foldMap (\x -> (show (rgbCode x))) (iter p))
  where p = pixels c
        rgbCode pixel = show ((clamp . getRed) col) ++ space ++ show ((clamp . getGreen) col) ++ space ++ show ((clamp . getBlue) col)
          where col = getColor pixel
 
-myCanvas = canvas 425 850
+myCanvas = canvas 900 550
 
-newCanvas = writePixels myCanvas [(0, 0), (1, 1), (2,2), (3,3), (4,4)] (color 1 1 1 1)
+newCanvas = writePixels myCanvas [(0, 0), (0, 3), (3,0), (3,3)] (color 1 0 1 1)
+
+mpixels = pixels newCanvas
+
+iter :: Array (Int, Int) Pixel -> [Pixel]
+iter array = [ pixelAtCord array (x, y) | y <- [ly.. hy], x <- [lx .. hx]]
+ where ((lx, ly), (hx, hy)) = bounds array
+
 
 clamp :: Double -> Int
 clamp double | double <= 0 = 0
