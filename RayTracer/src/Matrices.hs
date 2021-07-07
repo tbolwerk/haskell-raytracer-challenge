@@ -14,8 +14,12 @@ instance Eq (Matrix Double) where
                           (getNRows a) == (getNRows b) &&
                           (all (==True) (zipWith compare (elems (getArray a)) (elems (getArray b))))
                    where compare a b = abs (a - b) < Tuples.epsilon
+
 instance (Num a, Fractional a) => Num (Matrix a) where
    a * b = listToMatrix [ celCalc a b i j | i <- [0..getNRows a-1], j <- [0..getNCols a-1]]
+
+instance Functor Matrix where
+    fmap f m = listToMatrix (map f (elems $ getArray m))
 
 celCalc :: (Num a, Fractional a) => Matrix a -> Matrix a -> Int -> Int -> a
 celCalc a b i j = sum (zipWith (*) (getRow a i 0) (getCol b j 0))
@@ -83,7 +87,37 @@ listToMatrix xs = matrix bound bound (\(i, j) -> (((chunkOf bound xs) !! j) !! i
  where bound = round (sqrt (fromIntegral (length xs)))
 
 
-a :: Matrix Double
-a = listToMatrix [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
-b :: Matrix Double
-b = listToMatrix [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
+a4 :: Matrix Double
+a4 = listToMatrix [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
+b4 :: Matrix Double
+b4 = listToMatrix [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
+
+a3 :: Matrix Double
+a3 = listToMatrix [7,8,9,8,7,6,5,4,3,2]
+
+b3 :: Matrix Double
+b3 = listToMatrix [-2, -1,-2 ,3,3,2,-1,-1,-4]
+
+matrixVectorMultiply :: (Num a, Floating a) => Matrix a -> Tuple a -> Tuple a
+matrixVectorMultiply m t =  listToTuple (map (\row -> dot row t) [ listToTuple (getRow m i 0) | i <- [0..getNCols m -1]])
+
+listToTuple :: Num a => [a] -> Tuple a
+listToTuple (x:y:z:w:[]) = tuple x y z w
+
+
+calc = matrixVectorMultiply a1 b1
+
+a1 = listToMatrix [1,2,3,4,2,4,4,2,8,6,4,1,0,0,0,1]
+b1 = listToTuple [1,2,3,1]
+
+identityMatrix :: Matrix Double
+identityMatrix = matrix 4 4 (\(i,j) -> if i == j then 1.0 else 0.0)
+
+transpose :: Matrix a -> Matrix a 
+transpose m = matrix (getNRows m) (getNCols m) (\(i,j) -> getArray m ! (j,i))
+
+
+
+
+
+
