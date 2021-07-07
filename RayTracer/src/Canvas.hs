@@ -31,12 +31,12 @@ writePixel :: Canvas Int -> Int -> Int -> Color -> Canvas Int
 writePixel c x y col = Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y), pixel x y col)])
 
 filterOutOfBound :: ((Int, Int), (Int, Int)) -> [(Int, Int)] -> [(Int, Int)]
-filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\cord -> isOutOfBound ((lx, ly), (hx, hy)) cord) cords
+filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\cord -> isInBounds ((lx, ly), (hx, hy)) cord) cords
 
 type Bounds = ((Int, Int), (Int, Int))
 
-isOutOfBound :: Bounds -> (Int, Int) -> Bool
-isOutOfBound bounds (x,y) = x >= lx && y >= ly && x <= hx && y <= hy
+isInBounds :: Bounds -> (Int, Int) -> Bool
+isInBounds bounds (x,y) = x >= lx && y >= ly && x <= hx && y <= hy
     where ((lx, ly), (hx, hy)) = bounds 
 
 writePixels :: Canvas Int -> [(Int, Int)] -> Color -> Canvas Int
@@ -45,7 +45,7 @@ writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map 
 
 
 filterOutOfBound' :: Array (Int, Int) Pixel -> [((Int, Int),Pixel)]
-filterOutOfBound' array = filter (\(cord,_) -> isOutOfBound (bounds array) cord) (assocs array)
+filterOutOfBound' array = filter (\(cord,_) -> isInBounds (bounds array) cord) (assocs array)
 
 writePixels' :: Canvas Int -> Array (Int, Int) Pixel -> Canvas Int
 writePixels' c ps = Canvas (getWidth c) (getHeight c) ((pixels c) // (filterOutOfBound' ps))
@@ -58,7 +58,7 @@ pixelAt :: Canvas Int -> Int -> Int -> Pixel
 pixelAt c x y  = (!) (pixels c) (x,y) 
 
 pixelArray :: ((Int, Int), (Int, Int)) -> [Pixel] -> Array (Int,Int) Pixel
-pixelArray bounds pixels = array bounds [(getPosition p, p) | p <- pixels]
+pixelArray bounds pixels = array bounds [(getPosition p, p) | p <- pixels, isInBounds bounds (getPosition p)]
 
 createPPM :: Canvas Int -> FilePath -> IO ()
 createPPM c path = writeFile path content
@@ -75,7 +75,7 @@ pixelData c = format (foldMap (\x -> (show (rgbCode x))) (horizontalIter p))
        rgbCode pixel = show ((clamp . getRed) col) ++ space ++ show ((clamp . getGreen) col) ++ space ++ show ((clamp . getBlue) col)
          where col = getColor pixel
 
-myCanvas = canvas 5 5
+myCanvas = canvas 900 550
 
 newCanvas = writePixels myCanvas [(0, 0), (0, 3), (3,0), (3,3)] (color 1 0 1 1)
 

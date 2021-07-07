@@ -51,7 +51,7 @@ main = do
 --   print (mapProjectile myCanvas hit)
   print (mapProjectile myCanvas hit)
   let newCanvas = (writePixels myCanvas (mapProjectile myCanvas hit) (color 1 1 1 1))
-  let newCanvas' = (writePixels' myCanvas (mapProjectile' myCanvas hit))
+--   let newCanvas' = (writePixels' myCanvas (mapProjectile' myCanvas hit))
   createPPM newCanvas "projectile.ppm"
 --   createPPM newCanvas' "projectile2.ppm"
   if getY (last hit) > 0 && length hit == (read n)
