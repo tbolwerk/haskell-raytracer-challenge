@@ -31,10 +31,24 @@ writePixel :: Canvas Int -> Int -> Int -> Color -> Canvas Int
 writePixel c x y col = Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y), pixel x y col)])
 
 filterOutOfBound :: ((Int, Int), (Int, Int)) -> [(Int, Int)] -> [(Int, Int)]
-filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\(x,y) -> x >= lx && y >= ly && x <= hx && y <= hy) cords
+filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\cord -> isOutOfBound ((lx, ly), (hx, hy)) cord) cords
+
+type Bounds = ((Int, Int), (Int, Int))
+
+isOutOfBound :: Bounds -> (Int, Int) -> Bool
+isOutOfBound bounds (x,y) = x >= lx && y >= ly && x <= hx && y <= hy
+    where ((lx, ly), (hx, hy)) = bounds 
 
 writePixels :: Canvas Int -> [(Int, Int)] -> Color -> Canvas Int
 writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map (\cord@(x,y) -> (cord, pixel x y col))) (filterOutOfBound ((0,0), (getWidth c, getHeight c)) cords))
+ where pxs = map (\(x,y) -> pixel x y (color 1 1 1 1)) cords
+
+
+filterOutOfBound' :: Array (Int, Int) Pixel -> [((Int, Int),Pixel)]
+filterOutOfBound' array = filter (\(cord,_) -> isOutOfBound (bounds array) cord) (assocs array)
+
+writePixels' :: Canvas Int -> Array (Int, Int) Pixel -> Canvas Int
+writePixels' c ps = Canvas (getWidth c) (getHeight c) ((pixels c) // (filterOutOfBound' ps))
 
 pixelAtCord :: Array (Int, Int) Pixel -> (Int , Int) -> Pixel
 pixelAtCord pixels (x,y) = (!) pixels (x,y) 
@@ -61,7 +75,7 @@ pixelData c = format (foldMap (\x -> (show (rgbCode x))) (horizontalIter p))
        rgbCode pixel = show ((clamp . getRed) col) ++ space ++ show ((clamp . getGreen) col) ++ space ++ show ((clamp . getBlue) col)
          where col = getColor pixel
 
-myCanvas = canvas 900 550
+myCanvas = canvas 5 5
 
 newCanvas = writePixels myCanvas [(0, 0), (0, 3), (3,0), (3,3)] (color 1 0 1 1)
 
