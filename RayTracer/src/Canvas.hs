@@ -56,7 +56,7 @@ canvasToString c = ("P3\n" ++ ((show (getWidth c + 1)) ++ " " ++ (show (getHeigh
 colorDepth = 255
 
 pixelData :: Canvas Int -> String
-pixelData c = format (foldMap (\x -> (show (rgbCode x))) (iter p))
+pixelData c = format (foldMap (\x -> (show (rgbCode x))) (horizontalIter p))
  where p = pixels c
        rgbCode pixel = show ((clamp . getRed) col) ++ space ++ show ((clamp . getGreen) col) ++ space ++ show ((clamp . getBlue) col)
          where col = getColor pixel
@@ -67,8 +67,8 @@ newCanvas = writePixels myCanvas [(0, 0), (0, 3), (3,0), (3,3)] (color 1 0 1 1)
 
 mpixels = pixels newCanvas
 
-iter :: Array (Int, Int) Pixel -> [Pixel]
-iter array = [ pixelAtCord array (x, y) | y <- [ly.. hy], x <- [lx .. hx]]
+horizontalIter :: Array (Int, Int) Pixel -> [Pixel]
+horizontalIter array = [ pixelAtCord array (x, y) | y <- [ly.. hy], x <- [lx .. hx]]
  where ((lx, ly), (hx, hy)) = bounds array
 
 
