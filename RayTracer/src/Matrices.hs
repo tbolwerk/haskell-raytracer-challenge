@@ -116,8 +116,18 @@ identityMatrix = matrix 4 4 (\(i,j) -> if i == j then 1.0 else 0.0)
 transpose :: Matrix a -> Matrix a 
 transpose m = matrix (getNRows m) (getNCols m) (\(i,j) -> getArray m ! (j,i))
 
+determinant :: (Show a, Num a) => Matrix a -> a
+determinant (Matrix 2 2 array) = (a * d) - (b * c)
+    where a = array ! (0,0)
+          b = array ! (0,1)
+          c = array ! (1,0)
+          d = array ! (1,1)
 
+submatrix :: (Num a, Show a) => Matrix a -> Row -> Column -> Matrix a
+submatrix m r c = listToMatrix $ concat (map (\x -> take c x ++ drop (1 + c) x) removeRow)
+ where removeRow = take r (matrixList m) ++ drop (1 + r) (matrixList m)
 
+minor :: (Num a,Show a) => Matrix a -> Row -> Column -> a
+minor m@(Matrix 3 3 array) r c = determinant (submatrix m r c)
 
-
-
+b = listToMatrix [3,5,0,2,-1,-7,6,-1,5]
