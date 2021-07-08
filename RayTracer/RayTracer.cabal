@@ -32,7 +32,9 @@ library
       Colors,
       Canvas,
       Matrices,
-      Transformations
+      Transformations,
+      Rays,
+      Spheres
   other-modules:
       Paths_RayTracer
   hs-source-dirs:
