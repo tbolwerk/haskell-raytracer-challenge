@@ -1,5 +1,10 @@
 module Clock where
+{-
+Part of the putting it all together of chapter 4 matrix transformations
 
+drawing a clock using matrix transformations.
+and write it to a ppm file
+-}
 import Transformations
 import Matrices
 import Tuples
