@@ -31,7 +31,8 @@ library
       Tuples,
       Colors,
       Canvas,
-      Matrices
+      Matrices,
+      Transformations
   other-modules:
       Paths_RayTracer
   hs-source-dirs:
