@@ -73,11 +73,11 @@ scalingMatrix (x,y,z) = listToMatrix (concat [
     [0,0,0,1]
                                        ])
 
-transform :: Tuple Scalar -> Tuple Scalar
-transform = translation (5,-3,2)
+-- transform :: Tuple Scalar -> Tuple Scalar
+-- transform = translation (5,-3,2)
 
-p :: Tuple Scalar
-p = point 1 0 1
+-- p :: Tuple Scalar
+-- p = point 1 0 1
 
 -- inv :: Matrix Scalar
 -- inv = inverse transform
