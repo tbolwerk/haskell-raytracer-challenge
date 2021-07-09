@@ -39,7 +39,7 @@ it5 = intersection (-2.5, s)
 it6 = intersection (-3.5, s)
 
 intersection :: (Time, Sphere) -> Intersection
-intersection (t, s) = Intersection t s
+intersection (t, s) = Intersection t s 
 
 intersections :: Intersection -> State [Intersection] [Intersection]
 intersections is = do 
@@ -110,7 +110,7 @@ intersect :: (Sphere, Ray) -> State [Intersection] [Intersection]
 intersect (s,r') = let d = (discriminant a b c) 
                   in if d < 0 then return []
                               else return (quadraticEquation d)
- where r = transform (getTransform s) r'
+ where r = transform ((inverse . getTransform) s) r'
        sphereToRay = origin r - (getPos s)
        a = dot (direction r) (direction r)
        b = 2 * dot (direction r) sphereToRay
@@ -121,8 +121,8 @@ r1 = ray ((point 0 0 (-5)), vector 0 0 1)
 
 s = sphere 1
 
-test = intersect (s1, r1)
-    where s1 = setTransform s scalingMatrix (0.5,0.5,0.5) --TODO: FIX this should be (2.0, 2.0, 2.0)
+test = eval (intersect (s1, r1)) []
+    where s1 = setTransform s scalingMatrix (2.0, 2.0,2.0) --TODO: FIX this should be (2.0, 2.0, 2.0)
 
 
 -- xs = intersect (s, r1)
