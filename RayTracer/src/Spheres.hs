@@ -18,9 +18,12 @@ instance Ord Intersection where
 sphere :: Int -> Sphere
 sphere id = Sphere id (point 0 0 0) 1 identityMatrix
 
-setTransform :: Sphere -> (a -> Matrix Double) -> a -> Sphere
-setTransform s f a = Sphere (getId s) (getPos s) (getR s) (f a)
 
+setTransform' :: Sphere -> (a -> Matrix Double) -> a -> Sphere
+setTransform' s f a = Sphere (getId s) (getPos s) (getR s) (f a)
+
+setTransform :: Sphere -> Matrix Double -> Sphere
+setTransform s a = Sphere (getId s) (getPos s) (getR s) a
 
 hit :: [Intersection] -> Maybe Intersection
 hit xs = headOr ((List.sort . filter (\x -> time x >= 0)) xs)
@@ -28,6 +31,21 @@ hit xs = headOr ((List.sort . filter (\x -> time x >= 0)) xs)
 headOr :: [a] ->  Maybe a
 headOr [] = Nothing
 headOr (x:_) = Just x
+
+{-
+There are 4 vectors calculated after an intersection:
+* (E) the eye vector (negate the ray's direction)
+* (L) the light vector (subtract P fromo the position of the light source)
+* (N) the normal vector (perpendicular to the surface hit)
+* (R) the reflection vector, pointing in the directioin that incoming light would go.
+-}
+
+normalsAt :: (Sphere, Tuple Double) -> Tuple Double
+normalsAt (s,p) = vector (getX wordNormal) (getY wordNormal) (getZ wordNormal)
+    where objectPoint = matrixVectorMultiply (inverse (getTransform s)) p
+          objectNormal = objectPoint - (getPos s)
+          wordNormal = matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
+
 
 
 it0 = intersection (3.5, s)
@@ -122,7 +140,7 @@ r1 = ray ((point 0 0 (-5)), vector 0 0 1)
 s = sphere 1
 
 test = eval (intersect (s1, r1)) []
-    where s1 = setTransform s scalingMatrix (2.0, 2.0,2.0) --TODO: FIX this should be (2.0, 2.0, 2.0)
+    where s1 = setTransform' s scalingMatrix (2.0, 2.0,2.0) --TODO: FIX this should be (2.0, 2.0, 2.0)
 
 
 -- xs = intersect (s, r1)
