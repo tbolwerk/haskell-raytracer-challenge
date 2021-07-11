@@ -109,7 +109,7 @@ clamp double | double <= 0 = 0
 space = " "
 
 replace :: String -> String
-replace ('"':'"':xs) = "\n" ++ replace xs
+replace ('"':'"':xs) = '\n' : replace xs
 replace (x:xs) = x : replace xs
 replace "" = ""
 
