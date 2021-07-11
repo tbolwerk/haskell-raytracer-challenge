@@ -5,7 +5,7 @@ import Tuples
 import Control.Monad
 import Data.Array
 import System.IO
-
+import State
 type Position = (Int, Int)
 
 pixel :: Int -> Int -> Color -> Pixel
@@ -27,8 +27,23 @@ canvas width height = Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 0
  where w = width - 1
        h = height - 1
 
+
+canvas' :: (Int,Int) -> State (Canvas Int) (Canvas Int)
+canvas' (width, height) = do
+  State $ \s -> (s, (Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 1 0 0 1) | x <- [0..w], y <- [0..h] ])))
+  ask
+ where w = width - 1
+       h = height - 1
+
+writePixel' :: Pixel -> State (Canvas Int) (Canvas Int)
+writePixel' p= do
+  c' <- ask
+  return (writePixel c' ((fst . getPosition) p) ((snd . getPosition) p) (getColor p))
+
 writePixel :: Canvas Int -> Int -> Int -> Color -> Canvas Int
-writePixel c x y col = Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y), pixel x y col)])
+writePixel c x y col = if isInBounds ((0,0),(getWidth c,getHeight c)) (x,y) 
+   then Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y), pixel x y col)])
+   else c
 
 filterOutOfBound :: ((Int, Int), (Int, Int)) -> [(Int, Int)] -> [(Int, Int)]
 filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\cord -> isInBounds ((lx, ly), (hx, hy)) cord) cords

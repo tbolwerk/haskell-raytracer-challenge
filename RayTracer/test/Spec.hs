@@ -1,4 +1,5 @@
 import Test.QuickCheck as T
+
 import Tuples
 import Canvas
 import Colors
@@ -160,4 +161,5 @@ prop_Canvas_PPM_EndsWithNewLine :: CanvasInput -> Bool
 prop_Canvas_PPM_EndsWithNewLine (width, height) = (width <= 0 || height <= 0) || predicate
  where c = canvas width height 
        predicate = last (canvasToString c) == '\n'
-       
+
+

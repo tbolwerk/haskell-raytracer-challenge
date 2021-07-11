@@ -3,9 +3,11 @@ module Rays where
 import Tuples
 import Matrices
 import Transformations
+
 type Vector = Tuple Double
 type Point = Tuple Double
 type Time = Double
+
 data Ray = Ray {origin :: Point, direction :: Vector}
  deriving Show
 

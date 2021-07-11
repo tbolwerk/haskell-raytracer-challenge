@@ -45,6 +45,9 @@ dot (Tuple x1 y1 z1 w1) (Tuple x2 y2 z2 w2) = (x1 * x2) + (y1 * y2) + (z1 * z2) 
 cross :: (Eq a,Floating a, Num a) => Tuple a -> Tuple a -> Tuple a
 cross (Tuple x1 y1 z1 0) (Tuple x2 y2 z2 0) = vector ((y1 * z2) - (z1 * y2)) ((z1 * x2) - (x1 * z2)) ((x1 * y2) - (y1 * x2)) 
 
+reflect :: (Tuple Double, Tuple Double) -> Tuple Double
+reflect (v,n) = v - n * pure (2 * dot v n)
+
 data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a }
  deriving (Show)
 

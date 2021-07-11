@@ -4,7 +4,13 @@ import Tuples
 import Matrices
 import qualified Data.List as List
 import Transformations
-data Sphere = Sphere {getId :: Int, getPos :: Tuple Double, getR :: Double, getTransform :: Matrix Double}
+import Materials
+import State
+data Sphere = Sphere {getId :: Int, 
+                      getPos :: Tuple Double, 
+                      getR :: Double, 
+                      getTransform :: Matrix Double,
+                      getMaterial :: Material}
  deriving Show
 
 data Intersection = Intersection {time :: Time, object :: Sphere}
@@ -15,18 +21,23 @@ instance Eq Intersection where
 instance Ord Intersection where
     (<=) a b = time a <= time b && time a >= 0
 
-sphere :: Int -> Sphere
-sphere id = Sphere id (point 0 0 0) 1 identityMatrix
+sphere :: (Int, Tuple Double, Double, Matrix Double, Material) -> Sphere
+sphere (id, pos, r, t, m) = Sphere id pos r t m 
 
+defaultSphere :: Int -> Sphere
+defaultSphere id = sphere (id, (point 0 0 0), 1, identityMatrix, defaultMaterial)
 
 setTransform' :: Sphere -> (a -> Matrix Double) -> a -> Sphere
-setTransform' s f a = Sphere (getId s) (getPos s) (getR s) (f a)
+setTransform' s f a = sphere (getId s, getPos s, getR s, f a, getMaterial s )
 
 setTransform :: Sphere -> Matrix Double -> Sphere
-setTransform s a = Sphere (getId s) (getPos s) (getR s) a
+setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s )
 
-hit :: [Intersection] -> Maybe Intersection
-hit xs = headOr ((List.sort . filter (\x -> time x >= 0)) xs)
+hit :: State [Intersection] (Maybe Intersection)
+hit = do
+    xs <- ask
+    return (headOr ((List.sort . filter (\x -> time x >= 0)) xs))
+    --  
 
 headOr :: [a] ->  Maybe a
 headOr [] = Nothing
@@ -64,11 +75,6 @@ intersections is = do
     put [is]
     ask 
 
-exec :: State s a -> s -> s
-exec m s = snd (getState m s)
-
-eval :: State s a -> s -> a
-eval m s = fst (getState m s)
 
 {-
 Use state monad too keep track of all intersections!
@@ -86,26 +92,6 @@ main = do
     put [it6]
     ask
         
-ask :: State a a 
-ask =  State $ \s -> (s,s)
-put :: Monoid s => s -> State s ()
-put s = State $ \s0 -> ((), s <> s0)
-
-
-newtype State s a = State { getState :: s -> (a, s)}
-
-instance Functor (State s) where
-    fmap f fa = State $ \s0 -> let (a,s1) = (getState fa) s0
-                                in (f a, s1)
-instance Applicative (State s) where
-    pure a = State $ \s -> (a,s)
-    (State af) <*> (State aa) = State $ \s0 -> let (f, s1) = af s0
-                                               in let (a,s2) = aa s1
-                                                   in (f a, s2)
-instance Monad (State a) where
-    return = pure
-    ma >>= f = State $ \s0  -> let (a ,s1) = getState ma s0 
-                                in getState (f a) s1
 
 {-
 abc formula
@@ -124,10 +110,10 @@ eval (intersect (s, r1)) []
 [Intersection {time = 5.0, object = Sphere {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}},Intersection {time = 5.0, object = Sphere {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}}]
 -}
 
-intersect :: (Sphere, Ray) -> State [Intersection] [Intersection]
+intersect :: (Sphere, Ray) -> State [Intersection] (Maybe [Intersection])
 intersect (s,r') = let d = (discriminant a b c) 
-                  in if d < 0 then return []
-                              else return (quadraticEquation d)
+                  in if d < 0 then return Nothing
+                              else return (Just (quadraticEquation d))
  where r = transform ((inverse . getTransform) s) r'
        sphereToRay = origin r - (getPos s)
        a = dot (direction r) (direction r)
@@ -137,7 +123,7 @@ intersect (s,r') = let d = (discriminant a b c)
 
 r1 = ray ((point 0 0 (-5)), vector 0 0 1)
 
-s = sphere 1
+s = defaultSphere 1
 
 test = eval (intersect (s1, r1)) []
     where s1 = setTransform' s scalingMatrix (2.0, 2.0,2.0) --TODO: FIX this should be (2.0, 2.0, 2.0)
