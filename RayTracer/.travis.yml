@@ -1,0 +1,3 @@
+language: haskell
+ghc:
+  - "9.0.1"
