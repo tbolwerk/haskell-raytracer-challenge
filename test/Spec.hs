@@ -49,9 +49,6 @@ tests = [
                 , testCase "testCase29: Subtracting colors" testCase29
                 , testCase "testCase30: Multiplying a color by a scalar" testCase30
                 , testCase "testCase31: Multiplying colors" testCase31
-                , testCase "testCase32: Every pixel of initial canvas is black" testCase32
-                , testCase "testCase33: Width of canvas is correctly set" testCase33
-                , testCase "testCase34: Height of canvas is correctly set" testCase34
                 , testProperty "prop_Point" prop_Point
                 , testProperty "prop_Vector" prop_Vector
                 , testProperty "prop_Tuple_Equal" prop_Tuple_Equal
@@ -70,7 +67,10 @@ tests = [
                 , testProperty "prop_Canvas_PixelAt" prop_Canvas_PixelAt
                 , testProperty "prop_Canvas_WritePixel" prop_Canvas_WritePixel
                 , testProperty "prop_Canvas_PPM_EndsWithNewLine" prop_Canvas_PPM_EndsWithNewLine
-
+                , testCase "testCase32: Every pixel of initial canvas is black" testCase32
+                , testCase "testCase33: Width of canvas is correctly set" testCase33
+                , testCase "testCase34: Height of canvas is correctly set" testCase34
+                , testCase "testCase35: Pixel_at(c,2,3) = red" testCase35
             ]
     ]
 
@@ -106,8 +106,12 @@ testCase29 = assertEqual "c1 - c2" (color 0.2 0.5 0.5 1.0) (color 0.9 0.6 0.75 1
 testCase30 = assertEqual "c1 * 2" (color 0.4 0.6 0.8 2.0) (color 0.2 0.3 0.4 1 * pure 2)
 testCase31 = assertEqual "c1 * c2" (color 0.9 0.2 0.04 1) (color 1 0.2 0.4 1.0 * color 0.9 1 0.1 1)
 testCase32 = assertBool "every pixel of canvas is black" (all (\x -> Canvas.getColor x == (color 0 0 0 1)) (elems (Canvas.pixels (Canvas.canvas 10 20))))
-testCase33 = assertBool "c.width = 10" ((Canvas.getWidth (Canvas.canvas 10 20)) == 10)
-testCase34 = assertBool "c.height = 20" ((Canvas.getHeight (Canvas.canvas 10 20)) == 20)
+testCase33 = assertBool "c.width = 10" ((Canvas.getWidth (Canvas.canvas 10 20)) == (10 - 1))
+testCase34 = assertBool "c.height = 20" ((Canvas.getHeight (Canvas.canvas 10 20)) == (20 - 1))
+testCase35 = assertBool "pixel at (2,3) = red" (let c = Canvas.canvas 10 20
+                                                    red = color 1 0 0 1
+                                                    nc = Canvas.writePixel c 2 3 red
+                                               in (Canvas.getColor (Canvas.pixelAt nc 2 3)) == red)
 {- 
 Scenario: A tuple with w = 1.0 is a point
     Given a <- tuple (4.3, -4.2, 3.1, 1.0)
@@ -219,8 +223,8 @@ prop_Vector_Cross_Product (x1,y1,z1,_) (x2,y2,z2,_) = Tuples.cross t1 t2 == pred
 
 
 prop_Canvas_Create :: CanvasInput -> Bool
-prop_Canvas_Create (width, height) = ((getWidth c == width ) && 
-                                     (getHeight c == height) &&
+prop_Canvas_Create (width, height) = ((getWidth c == width -1) && 
+                                     (getHeight c == height -1) &&
                                      predicate)
   where c = canvas width height
         isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0
