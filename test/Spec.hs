@@ -1,4 +1,4 @@
-import Test.QuickCheck as T
+import qualified Test.QuickCheck as T
 import Test.HUnit
 import Tuples
 import Canvas
@@ -45,8 +45,8 @@ tests = [
 
 testCase1 = assertBool "is a point," (isPoint (tuple 4.3 (-4.2) 3.1 1.0) )
 testCase2 = assertBool "is a vector," (isVector (tuple 4.3 (-4.2) 3.1 0.0) )
-testCase3 = assertEqual "tuple with w=0.0" (vector 4 (-4) 3) (tuple 4 (-4) 3 0)
-testCase4 = assertEqual "tuple with w=1.0" (point 4 (-4) 3) (tuple 4 (-4) 3 1.0)
+testCase3 = assertEqual "tuple with w=0.0" (vector 4 (-4 :: Double) 3) (tuple 4 (-4) 3 0)
+testCase4 = assertEqual "tuple with w=1.0" (point 4.0 (-4.0 :: Double) 3.0) (tuple 4.0 (-4.0) 3.0 1.0)
      
 
 {- 
