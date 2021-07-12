@@ -1,6 +1,0 @@
-documentation: True
-
-package *
-  documentation: True
-coverage: True
-library-coverage: True
