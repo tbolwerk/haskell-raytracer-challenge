@@ -65,9 +65,8 @@ j increments column
 matrix :: Row -> Column -> ((Row, Column) -> a) -> Matrix a
 matrix r c f = Matrix r c (array ((0,0), (c-1, r-1)) [((i,j), f (i,j)) | j <- [0..r-1], i <- [0..c-1]])
 
-
 get :: Matrix a -> (Row, Column) -> a
-get m (i,j) = (getArray m) ! (i,j)
+get m (i,j) = (getArray m) ! (j,i)
 
 set :: Matrix a -> (Row, Column) -> a -> Matrix a
 set m (i,j) v = Matrix  (getNRows m) (getNCols m) ((getArray m) // [((i, j), v)])

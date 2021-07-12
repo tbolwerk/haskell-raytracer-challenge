@@ -4,6 +4,7 @@ import Tuples
 import Canvas
 import Colors
 import Data.Array
+import Matrices
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2 (testProperty)
@@ -71,7 +72,16 @@ tests = [
                 , testCase "testCase33: Width of canvas is correctly set" testCase33
                 , testCase "testCase34: Height of canvas is correctly set" testCase34
                 , testCase "testCase35: Pixel_at(c,2,3) = red" testCase35
-            ]
+            ],
+        testGroup "Matrices" [
+              testCase "Construction and inspecting a 4x4 matrix M[0,0] = 1" testCase36
+            , testCase "Construction and inspecting a 4x4 matrix M[0,3] = 4" testCase37
+            , testCase "Construction and inspecting a 4x4 matrix M[1,0] = 5.5" testCase38
+            , testCase "Construction and inspecting a 4x4 matrix M[1,2] = 7.5" testCase39
+            , testCase "Construction and inspecting a 4x4 matrix M[2,2] = 11" testCase40
+            , testCase "Construction and inspecting a 4x4 matrix M[3,0] = 13.5" testCase41
+            , testCase "Construction and inspecting a 4x4 matrix M[3,2] = 15.5" testCase42
+        ]
     ]
 
 testCase1 = assertBool "is a point," (isPoint (tuple 4.3 (-4.2) 3.1 1.0) )
@@ -112,6 +122,13 @@ testCase35 = assertBool "pixel at (2,3) = red" (let c = Canvas.canvas 10 20
                                                     red = color 1 0 0 1
                                                     nc = Canvas.writePixel c 2 3 red
                                                in (Canvas.getColor (Canvas.pixelAt nc 2 3)) == red)
+testCase36 = assertEqual "given matrix M[0,0] = 1" 1 (get (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5]) (0,0))
+testCase37 = assertEqual "given matrix M[0,3] = 4" 4 (get (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5]) (0,3))
+testCase38 = assertEqual "given matrix M[1,0] = 5.5" 5.5 (get (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5]) (1,0))
+testCase39 = assertEqual "given matrix M[1,2] = 7.5" 7.5 (get (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5]) (1,2))
+testCase40 = assertEqual "given matrix M[2,2] = 11" 11 (get (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5]) (2,2))
+testCase41 = assertEqual "given matrix M[3,0] = 13.5" 13.5 (get (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5]) (3,0))
+testCase42 = assertEqual "given matrix M[3,2] = 15.5" 15.5 (get (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5]) (3,2))
 {- 
 Scenario: A tuple with w = 1.0 is a point
     Given a <- tuple (4.3, -4.2, 3.1, 1.0)
