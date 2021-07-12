@@ -19,6 +19,8 @@ tests = [
         testGroup "Tuples" [
                   testCase "testCase1: A tuple with w=1.0 is a point" testCase1
                 , testCase "testCase2: A tuple with w=0.0 is a vector" testCase2
+                , testCase "testCase3: Creates a tuple with w=0.0" testCase3
+                , testCase "testCase4: Creates a tuple with w=1.0" testCase4
                 , testProperty "prop_Point" prop_Point
                 , testProperty "prop_Vector" prop_Vector
                 , testProperty "prop_Tuple_Equal" prop_Tuple_Equal
@@ -43,7 +45,8 @@ tests = [
 
 testCase1 = assertBool "is a point," (isPoint (tuple 4.3 (-4.2) 3.1 1.0) )
 testCase2 = assertBool "is a vector," (isVector (tuple 4.3 (-4.2) 3.1 0.0) )
-
+testCase3 = assertEqual "tuple with w=0.0" (vector 4 (-4) 3) (tuple 4 (-4) 3 0)
+testCase4 = assertEqual "tuple with w=1.0" (point 4 (-4) 3) (tuple 4 (-4) 3 1.0)
      
 
 {- 
