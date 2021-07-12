@@ -17,7 +17,9 @@ main = defaultMain tests
 
 tests = [
         testGroup "Tuples" [
-                testProperty "prop_Point" prop_Point
+                  testCase "testCase1: A tuple with w=1.0 is a point" testCase1
+                , testCase "testCase2: A tuple with w=0.0 is a vector" testCase2
+                , testProperty "prop_Point" prop_Point
                 , testProperty "prop_Vector" prop_Vector
                 , testProperty "prop_Tuple_Equal" prop_Tuple_Equal
                 , testProperty "prop_Tuple_Addition" prop_Tuple_Addition
@@ -35,8 +37,7 @@ tests = [
                 , testProperty "prop_Canvas_PixelAt" prop_Canvas_PixelAt
                 , testProperty "prop_Canvas_WritePixel" prop_Canvas_WritePixel
                 , testProperty "prop_Canvas_PPM_EndsWithNewLine" prop_Canvas_PPM_EndsWithNewLine
-                , testCase "testCase1: A tuple with w=1.0 is a point" testCase1
-                , testCase "testCase2: A tuple with w=0.0 is a vector" testCase2
+
             ]
     ]
 
