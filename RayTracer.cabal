@@ -1,0 +1,83 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 409f30f0c22a81a05d9f8d2535c639a8128f218f1f2cf36aa97b9b199e72a7d9
+
+name:           RayTracer
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/twanbolwerkhan@student.han.nl/RayTracer#readme>
+homepage:       https://github.com/twanbolwerkhan@student.han.nl/RayTracer#readme
+bug-reports:    https://github.com/twanbolwerkhan@student.han.nl/RayTracer/issues
+author:         Twan Bolwerk
+maintainer:     twanbolwerk@gmail.com
+copyright:      MIT licence
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/twanbolwerkhan@student.han.nl/RayTracer
+
+library
+  exposed-modules:
+      Lib,
+      Tuples,
+      Colors,
+      Canvas,
+      Matrices,
+      Transformations,
+      Rays,
+      Spheres,
+      State
+  other-modules:
+      Paths_RayTracer
+  hs-source-dirs:
+      src
+  build-depends:
+      array >=0.5.4.0
+      , base >=4.7 && <5
+  default-language: Haskell2010
+
+executable RayTracer-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_RayTracer
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      RayTracer
+    , base >=4.7 && <5
+  default-language: Haskell2010
+
+test-suite RayTracer-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  exposed-modules:
+      TestTuples
+  other-modules:
+      Paths_RayTracer
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      RayTracer
+    , base >=4.7 && <5
+    , QuickCheck >=2.14.2
+  default-language: Haskell2010
+
+benchmark Main
+  build-depends:    base, criterion, RayTracer
+  default-language: Haskell2010
+  other-modules:    Paths_RayTracer
+  ghc-options:      -Wall
+  hs-source-dirs:   benchmarks
+  main-is:          Main.hs
+  type:             exitcode-stdio-1.0
