@@ -1,4 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
+
+
 {-
 Part of chapter 3 of the raytracer challenge.
 
@@ -12,11 +14,12 @@ https://www.wisfaq.nl/show3archive.asp?id=23989&j=2004
 module Matrices where
 import Data.Array
 import Tuples
-
 data Matrix a = Matrix { getNRows :: Row,
                          getNCols :: Column,                        
                          getArray :: Array (Row, Column) a}
  deriving Show
+
+    
 
 instance Eq (Matrix Double) where
     a == b = predicate
@@ -100,7 +103,6 @@ horizontalIter array = [ array ! (x, y) | y <- [ly.. hy], x <- [lx .. hx]]
 listToMatrix :: [a] -> Matrix a
 listToMatrix xs = matrix bound bound (\(i, j) -> (((chunkOf bound xs) !! j) !! i)) 
  where bound = round (sqrt (fromIntegral (length xs)))
-
 
 a4 :: Matrix Double
 a4 = listToMatrix [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
