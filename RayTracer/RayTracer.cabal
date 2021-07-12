@@ -74,7 +74,7 @@ test-suite RayTracer-test
   default-language: Haskell2010
 
 benchmark Main
-  build-depends:    base, criterion
+  build-depends:    base, criterion, RayTracer
   default-language: Haskell2010
   other-modules:    Paths_RayTracer
   ghc-options:      -Wall

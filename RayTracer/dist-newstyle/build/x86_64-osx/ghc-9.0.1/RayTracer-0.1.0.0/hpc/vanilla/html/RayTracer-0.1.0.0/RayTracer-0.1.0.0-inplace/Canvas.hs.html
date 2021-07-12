@@ -1,0 +1,143 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+span.lineno { color: white; background: #aaaaaa; border-right: solid white 12px }
+span.nottickedoff { background: yellow}
+span.istickedoff { background: white }
+span.tickonlyfalse { margin: -1px; border: 1px solid #f20913; background: #f20913 }
+span.tickonlytrue  { margin: -1px; border: 1px solid #60de51; background: #60de51 }
+span.funcount { font-size: small; color: orange; z-index: 2; position: absolute; right: 20 }
+span.decl { font-weight: bold }
+span.spaces    { background: white }
+</style>
+</head>
+<body>
+<pre>
+<span class="decl"><span class="nottickedoff">never executed</span> <span class="tickonlytrue">always true</span> <span class="tickonlyfalse">always false</span></span>
+</pre>
+<pre>
+<span class="lineno">    1 </span>{-# LANGUAGE OverloadedStrings #-}
+<span class="lineno">    2 </span>module Canvas where
+<span class="lineno">    3 </span>import Colors
+<span class="lineno">    4 </span>import Tuples
+<span class="lineno">    5 </span>import Control.Monad
+<span class="lineno">    6 </span>import Data.Array
+<span class="lineno">    7 </span>import System.IO
+<span class="lineno">    8 </span>import State
+<span class="lineno">    9 </span>type Position = (Int, Int)
+<span class="lineno">   10 </span>
+<span class="lineno">   11 </span>pixel :: Int -&gt; Int -&gt; Color -&gt; Pixel
+<span class="lineno">   12 </span><span class="decl"><span class="istickedoff">pixel x y col = Pixel (x,y) col</span></span>
+<span class="lineno">   13 </span>
+<span class="lineno">   14 </span>data Pixel = Pixel { <span class="istickedoff"><span class="decl"><span class="istickedoff">getPosition</span></span></span> :: Position , <span class="istickedoff"><span class="decl"><span class="istickedoff">getColor</span></span></span> :: Color }
+<span class="lineno">   15 </span> deriving <span class="decl"><span class="nottickedoff">Show</span></span>
+<span class="lineno">   16 </span>
+<span class="lineno">   17 </span>-- Probably should be a monad for canvas
+<span class="lineno">   18 </span>--- State monad
+<span class="lineno">   19 </span>--- s = Pixels
+<span class="lineno">   20 </span>--- a = Canvas
+<span class="lineno">   21 </span>
+<span class="lineno">   22 </span>data Canvas a = Canvas { <span class="istickedoff"><span class="decl"><span class="istickedoff">getWidth</span></span></span> :: a, <span class="istickedoff"><span class="decl"><span class="istickedoff">getHeight</span></span></span> :: a, <span class="istickedoff"><span class="decl"><span class="istickedoff">pixels</span></span></span> :: Array (Int,Int) Pixel } 
+<span class="lineno">   23 </span> deriving <span class="decl"><span class="nottickedoff">Show</span></span>
+<span class="lineno">   24 </span>
+<span class="lineno">   25 </span>canvas :: Int -&gt; Int -&gt; Canvas Int 
+<span class="lineno">   26 </span><span class="decl"><span class="istickedoff">canvas width height = Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 0 0 0 <span class="nottickedoff">1</span>) | x &lt;- [0..w], y &lt;- [0..h] ])</span>
+<span class="lineno">   27 </span><span class="spaces"> </span><span class="istickedoff">where w = width - 1</span>
+<span class="lineno">   28 </span><span class="spaces">       </span><span class="istickedoff">h = height - 1</span></span>
+<span class="lineno">   29 </span>
+<span class="lineno">   30 </span>
+<span class="lineno">   31 </span>canvas' :: (Int,Int) -&gt; State (Canvas Int) (Canvas Int)
+<span class="lineno">   32 </span><span class="decl"><span class="nottickedoff">canvas' (width, height) = do</span>
+<span class="lineno">   33 </span><span class="spaces">  </span><span class="nottickedoff">State $ \s -&gt; (s, (Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 1 0 0 1) | x &lt;- [0..w], y &lt;- [0..h] ])))</span>
+<span class="lineno">   34 </span><span class="spaces">  </span><span class="nottickedoff">ask</span>
+<span class="lineno">   35 </span><span class="spaces"> </span><span class="nottickedoff">where w = width - 1</span>
+<span class="lineno">   36 </span><span class="spaces">       </span><span class="nottickedoff">h = height - 1</span></span>
+<span class="lineno">   37 </span>
+<span class="lineno">   38 </span>writePixel' :: Pixel -&gt; State (Canvas Int) (Canvas Int)
+<span class="lineno">   39 </span><span class="decl"><span class="nottickedoff">writePixel' p= do</span>
+<span class="lineno">   40 </span><span class="spaces">  </span><span class="nottickedoff">c' &lt;- ask</span>
+<span class="lineno">   41 </span><span class="spaces">  </span><span class="nottickedoff">return (writePixel c' ((fst . getPosition) p) ((snd . getPosition) p) (getColor p))</span></span>
+<span class="lineno">   42 </span>
+<span class="lineno">   43 </span>writePixel :: Canvas Int -&gt; Int -&gt; Int -&gt; Color -&gt; Canvas Int
+<span class="lineno">   44 </span><span class="decl"><span class="istickedoff">writePixel c x y col = if <span class="tickonlytrue">isInBounds ((0,0),(getWidth c,getHeight c)) (x,y)</span> </span>
+<span class="lineno">   45 </span><span class="spaces">   </span><span class="istickedoff">then Canvas <span class="nottickedoff">(getWidth c)</span> <span class="nottickedoff">(getHeight c)</span> ((pixels c) // [((x,y), pixel <span class="nottickedoff">x</span> <span class="nottickedoff">y</span> col)])</span>
+<span class="lineno">   46 </span><span class="spaces">   </span><span class="istickedoff">else <span class="nottickedoff">c</span></span></span>
+<span class="lineno">   47 </span>
+<span class="lineno">   48 </span>filterOutOfBound :: ((Int, Int), (Int, Int)) -&gt; [(Int, Int)] -&gt; [(Int, Int)]
+<span class="lineno">   49 </span><span class="decl"><span class="nottickedoff">filterOutOfBound ((lx, ly), (hx, hy)) cords = filter (\cord -&gt; isInBounds ((lx, ly), (hx, hy)) cord) cords</span></span>
+<span class="lineno">   50 </span>
+<span class="lineno">   51 </span>type Bounds = ((Int, Int), (Int, Int))
+<span class="lineno">   52 </span>
+<span class="lineno">   53 </span>isInBounds :: Bounds -&gt; (Int, Int) -&gt; Bool
+<span class="lineno">   54 </span><span class="decl"><span class="istickedoff">isInBounds bounds (x,y) = x &gt;= lx &amp;&amp; y &gt;= ly &amp;&amp; x &lt;= hx &amp;&amp; y &lt;= hy</span>
+<span class="lineno">   55 </span><span class="spaces">    </span><span class="istickedoff">where ((lx, ly), (hx, hy)) = bounds</span></span> 
+<span class="lineno">   56 </span>
+<span class="lineno">   57 </span>writePixels :: Canvas Int -&gt; [(Int, Int)] -&gt; Color -&gt; Canvas Int
+<span class="lineno">   58 </span><span class="decl"><span class="nottickedoff">writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map (\cord@(x,y) -&gt; (cord, pixel x y col))) (filterOutOfBound ((0,0), (getWidth c, getHeight c)) cords))</span>
+<span class="lineno">   59 </span><span class="spaces"> </span><span class="nottickedoff">where pxs = map (\(x,y) -&gt; pixel x y (color 1 1 1 1)) cords</span></span>
+<span class="lineno">   60 </span>
+<span class="lineno">   61 </span>
+<span class="lineno">   62 </span>filterOutOfBound' :: Array (Int, Int) Pixel -&gt; [((Int, Int),Pixel)]
+<span class="lineno">   63 </span><span class="decl"><span class="nottickedoff">filterOutOfBound' array = filter (\(cord,_) -&gt; isInBounds (bounds array) cord) (assocs array)</span></span>
+<span class="lineno">   64 </span>
+<span class="lineno">   65 </span>writePixels' :: Canvas Int -&gt; Array (Int, Int) Pixel -&gt; Canvas Int
+<span class="lineno">   66 </span><span class="decl"><span class="nottickedoff">writePixels' c ps = Canvas (getWidth c) (getHeight c) ((pixels c) // (filterOutOfBound' ps))</span></span>
+<span class="lineno">   67 </span>
+<span class="lineno">   68 </span>pixelAtCord :: Array (Int, Int) Pixel -&gt; (Int , Int) -&gt; Pixel
+<span class="lineno">   69 </span><span class="decl"><span class="istickedoff">pixelAtCord pixels (x,y) = (!) pixels (x,y)</span></span> 
+<span class="lineno">   70 </span>
+<span class="lineno">   71 </span>
+<span class="lineno">   72 </span>pixelAt :: Canvas Int -&gt; Int -&gt; Int -&gt; Pixel
+<span class="lineno">   73 </span><span class="decl"><span class="istickedoff">pixelAt c x y  = (!) (pixels c) (x,y)</span></span> 
+<span class="lineno">   74 </span>
+<span class="lineno">   75 </span>pixelArray :: ((Int, Int), (Int, Int)) -&gt; [Pixel] -&gt; Array (Int,Int) Pixel
+<span class="lineno">   76 </span><span class="decl"><span class="istickedoff">pixelArray bounds pixels = array bounds [(getPosition p, p) | p &lt;- pixels, <span class="tickonlytrue">isInBounds bounds (getPosition p)</span>]</span></span>
+<span class="lineno">   77 </span>
+<span class="lineno">   78 </span>createPPM :: Canvas Int -&gt; FilePath -&gt; IO ()
+<span class="lineno">   79 </span><span class="decl"><span class="nottickedoff">createPPM c path = writeFile path content</span>
+<span class="lineno">   80 </span><span class="spaces"> </span><span class="nottickedoff">where content = canvasToString c</span></span>
+<span class="lineno">   81 </span>
+<span class="lineno">   82 </span>canvasToString :: Canvas Int -&gt; String
+<span class="lineno">   83 </span><span class="decl"><span class="istickedoff">canvasToString c = (&quot;P3\n&quot; ++ ((show (getWidth c + 1)) ++ &quot; &quot; ++ (show (getHeight c + 1))) ++ &quot;\n&quot; ++ &quot;255\n&quot; ++ pixelData c ++ &quot;\n&quot;)</span></span>
+<span class="lineno">   84 </span>
+<span class="lineno">   85 </span><span class="decl"><span class="nottickedoff">colorDepth = 255</span></span>
+<span class="lineno">   86 </span>
+<span class="lineno">   87 </span>pixelData :: Canvas Int -&gt; String
+<span class="lineno">   88 </span><span class="decl"><span class="istickedoff">pixelData c = format (foldMap (\x -&gt; (show (rgbCode x))) (horizontalIter p))</span>
+<span class="lineno">   89 </span><span class="spaces"> </span><span class="istickedoff">where p = pixels c</span>
+<span class="lineno">   90 </span><span class="spaces">       </span><span class="istickedoff">rgbCode pixel = show ((clamp . getRed) col) ++ space ++ show ((clamp . getGreen) col) ++ space ++ show ((clamp . getBlue) col)</span>
+<span class="lineno">   91 </span><span class="spaces">         </span><span class="istickedoff">where col = getColor pixel</span></span>
+<span class="lineno">   92 </span>
+<span class="lineno">   93 </span><span class="decl"><span class="nottickedoff">myCanvas = canvas 900 550</span></span>
+<span class="lineno">   94 </span>
+<span class="lineno">   95 </span><span class="decl"><span class="nottickedoff">newCanvas = writePixels myCanvas [(0, 0), (0, 3), (3,0), (3,3)] (color 1 0 1 1)</span></span>
+<span class="lineno">   96 </span>
+<span class="lineno">   97 </span><span class="decl"><span class="nottickedoff">mpixels = pixels newCanvas</span></span>
+<span class="lineno">   98 </span>
+<span class="lineno">   99 </span>horizontalIter :: Array (Int, Int) Pixel -&gt; [Pixel]
+<span class="lineno">  100 </span><span class="decl"><span class="istickedoff">horizontalIter array = [ pixelAtCord array (x, y) | y &lt;- [ly.. hy], x &lt;- [lx .. hx]]</span>
+<span class="lineno">  101 </span><span class="spaces"> </span><span class="istickedoff">where ((lx, ly), (hx, hy)) = bounds array</span></span>
+<span class="lineno">  102 </span>
+<span class="lineno">  103 </span>
+<span class="lineno">  104 </span>clamp :: Double -&gt; Int
+<span class="lineno">  105 </span><span class="decl"><span class="istickedoff">clamp double | <span class="tickonlytrue">double &lt;= 0</span> = 0</span>
+<span class="lineno">  106 </span><span class="spaces">             </span><span class="istickedoff">| <span class="nottickedoff">double &gt;= 1</span> = <span class="nottickedoff">255</span></span>
+<span class="lineno">  107 </span><span class="spaces">             </span><span class="istickedoff">| <span class="nottickedoff">otherwise</span> = <span class="nottickedoff">round (double * 255)</span></span></span>
+<span class="lineno">  108 </span>
+<span class="lineno">  109 </span><span class="decl"><span class="istickedoff">space = &quot; &quot;</span></span>
+<span class="lineno">  110 </span>
+<span class="lineno">  111 </span>replace :: String -&gt; String
+<span class="lineno">  112 </span><span class="decl"><span class="istickedoff">replace ('&quot;':'&quot;':xs) = '\n' : replace xs</span>
+<span class="lineno">  113 </span><span class="spaces"></span><span class="istickedoff">replace (x:xs) = x : replace xs</span>
+<span class="lineno">  114 </span><span class="spaces"></span><span class="istickedoff">replace &quot;&quot; = &quot;&quot;</span></span>
+<span class="lineno">  115 </span>
+<span class="lineno">  116 </span>format :: String -&gt; String
+<span class="lineno">  117 </span><span class="decl"><span class="istickedoff">format input = filter (/= '&quot;') doubleQuoted</span>
+<span class="lineno">  118 </span><span class="spaces"> </span><span class="istickedoff">where doubleQuoted = replace input</span></span>
+<span class="lineno">  119 </span>
+<span class="lineno">  120 </span>
+
+</pre>
+</body>
+</html>
