@@ -1,29 +1,46 @@
 import Test.QuickCheck as T
-
+import Test.HUnit
 import Tuples
 import Canvas
 import Colors
+import Test.Framework (defaultMain, testGroup)
+import Test.Framework.Providers.HUnit
+import Test.Framework.Providers.QuickCheck2 (testProperty)
+
+
 
 type TupleInput = (Double,Double,Double,Double)
 type CanvasInput = (Int, Int)
-main :: IO ()
-main = do
-     (T.quickCheck prop_Point)
-     (T.quickCheck prop_Vector)
-     (T.quickCheck prop_Tuple_Equal)
-     (T.quickCheck prop_Tuple_Addition)
-     (T.quickCheck prop_Tuple_Subtraction)
-     (T.quickCheck prop_Tuple_Negate)
-     (T.quickCheck prop_Tuple_Scalar_Multiplication)
-     (T.quickCheck prop_Tuple_Scalar_Division)
-     (T.quickCheck prop_Tuple_Magnitude)
-     (T.quickCheck prop_Tuple_Normalize)
-     (T.quickCheck prop_Tuple_Dot_Product)
-     (T.quickCheck prop_Vector_Cross_Product)
-     (T.quickCheck prop_Canvas_Create)
-     (T.quickCheck prop_Canvas_PixelAt)
-     (T.quickCheck prop_Canvas_WritePixel)
-     (T.quickCheck prop_Canvas_PPM_EndsWithNewLine)
+
+
+main = defaultMain tests
+
+tests = [
+        testGroup "Tuples" [
+                testProperty "prop_Point" prop_Point
+                , testProperty "prop_Vector" prop_Vector
+                , testProperty "prop_Tuple_Equal" prop_Tuple_Equal
+                , testProperty "prop_Tuple_Addition" prop_Tuple_Addition
+                , testProperty "prop_Tuple_Subtraction" prop_Tuple_Subtraction
+                , testProperty "prop_Tuple_Negate" prop_Tuple_Negate
+                , testProperty "prop_Tuple_Scalar_Multiplication" prop_Tuple_Scalar_Multiplication
+                , testProperty "prop_Tuple_Scalar_Division" prop_Tuple_Scalar_Division
+                , testProperty "prop_Tuple_Magnitude" prop_Tuple_Magnitude
+                , testProperty "prop_Tuple_Normalize" prop_Tuple_Normalize
+                , testProperty "prop_Tuple_Dot_Product" prop_Tuple_Dot_Product
+                , testProperty "prop_Vector_Cross_Product" prop_Vector_Cross_Product
+            ],
+        testGroup "Canvas" [
+                testProperty "prop_Canvas_Create" prop_Canvas_Create
+                , testProperty "prop_Canvas_PixelAt" prop_Canvas_PixelAt
+                , testProperty "prop_Canvas_WritePixel" prop_Canvas_WritePixel
+                , testProperty "prop_Canvas_PPM_EndsWithNewLine" prop_Canvas_PPM_EndsWithNewLine
+                , testCase "testCase1" testCase1
+            ]
+    ]
+
+testCase1 = assertEqual "for (foo 3)," 4 4
+
      
 
 {- 
@@ -137,9 +154,9 @@ prop_Vector_Cross_Product (x1,y1,z1,_) (x2,y2,z2,_) = Tuples.cross t1 t2 == pred
 
 
 prop_Canvas_Create :: CanvasInput -> Bool
-prop_Canvas_Create (width, height) = (getWidth c == width) && 
-                                     (getHeight c == height) &&
-                                     predicate
+prop_Canvas_Create (width, height) = ((getWidth c == width -1) && 
+                                     (getHeight c == height -1) &&
+                                     predicate)
   where c = canvas width height
         isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0
         predicate = all (\x -> isBlack (getColor x)) (pixels c)

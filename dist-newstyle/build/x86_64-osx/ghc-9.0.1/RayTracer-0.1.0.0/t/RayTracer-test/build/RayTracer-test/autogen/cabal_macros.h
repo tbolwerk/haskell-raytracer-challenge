@@ -11,6 +11,17 @@
   (major1) == 0 && (major2) == 1 && (minor) <= 0)
 #endif /* MIN_VERSION_RayTracer */
 
+/* package HUnit-1.6.2.0 */
+#ifndef VERSION_HUnit
+#define VERSION_HUnit "1.6.2.0"
+#endif /* VERSION_HUnit */
+#ifndef MIN_VERSION_HUnit
+#define MIN_VERSION_HUnit(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  6 || \
+  (major1) == 1 && (major2) == 6 && (minor) <= 2)
+#endif /* MIN_VERSION_HUnit */
+
 /* package QuickCheck-2.14.2 */
 #ifndef VERSION_QuickCheck
 #define VERSION_QuickCheck "2.14.2"
@@ -43,6 +54,39 @@
   (major1) == 4 && (major2) <  15 || \
   (major1) == 4 && (major2) == 15 && (minor) <= 0)
 #endif /* MIN_VERSION_base */
+
+/* package test-framework-0.8.2.0 */
+#ifndef VERSION_test_framework
+#define VERSION_test_framework "0.8.2.0"
+#endif /* VERSION_test_framework */
+#ifndef MIN_VERSION_test_framework
+#define MIN_VERSION_test_framework(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  8 || \
+  (major1) == 0 && (major2) == 8 && (minor) <= 2)
+#endif /* MIN_VERSION_test_framework */
+
+/* package test-framework-hunit-0.3.0.2 */
+#ifndef VERSION_test_framework_hunit
+#define VERSION_test_framework_hunit "0.3.0.2"
+#endif /* VERSION_test_framework_hunit */
+#ifndef MIN_VERSION_test_framework_hunit
+#define MIN_VERSION_test_framework_hunit(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  3 || \
+  (major1) == 0 && (major2) == 3 && (minor) <= 0)
+#endif /* MIN_VERSION_test_framework_hunit */
+
+/* package test-framework-quickcheck2-0.3.0.5 */
+#ifndef VERSION_test_framework_quickcheck2
+#define VERSION_test_framework_quickcheck2 "0.3.0.5"
+#endif /* VERSION_test_framework_quickcheck2 */
+#ifndef MIN_VERSION_test_framework_quickcheck2
+#define MIN_VERSION_test_framework_quickcheck2(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  3 || \
+  (major1) == 0 && (major2) == 3 && (minor) <= 0)
+#endif /* MIN_VERSION_test_framework_quickcheck2 */
 
 /* tool alex-3.2.4 */
 #ifndef TOOL_VERSION_alex

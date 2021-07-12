@@ -1,4 +1,10 @@
 Test suite RayTracer-test: RUNNING...
+Cases: 1  Tried: 0  Errors: 0  Failures: 0                                          ### Failure in: 0:test1
+test/Spec.hs:8
+for (foo 3),
+expected: 3
+ but got: 4
+Cases: 1  Tried: 1  Errors: 0  Failures: 1
 +++ OK, passed 100 tests.
 +++ OK, passed 100 tests.
 +++ OK, passed 100 tests.

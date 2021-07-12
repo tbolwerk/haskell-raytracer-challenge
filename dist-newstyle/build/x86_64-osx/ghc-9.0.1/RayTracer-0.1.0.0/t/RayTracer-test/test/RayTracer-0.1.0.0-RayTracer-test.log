@@ -1,20 +1,27 @@
 Test suite RayTracer-test: RUNNING...
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-*** Failed! Falsified (after 1 test):
-(0,0)
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
-+++ OK, passed 100 tests.
+Tuples:
+  prop_Point: [OK, passed 100 tests]
+  prop_Vector: [OK, passed 100 tests]
+  prop_Tuple_Equal: [OK, passed 100 tests]
+  prop_Tuple_Addition: [OK, passed 100 tests]
+  prop_Tuple_Subtraction: [OK, passed 100 tests]
+  prop_Tuple_Negate: [OK, passed 100 tests]
+  prop_Tuple_Scalar_Multiplication: [OK, passed 100 tests]
+  prop_Tuple_Scalar_Division: [OK, passed 100 tests]
+  prop_Tuple_Magnitude: [OK, passed 100 tests]
+  prop_Tuple_Normalize: [OK, passed 100 tests]
+  prop_Tuple_Dot_Product: [OK, passed 100 tests]
+  prop_Vector_Cross_Product: [OK, passed 100 tests]
+Canvas:
+  prop_Canvas_Create: [OK, passed 100 tests]
+  prop_Canvas_PixelAt: [OK, passed 100 tests]
+  prop_Canvas_WritePixel: [OK, passed 100 tests]
+  prop_Canvas_PPM_EndsWithNewLine: [OK, passed 100 tests]
+  testCase1: [OK]
+
+         Properties   Test Cases  Total       
+ Passed  16           1           17          
+ Failed  0            0           0           
+ Total   16           1           17          
 Test suite RayTracer-test: PASS
-Test suite logged to: /Users/twanbolwerk/Documents/dev/the-raytracer-challenge-by-twan-bolwerk/RayTracer/dist-newstyle/build/x86_64-osx/ghc-9.0.1/RayTracer-0.1.0.0/t/RayTracer-test/test/RayTracer-0.1.0.0-RayTracer-test.log
+Test suite logged to: /Users/twanbolwerk/Documents/dev/the-raytracer-challenge-by-twan-bolwerk/dist-newstyle/build/x86_64-osx/ghc-9.0.1/RayTracer-0.1.0.0/t/RayTracer-test/test/RayTracer-0.1.0.0-RayTracer-test.log
