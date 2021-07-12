@@ -1,5 +1,5 @@
 # RayTracer
-
+[![Build Status](https://travis-ci.com/twanbolwerkhan/haskell-raytracer-challenge.svg?branch=main)](https://travis-ci.com/twanbolwerkhan/haskell-raytracer-challenge)
 ## Prerequisite
 * haskell2010
 * prefer haskell-platform
