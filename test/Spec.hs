@@ -35,11 +35,13 @@ tests = [
                 , testProperty "prop_Canvas_PixelAt" prop_Canvas_PixelAt
                 , testProperty "prop_Canvas_WritePixel" prop_Canvas_WritePixel
                 , testProperty "prop_Canvas_PPM_EndsWithNewLine" prop_Canvas_PPM_EndsWithNewLine
-                , testCase "testCase1" testCase1
+                , testCase "testCase1: A tuple with w=1.0 is a point" testCase1
+                , testCase "testCase2: A tuple with w=0.0 is a vector" testCase2
             ]
     ]
 
-testCase1 = assertEqual "for (foo 3)," 4 4
+testCase1 = assertBool "is a point," (isPoint (tuple 4.3 (-4.2) 3.1 1.0) )
+testCase2 = assertBool "is a vector," (isVector (tuple 4.3 (-4.2) 3.1 0.0) )
 
      
 
