@@ -18,3 +18,11 @@ run:
 ## How to test:
 run:
 >> cabal test
+
+## To add new benchmarks
+
+cabal configure --enable-benchmarks && cabal build && cabal bench
+
+## TO run these benchmarks
+
+cabal new-bench

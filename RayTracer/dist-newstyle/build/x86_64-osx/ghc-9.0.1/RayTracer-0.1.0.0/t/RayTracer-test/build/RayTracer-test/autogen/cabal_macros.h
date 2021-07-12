@@ -11,17 +11,6 @@
   (major1) == 0 && (major2) == 1 && (minor) <= 0)
 #endif /* MIN_VERSION_RayTracer */
 
-/* package HUnit-1.6.2.0 */
-#ifndef VERSION_HUnit
-#define VERSION_HUnit "1.6.2.0"
-#endif /* VERSION_HUnit */
-#ifndef MIN_VERSION_HUnit
-#define MIN_VERSION_HUnit(major1,major2,minor) (\
-  (major1) <  1 || \
-  (major1) == 1 && (major2) <  6 || \
-  (major1) == 1 && (major2) == 6 && (minor) <= 2)
-#endif /* MIN_VERSION_HUnit */
-
 /* package QuickCheck-2.14.2 */
 #ifndef VERSION_QuickCheck
 #define VERSION_QuickCheck "2.14.2"

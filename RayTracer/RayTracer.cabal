@@ -72,3 +72,12 @@ test-suite RayTracer-test
     , base >=4.7 && <5
     , QuickCheck >=2.14.2
   default-language: Haskell2010
+
+benchmark Main
+  build-depends:    base, criterion
+  default-language: Haskell2010
+  other-modules:    Paths_RayTracer
+  ghc-options:      -Wall
+  hs-source-dirs:   benchmarks
+  main-is:          Main.hs
+  type:             exitcode-stdio-1.0
