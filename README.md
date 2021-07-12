@@ -19,6 +19,9 @@ run:
 run:
 > cabal test
 
+## Run tests with coverage
+>  cabal configure --enable-coverage
+
 ## To add new benchmarks
 
 > cabal configure --enable-benchmarks && cabal build && cabal bench

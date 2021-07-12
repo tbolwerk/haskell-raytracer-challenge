@@ -42,7 +42,7 @@ span.spaces    { background: white }
 <span class="lineno">   23 </span> deriving <span class="decl"><span class="nottickedoff">Show</span></span>
 <span class="lineno">   24 </span>
 <span class="lineno">   25 </span>canvas :: Int -&gt; Int -&gt; Canvas Int 
-<span class="lineno">   26 </span><span class="decl"><span class="istickedoff">canvas width height = Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 0 0 0 <span class="nottickedoff">1</span>) | x &lt;- [0..w], y &lt;- [0..h] ])</span>
+<span class="lineno">   26 </span><span class="decl"><span class="istickedoff">canvas width height = Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 0 0 0 1) | x &lt;- [0..w], y &lt;- [0..h] ])</span>
 <span class="lineno">   27 </span><span class="spaces"> </span><span class="istickedoff">where w = width - 1</span>
 <span class="lineno">   28 </span><span class="spaces">       </span><span class="istickedoff">h = height - 1</span></span>
 <span class="lineno">   29 </span>
