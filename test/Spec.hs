@@ -21,6 +21,20 @@ tests = [
                 , testCase "testCase2: A tuple with w=0.0 is a vector" testCase2
                 , testCase "testCase3: Creates a tuple with w=0.0" testCase3
                 , testCase "testCase4: Creates a tuple with w=1.0" testCase4
+                , testCase "testCase5: Adding two tuples" testCase5
+                , testCase "testCase6: Subtracting two points" testCase6
+                , testCase "testCase7: Subtracting a vector from a point" testCase7
+                , testCase "testCase8: Subtracting two vectors" testCase8
+                , testCase "testCase9: Subtracting a vector from the zero vector" testCase9
+                , testCase "testCase10: Negating a tuple" testCase10
+                , testCase "testCase11: Multiplying a tuple by a scalar" testCase11
+                , testCase "testCase12: Multiplying a tuple by a fraction" testCase12
+                , testCase "testCase13: Dividing a tuple by a scalar" testCase13
+                , testCase "testCase14: Computing the magnitude of vector (1,0,0)" testCase14
+                , testCase "testCase15: Computing the magnitude of vector (0,1,0)" testCase15
+                , testCase "testCase16: Computing the magnitude of vector (0,0,1)" testCase16
+                , testCase "testCase17: Computing the magnitude of vector (1,2,3)" testCase17
+                , testCase "testCase18: Computing the magnitude of vector (-1,-2,-3)" testCase18
                 , testProperty "prop_Point" prop_Point
                 , testProperty "prop_Vector" prop_Vector
                 , testProperty "prop_Tuple_Equal" prop_Tuple_Equal
@@ -35,7 +49,7 @@ tests = [
                 , testProperty "prop_Vector_Cross_Product" prop_Vector_Cross_Product
             ],
         testGroup "Canvas" [
-                testProperty "prop_Canvas_Create" prop_Canvas_Create
+                  testProperty "prop_Canvas_Create" prop_Canvas_Create
                 , testProperty "prop_Canvas_PixelAt" prop_Canvas_PixelAt
                 , testProperty "prop_Canvas_WritePixel" prop_Canvas_WritePixel
                 , testProperty "prop_Canvas_PPM_EndsWithNewLine" prop_Canvas_PPM_EndsWithNewLine
@@ -47,7 +61,20 @@ testCase1 = assertBool "is a point," (isPoint (tuple 4.3 (-4.2) 3.1 1.0) )
 testCase2 = assertBool "is a vector," (isVector (tuple 4.3 (-4.2) 3.1 0.0) )
 testCase3 = assertEqual "tuple with w=0.0" (vector 4 (-4 :: Double) 3) (tuple 4 (-4) 3 0)
 testCase4 = assertEqual "tuple with w=1.0" (point 4.0 (-4.0 :: Double) 3.0) (tuple 4.0 (-4.0) 3.0 1.0)
-     
+testCase5 = assertEqual "tuple (1, 1, 6, 1)" (tuple 1 1 6 1) (tuple 3 (-2 :: Double) 5 1 + tuple (-2) 3 1 0)     
+testCase6 = assertEqual "vector (-2, -4, -6)" (vector (-2) (-4 :: Double) (-6)) (point 3 2 1 - point 5 6 7)
+testCase7 = assertEqual "point (-2, -4, -6)" (point (-2) (-4) (-6::Double)) (point (3::Double) 2 1 - vector 5 6 7)
+testCase8 = assertEqual "vector (-2, -4, -6)" (vector (-2) (-4) (-6 :: Double)) ((vector 3 2 1) - (vector 5 6 (7 :: Double)))
+testCase9 = assertEqual "vector (-1, 2, -3)" (vector (-1) 2 (-3 :: Double)) ((vector 0 0 0) - (vector 1 (-2 :: Double) 3)) 
+testCase10 = assertEqual "vector (-1, 2, -3)" (tuple (-1) 2 ((-3) :: Double) 4)  (negate (tuple 1 (-2) 3 (-4))) 
+testCase11 = assertEqual "a * 3.5" (tuple 3.5 (-7 ::Double) 10.5 (-14)) ((tuple 1 (-2) 3 (-4)) * pure 3.5)
+testCase12 = assertEqual "a * 0.5" (tuple 0.5 (-1 ::Double) 1.5 (-2)) ((tuple 1 (-2) 3 (-4)) * pure 0.5)
+testCase13 = assertEqual "a / 2" (tuple 0.5 (-1) 1.5 (-2 ::Double)) ((tuple 1 (-2) 3 (-4)) / pure 2)
+testCase14 = assertEqual "magnitude(vector (1,0,0))" 1 (magnitude (vector 1 0 0))
+testCase15 = assertEqual "magnitude(vector (0,1,0))" 1 (magnitude (vector 0 1 0))
+testCase16 = assertEqual "magnitude(vector (0,0,1))" 1 (magnitude (vector 0 0 1))
+testCase17 = assertEqual "magnitude(vector (1,2,3))" (sqrt 14) (magnitude (vector 1 2 3))
+testCase18 = assertEqual "magnitude(vector (-1,-2,-3))" (sqrt 14) (magnitude (vector (-1) (-2) (-3)))
 
 {- 
 Scenario: A tuple with w = 1.0 is a point

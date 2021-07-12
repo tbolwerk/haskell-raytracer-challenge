@@ -4,6 +4,20 @@ Tuples:
   testCase2: A tuple with w=0.0 is a vector: [OK]
   testCase3: Creates a tuple with w=0.0: [OK]
   testCase4: Creates a tuple with w=1.0: [OK]
+  testCase5: Adding two tuples: [OK]
+  testCase6: Subtracting two points: [OK]
+  testCase7: Subtracting a vector from a point: [OK]
+  testCase8: Subtracting two vectors: [OK]
+  testCase9: Subtracting a vector from the zero vector: [OK]
+  testCase10: Negating a tuple: [OK]
+  testCase11: Multiplying a tuple by a scalar: [OK]
+  testCase12: Multiplying a tuple by a fraction: [OK]
+  testCase13: Dividing a tuple by a scalar: [OK]
+  testCase14: Computing the magnitude of vector (1,0,0): [OK]
+  testCase15: Computing the magnitude of vector (0,1,0): [OK]
+  testCase16: Computing the magnitude of vector (0,0,1): [OK]
+  testCase17: Computing the magnitude of vector (1,2,3): [OK]
+  testCase18: Computing the magnitude of vector (-1,-2,-3): [OK]
   prop_Point: [OK, passed 100 tests]
   prop_Vector: [OK, passed 100 tests]
   prop_Tuple_Equal: [OK, passed 100 tests]
@@ -22,9 +36,9 @@ Canvas:
   prop_Canvas_WritePixel: [OK, passed 100 tests]
   prop_Canvas_PPM_EndsWithNewLine: [OK, passed 100 tests]
 
-         Properties   Test Cases  Total       
- Passed  16           4           20          
- Failed  0            0           0           
- Total   16           4           20          
+         Properties   Test Cases   Total       
+ Passed  16           18           34          
+ Failed  0            0            0           
+ Total   16           18           34          
 Test suite RayTracer-test: PASS
 Test suite logged to: /Users/twanbolwerk/Documents/dev/the-raytracer-challenge-by-twan-bolwerk/dist-newstyle/build/x86_64-osx/ghc-9.0.1/RayTracer-0.1.0.0/t/RayTracer-test/test/RayTracer-0.1.0.0-RayTracer-test.log
