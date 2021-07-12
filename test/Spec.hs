@@ -3,6 +3,7 @@ import Test.HUnit
 import Tuples
 import Canvas
 import Colors
+import Data.Array
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2 (testProperty)
@@ -35,6 +36,22 @@ tests = [
                 , testCase "testCase16: Computing the magnitude of vector (0,0,1)" testCase16
                 , testCase "testCase17: Computing the magnitude of vector (1,2,3)" testCase17
                 , testCase "testCase18: Computing the magnitude of vector (-1,-2,-3)" testCase18
+                , testCase "testCase19: Normalizing vector (4,0,0) gives (1,0,0)" testCase19
+                , testCase "testCase20: Normalizing vector (1,2,3) gives (1/sqrt 14,2/sqrt 14,3/sqrt 14)" testCase20
+                , testCase "testCase21: The magnitude of a normalized vector (1,2,3) gives 1" testCase21
+                , testCase "testCase22: The dot product of two tuples" testCase22
+                , testCase "testCase23: The dot product of two vectors (a,b)" testCase23
+                , testCase "testCase24: The dot product of two vectors (b,a)" testCase24
+                , testCase "testCase25: Colors are (RED, green, blue) tuples" testCase25
+                , testCase "testCase26: Colors are (red, GREEN, blue) tuples" testCase26
+                , testCase "testCase27: Colors are (red, green, BLUE) tuples" testCase27
+                , testCase "testCase28: Adding colors" testCase28
+                , testCase "testCase29: Subtracting colors" testCase29
+                , testCase "testCase30: Multiplying a color by a scalar" testCase30
+                , testCase "testCase31: Multiplying colors" testCase31
+                , testCase "testCase32: Every pixel of initial canvas is black" testCase32
+                , testCase "testCase33: Width of canvas is correctly set" testCase33
+                , testCase "testCase34: Height of canvas is correctly set" testCase34
                 , testProperty "prop_Point" prop_Point
                 , testProperty "prop_Vector" prop_Vector
                 , testProperty "prop_Tuple_Equal" prop_Tuple_Equal
@@ -75,7 +92,22 @@ testCase15 = assertEqual "magnitude(vector (0,1,0))" 1 (magnitude (vector 0 1 0)
 testCase16 = assertEqual "magnitude(vector (0,0,1))" 1 (magnitude (vector 0 0 1))
 testCase17 = assertEqual "magnitude(vector (1,2,3))" (sqrt 14) (magnitude (vector 1 2 3))
 testCase18 = assertEqual "magnitude(vector (-1,-2,-3))" (sqrt 14) (magnitude (vector (-1) (-2) (-3)))
-
+testCase19 = assertEqual "normalize(vector (1,0,0)" (vector (1 :: Double) 0 0) (normalize (vector 4 0 0))
+testCase20 = assertEqual "normalize(vector (1,2,3)" (vector (1/(sqrt 14)) (2/(sqrt (14 :: Double))) (3/sqrt 14)) (normalize (vector 1 2 3))
+testCase21 = assertEqual "magnitude(normalize(vector (1,2,3))" 1 (magnitude (normalize (vector 1 2 3)))
+testCase22 = assertEqual "dot(a,b) = 20" 20 (dot (vector 1 2 3) (vector 2 3 4))
+testCase23 = assertEqual "cross(a,b) = vector(-1,2,-1)" (vector (-1) 2 (-1 ::Double)) (cross (vector 1 2 3) (vector 2 3 4))
+testCase24 = assertEqual "cross(b,a) = vector(1,-2,1)" (vector 1 (-2 ::Double) 1) (cross (vector 2 3 4) (vector 1 2 3))
+testCase25 = assertEqual "c.red = -0.5" (-0.5) (getRed (color (-0.5) 0.4 1.7 1))
+testCase26 = assertEqual "c.green = 0.4" 0.4 (getGreen (color (-0.5) 0.4 1.7 1))
+testCase27 = assertEqual "c.blue = 1.7" 1.7 (getBlue (color (-0.5) 0.4 1.7 1))
+testCase28 = assertEqual "c1 + c2" (color 1.6 0.7 1.0 1.0) (color 0.9 0.6 0.75 1 + color 0.7 0.1 0.25 0)
+testCase29 = assertEqual "c1 - c2" (color 0.2 0.5 0.5 1.0) (color 0.9 0.6 0.75 1 - color 0.7 0.1 0.25 0)
+testCase30 = assertEqual "c1 * 2" (color 0.4 0.6 0.8 2.0) (color 0.2 0.3 0.4 1 * pure 2)
+testCase31 = assertEqual "c1 * c2" (color 0.9 0.2 0.04 1) (color 1 0.2 0.4 1.0 * color 0.9 1 0.1 1)
+testCase32 = assertBool "every pixel of canvas is black" (all (\x -> Canvas.getColor x == (color 0 0 0 1)) (elems (Canvas.pixels (Canvas.canvas 10 20))))
+testCase33 = assertBool "c.width = 10" ((Canvas.getWidth (Canvas.canvas 10 20)) == 10)
+testCase34 = assertBool "c.height = 20" ((Canvas.getHeight (Canvas.canvas 10 20)) == 20)
 {- 
 Scenario: A tuple with w = 1.0 is a point
     Given a <- tuple (4.3, -4.2, 3.1, 1.0)
@@ -187,8 +219,8 @@ prop_Vector_Cross_Product (x1,y1,z1,_) (x2,y2,z2,_) = Tuples.cross t1 t2 == pred
 
 
 prop_Canvas_Create :: CanvasInput -> Bool
-prop_Canvas_Create (width, height) = ((getWidth c == width -1) && 
-                                     (getHeight c == height -1) &&
+prop_Canvas_Create (width, height) = ((getWidth c == width ) && 
+                                     (getHeight c == height) &&
                                      predicate)
   where c = canvas width height
         isBlack col = getRed col == 0 && getGreen col == 0 && getBlue col == 0

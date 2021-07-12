@@ -44,6 +44,17 @@
   (major1) == 0 && (major2) == 1 && (minor) <= 0)
 #endif /* MIN_VERSION_RayTracer */
 
+/* package array-0.5.4.0 */
+#ifndef VERSION_array
+#define VERSION_array "0.5.4.0"
+#endif /* VERSION_array */
+#ifndef MIN_VERSION_array
+#define MIN_VERSION_array(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  5 || \
+  (major1) == 0 && (major2) == 5 && (minor) <= 4)
+#endif /* MIN_VERSION_array */
+
 /* package base-4.15.0.0 */
 #ifndef VERSION_base
 #define VERSION_base "4.15.0.0"

@@ -75,6 +75,7 @@ test-suite RayTracer-test
     , base >=4.7 && <5
     , QuickCheck >=2.14.2
     , HUnit >=1.6.2.0
+    , array >=0.5.4.0
   default-language: Haskell2010
 
 benchmark Main

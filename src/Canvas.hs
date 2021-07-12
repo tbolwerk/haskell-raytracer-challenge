@@ -23,7 +23,7 @@ data Canvas a = Canvas { getWidth :: a, getHeight :: a, pixels :: Array (Int,Int
  deriving Show
 
 canvas :: Int -> Int -> Canvas Int 
-canvas width height = Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 0 0 0 1) | x <- [0..w], y <- [0..h] ])
+canvas width height = Canvas width height (pixelArray ((0,0), (w,h)) [ pixel x y (color 0 0 0 1) | x <- [0..w], y <- [0..h] ])
  where w = width - 1
        h = height - 1
 

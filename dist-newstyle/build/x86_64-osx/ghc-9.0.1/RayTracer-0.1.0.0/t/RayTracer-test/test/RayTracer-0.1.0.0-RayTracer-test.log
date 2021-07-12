@@ -18,6 +18,22 @@ Tuples:
   testCase16: Computing the magnitude of vector (0,0,1): [OK]
   testCase17: Computing the magnitude of vector (1,2,3): [OK]
   testCase18: Computing the magnitude of vector (-1,-2,-3): [OK]
+  testCase19: Normalizing vector (4,0,0) gives (1,0,0): [OK]
+  testCase20: Normalizing vector (1,2,3) gives (1/sqrt 14,2/sqrt 14,3/sqrt 14): [OK]
+  testCase21: The magnitude of a normalized vector (1,2,3) gives 1: [OK]
+  testCase22: The dot product of two tuples: [OK]
+  testCase23: The dot product of two vectors (a,b): [OK]
+  testCase24: The dot product of two vectors (b,a): [OK]
+  testCase25: Colors are (RED, green, blue) tuples: [OK]
+  testCase26: Colors are (red, GREEN, blue) tuples: [OK]
+  testCase27: Colors are (red, green, BLUE) tuples: [OK]
+  testCase28: Adding colors: [OK]
+  testCase29: Subtracting colors: [OK]
+  testCase30: Multiplying a color by a scalar: [OK]
+  testCase31: Multiplying colors: [OK]
+  testCase32: Every pixel of initial canvas is black: [OK]
+  testCase33: Width of canvas is correctly set: [OK]
+  testCase34: Height of canvas is correctly set: [OK]
   prop_Point: [OK, passed 100 tests]
   prop_Vector: [OK, passed 100 tests]
   prop_Tuple_Equal: [OK, passed 100 tests]
@@ -37,8 +53,8 @@ Canvas:
   prop_Canvas_PPM_EndsWithNewLine: [OK, passed 100 tests]
 
          Properties   Test Cases   Total       
- Passed  16           18           34          
+ Passed  16           34           50          
  Failed  0            0            0           
- Total   16           18           34          
+ Total   16           34           50          
 Test suite RayTracer-test: PASS
 Test suite logged to: /Users/twanbolwerk/Documents/dev/the-raytracer-challenge-by-twan-bolwerk/dist-newstyle/build/x86_64-osx/ghc-9.0.1/RayTracer-0.1.0.0/t/RayTracer-test/test/RayTracer-0.1.0.0-RayTracer-test.log
