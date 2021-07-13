@@ -1,3 +1,4 @@
+{-# LANGUAGE StrictData #-}
 module Chapter1 where
 {- 
 This module is part of chapter 1 of The Ray Tracer Challenge
@@ -9,10 +10,10 @@ import Canvas
 import Colors
 import Data.Array
 
-data Projectile a = Projectile { position :: Tuple a, velocity :: Tuple a} 
+data Projectile a = Projectile { position :: !(Tuple a), velocity :: !(Tuple a)} 
  deriving Show
 
-data Environment a = Environment { gravity :: Tuple a, wind :: Tuple a }
+data Environment a = Environment { gravity :: !(Tuple a), wind :: !(Tuple a) }
 --- s = Projectile
 --- a = Enviroment
 

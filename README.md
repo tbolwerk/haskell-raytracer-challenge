@@ -62,3 +62,11 @@ Chapter 6
 > cabal bench --benchmark-option --output=bench.html
 
 > rm Main.tix && cabal bench --benchmark-option --output=bench.html
+
+## Static code analysis
+
+Use stan for static code analysis
+
+https://github.com/kowainik/stan
+
+> stan report
