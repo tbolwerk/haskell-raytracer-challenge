@@ -4,10 +4,19 @@ import qualified Test.QuickCheck as T
 import Test.HUnit
 type TupleInput = (Double,Double,Double,Double)
 
-testCase1 = assertBool "is a point," (isPoint (tuple 4.3 (-4.2) 3.1 1.0) )
-testCase2 = assertBool "is a vector," (isVector (tuple 4.3 (-4.2) 3.1 0.0) )
-testCase3 = assertEqual "tuple with w=0.0" (vector 4 (-4 :: Double) 3) (tuple 4 (-4) 3 0)
-testCase4 = assertEqual "tuple with w=1.0" (point 4.0 (-4.0 :: Double) 3.0) (tuple 4.0 (-4.0) 3.0 1.0)
+tupleIsPoint :: Tuple Double
+tupleIsPoint = (tuple 4.3 (-4.2) 3.1 1.0) 
+tupleIsVector :: Tuple Double
+tupleIsVector = (tuple 4.3 (-4.2) 3.1 0.0)
+vectorIsTuple :: Tuple Double
+vectorIsTuple = (vector 4.3 (-4.2) 3.1)
+pointIsTuple :: Tuple Double
+pointIsTuple = point 4.3 (-4.2) 3.1
+
+testCase1 = assertBool "is a point," (isPoint tupleIsPoint)
+testCase2 = assertBool "is a vector," (isVector tupleIsVector)
+testCase3 = assertEqual "tuple with w=0.0"  vectorIsTuple tupleIsVector
+testCase4 = assertEqual "tuple with w=1.0" pointIsTuple tupleIsPoint
 testCase5 = assertEqual "tuple (1, 1, 6, 1)" (tuple 1 1 6 1) (tuple 3 (-2 :: Double) 5 1 + tuple (-2) 3 1 0)     
 testCase6 = assertEqual "vector (-2, -4, -6)" (vector (-2) (-4 :: Double) (-6)) (point 3 2 1 - point 5 6 7)
 testCase7 = assertEqual "point (-2, -4, -6)" (point (-2) (-4) (-6::Double)) (point (3::Double) 2 1 - vector 5 6 7)
