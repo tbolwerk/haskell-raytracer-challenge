@@ -61,7 +61,10 @@ test-suite RayTracer-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   exposed-modules:
-      TestTuples
+        TuplesTest
+      , MatricesTest
+      , CanvasTest
+      , ColorsTest
   other-modules:
       Paths_RayTracer
   hs-source-dirs:

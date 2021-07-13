@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+span.lineno { color: white; background: #aaaaaa; border-right: solid white 12px }
+span.nottickedoff { background: yellow}
+span.istickedoff { background: white }
+span.tickonlyfalse { margin: -1px; border: 1px solid #f20913; background: #f20913 }
+span.tickonlytrue  { margin: -1px; border: 1px solid #60de51; background: #60de51 }
+span.funcount { font-size: small; color: orange; z-index: 2; position: absolute; right: 20 }
+span.decl { font-weight: bold }
+span.spaces    { background: white }
+</style>
+</head>
+<body>
+<pre>
+<span class="decl"><span class="nottickedoff">never executed</span> <span class="tickonlytrue">always true</span> <span class="tickonlyfalse">always false</span></span>
+</pre>
+<pre>
+<span class="lineno">    1 </span>module CanvasTest where
+<span class="lineno">    2 </span>import Canvas
+<span class="lineno">    3 </span>import Colors
+<span class="lineno">    4 </span>import Data.Array
+<span class="lineno">    5 </span>import qualified Test.QuickCheck as T
+<span class="lineno">    6 </span>import Test.HUnit
+<span class="lineno">    7 </span>type CanvasInput = (Int, Int)
+<span class="lineno">    8 </span>
+<span class="lineno">    9 </span><span class="decl"><span class="istickedoff">testCase32 = assertBool <span class="nottickedoff">&quot;every pixel of canvas is black&quot;</span> (all (\x -&gt; Canvas.getColor x == (color 0 0 0 1)) (elems (Canvas.pixels (Canvas.canvas 10 20))))</span></span>
+<span class="lineno">   10 </span><span class="decl"><span class="istickedoff">testCase33 = assertBool <span class="nottickedoff">&quot;c.width = 10&quot;</span> ((Canvas.getWidth (Canvas.canvas 10 <span class="nottickedoff">20</span>)) == (10 - 1))</span></span>
+<span class="lineno">   11 </span><span class="decl"><span class="istickedoff">testCase34 = assertBool <span class="nottickedoff">&quot;c.height = 20&quot;</span> ((Canvas.getHeight (Canvas.canvas <span class="nottickedoff">10</span> 20)) == (20 - 1))</span></span>
+<span class="lineno">   12 </span><span class="decl"><span class="istickedoff">testCase35 = assertBool <span class="nottickedoff">&quot;pixel at (2,3) = red&quot;</span> (let c = Canvas.canvas 10 20</span>
+<span class="lineno">   13 </span><span class="spaces">                                                    </span><span class="istickedoff">red = color 1 0 0 1</span>
+<span class="lineno">   14 </span><span class="spaces">                                                    </span><span class="istickedoff">nc = Canvas.writePixel c 2 3 red</span>
+<span class="lineno">   15 </span><span class="spaces">                                               </span><span class="istickedoff">in (Canvas.getColor (Canvas.pixelAt nc 2 3)) == red)</span></span>
+<span class="lineno">   16 </span>
+<span class="lineno">   17 </span>
+<span class="lineno">   18 </span>prop_Canvas_Create :: CanvasInput -&gt; Bool
+<span class="lineno">   19 </span><span class="decl"><span class="istickedoff">prop_Canvas_Create (width, height) = ((getWidth c == width -1) &amp;&amp; </span>
+<span class="lineno">   20 </span><span class="spaces">                                     </span><span class="istickedoff">(getHeight c == height -1) &amp;&amp;</span>
+<span class="lineno">   21 </span><span class="spaces">                                     </span><span class="istickedoff">predicate)</span>
+<span class="lineno">   22 </span><span class="spaces">  </span><span class="istickedoff">where c = canvas width height</span>
+<span class="lineno">   23 </span><span class="spaces">        </span><span class="istickedoff">isBlack col = getRed col == 0 &amp;&amp; getGreen col == 0 &amp;&amp; getBlue col == 0</span>
+<span class="lineno">   24 </span><span class="spaces">        </span><span class="istickedoff">predicate = all (\x -&gt; isBlack (getColor x)) (pixels c)</span></span>
+<span class="lineno">   25 </span>
+<span class="lineno">   26 </span>prop_Canvas_PixelAt :: CanvasInput -&gt; Bool
+<span class="lineno">   27 </span><span class="decl"><span class="istickedoff">prop_Canvas_PixelAt (width, height) = (width &lt;= 0 || height &lt;= 0) || isBlack (getColor (pixelAt c 0 0))</span>
+<span class="lineno">   28 </span><span class="spaces">    </span><span class="istickedoff">where c = canvas width height</span>
+<span class="lineno">   29 </span><span class="spaces">          </span><span class="istickedoff">isBlack col = getRed col == 0 &amp;&amp; getGreen col == 0 &amp;&amp; getBlue col == 0</span></span>
+<span class="lineno">   30 </span>
+<span class="lineno">   31 </span>prop_Canvas_WritePixel :: CanvasInput -&gt; Bool
+<span class="lineno">   32 </span><span class="decl"><span class="istickedoff">prop_Canvas_WritePixel (width, height) = (width &lt;= 0 || height &lt;= 0) || (black /= actualColor) &amp;&amp; (actualColor == red)</span>
+<span class="lineno">   33 </span><span class="spaces">    </span><span class="istickedoff">where c = canvas width height</span>
+<span class="lineno">   34 </span><span class="spaces">          </span><span class="istickedoff">nc = writePixel c 0 0 red </span>
+<span class="lineno">   35 </span><span class="spaces">          </span><span class="istickedoff">red = color 1 0 0 0</span>
+<span class="lineno">   36 </span><span class="spaces">          </span><span class="istickedoff">black = color 0 <span class="nottickedoff">0</span> <span class="nottickedoff">0</span> <span class="nottickedoff">0</span></span>
+<span class="lineno">   37 </span><span class="spaces">          </span><span class="istickedoff">actualColor = getColor (pixelAt nc 0 0)</span></span>
+<span class="lineno">   38 </span>
+<span class="lineno">   39 </span>prop_Canvas_PPM_EndsWithNewLine :: CanvasInput -&gt; Bool
+<span class="lineno">   40 </span><span class="decl"><span class="istickedoff">prop_Canvas_PPM_EndsWithNewLine (width, height) = (width &lt;= 0 || height &lt;= 0) || predicate</span>
+<span class="lineno">   41 </span><span class="spaces"> </span><span class="istickedoff">where c = canvas width height </span>
+<span class="lineno">   42 </span><span class="spaces">       </span><span class="istickedoff">predicate = last (canvasToString c) == '\n'</span></span>
+<span class="lineno">   43 </span>
+<span class="lineno">   44 </span>
+
+</pre>
+</body>
+</html>

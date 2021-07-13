@@ -1,0 +1,162 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+span.lineno { color: white; background: #aaaaaa; border-right: solid white 12px }
+span.nottickedoff { background: yellow}
+span.istickedoff { background: white }
+span.tickonlyfalse { margin: -1px; border: 1px solid #f20913; background: #f20913 }
+span.tickonlytrue  { margin: -1px; border: 1px solid #60de51; background: #60de51 }
+span.funcount { font-size: small; color: orange; z-index: 2; position: absolute; right: 20 }
+span.decl { font-weight: bold }
+span.spaces    { background: white }
+</style>
+</head>
+<body>
+<pre>
+<span class="decl"><span class="nottickedoff">never executed</span> <span class="tickonlytrue">always true</span> <span class="tickonlyfalse">always false</span></span>
+</pre>
+<pre>
+<span class="lineno">    1 </span>module TuplesTest where
+<span class="lineno">    2 </span>import Tuples
+<span class="lineno">    3 </span>import qualified Test.QuickCheck as T
+<span class="lineno">    4 </span>import Test.HUnit
+<span class="lineno">    5 </span>type TupleInput = (Double,Double,Double,Double)
+<span class="lineno">    6 </span>
+<span class="lineno">    7 </span><span class="decl"><span class="istickedoff">testCase1 = assertBool <span class="nottickedoff">&quot;is a point,&quot;</span> (isPoint (tuple <span class="nottickedoff">4.3</span> <span class="nottickedoff">(-4.2)</span> <span class="nottickedoff">3.1</span> 1.0) )</span></span>
+<span class="lineno">    8 </span><span class="decl"><span class="istickedoff">testCase2 = assertBool <span class="nottickedoff">&quot;is a vector,&quot;</span> (isVector (tuple <span class="nottickedoff">4.3</span> <span class="nottickedoff">(-4.2)</span> <span class="nottickedoff">3.1</span> 0.0) )</span></span>
+<span class="lineno">    9 </span><span class="decl"><span class="istickedoff">testCase3 = assertEqual <span class="nottickedoff">&quot;tuple with w=0.0&quot;</span> (vector 4 (-4 :: Double) 3) (tuple 4 (-4) 3 0)</span></span>
+<span class="lineno">   10 </span><span class="decl"><span class="istickedoff">testCase4 = assertEqual <span class="nottickedoff">&quot;tuple with w=1.0&quot;</span> (point 4.0 (-4.0 :: Double) 3.0) (tuple 4.0 (-4.0) 3.0 1.0)</span></span>
+<span class="lineno">   11 </span><span class="decl"><span class="istickedoff">testCase5 = assertEqual <span class="nottickedoff">&quot;tuple (1, 1, 6, 1)&quot;</span> (tuple 1 1 6 1) (tuple 3 (-2 :: Double) 5 1 + tuple (-2) 3 1 0)</span></span>     
+<span class="lineno">   12 </span><span class="decl"><span class="istickedoff">testCase6 = assertEqual <span class="nottickedoff">&quot;vector (-2, -4, -6)&quot;</span> (vector (-2) (-4 :: Double) (-6)) (point 3 2 1 - point 5 6 7)</span></span>
+<span class="lineno">   13 </span><span class="decl"><span class="istickedoff">testCase7 = assertEqual <span class="nottickedoff">&quot;point (-2, -4, -6)&quot;</span> (point (-2) (-4) (-6::Double)) (point (3::Double) 2 1 - vector 5 6 7)</span></span>
+<span class="lineno">   14 </span><span class="decl"><span class="istickedoff">testCase8 = assertEqual <span class="nottickedoff">&quot;vector (-2, -4, -6)&quot;</span> (vector (-2) (-4) (-6 :: Double)) ((vector 3 2 1) - (vector 5 6 (7 :: Double)))</span></span>
+<span class="lineno">   15 </span><span class="decl"><span class="istickedoff">testCase9 = assertEqual <span class="nottickedoff">&quot;vector (-1, 2, -3)&quot;</span> (vector (-1) 2 (-3 :: Double)) ((vector 0 0 0) - (vector 1 (-2 :: Double) 3))</span></span> 
+<span class="lineno">   16 </span><span class="decl"><span class="istickedoff">testCase10 = assertEqual <span class="nottickedoff">&quot;vector (-1, 2, -3)&quot;</span> (tuple (-1) 2 ((-3) :: Double) 4)  (negate (tuple 1 (-2) 3 (-4)))</span></span> 
+<span class="lineno">   17 </span><span class="decl"><span class="istickedoff">testCase11 = assertEqual <span class="nottickedoff">&quot;a * 3.5&quot;</span> (tuple 3.5 (-7 ::Double) 10.5 (-14)) ((tuple 1 (-2) 3 (-4)) * pure 3.5)</span></span>
+<span class="lineno">   18 </span><span class="decl"><span class="istickedoff">testCase12 = assertEqual <span class="nottickedoff">&quot;a * 0.5&quot;</span> (tuple 0.5 (-1 ::Double) 1.5 (-2)) ((tuple 1 (-2) 3 (-4)) * pure 0.5)</span></span>
+<span class="lineno">   19 </span><span class="decl"><span class="istickedoff">testCase13 = assertEqual <span class="nottickedoff">&quot;a / 2&quot;</span> (tuple 0.5 (-1) 1.5 (-2 ::Double)) ((tuple 1 (-2) 3 (-4)) / pure 2)</span></span>
+<span class="lineno">   20 </span><span class="decl"><span class="istickedoff">testCase14 = assertEqual <span class="nottickedoff">&quot;magnitude(vector (1,0,0))&quot;</span> 1 (magnitude (vector 1 0 0))</span></span>
+<span class="lineno">   21 </span><span class="decl"><span class="istickedoff">testCase15 = assertEqual <span class="nottickedoff">&quot;magnitude(vector (0,1,0))&quot;</span> 1 (magnitude (vector 0 1 0))</span></span>
+<span class="lineno">   22 </span><span class="decl"><span class="istickedoff">testCase16 = assertEqual <span class="nottickedoff">&quot;magnitude(vector (0,0,1))&quot;</span> 1 (magnitude (vector 0 0 1))</span></span>
+<span class="lineno">   23 </span><span class="decl"><span class="istickedoff">testCase17 = assertEqual <span class="nottickedoff">&quot;magnitude(vector (1,2,3))&quot;</span> (sqrt 14) (magnitude (vector 1 2 3))</span></span>
+<span class="lineno">   24 </span><span class="decl"><span class="istickedoff">testCase18 = assertEqual <span class="nottickedoff">&quot;magnitude(vector (-1,-2,-3))&quot;</span> (sqrt 14) (magnitude (vector (-1) (-2) (-3)))</span></span>
+<span class="lineno">   25 </span><span class="decl"><span class="istickedoff">testCase19 = assertEqual <span class="nottickedoff">&quot;normalize(vector (1,0,0)&quot;</span> (vector (1 :: Double) 0 0) (normalize (vector 4 0 0))</span></span>
+<span class="lineno">   26 </span><span class="decl"><span class="istickedoff">testCase20 = assertEqual <span class="nottickedoff">&quot;normalize(vector (1,2,3)&quot;</span> (vector (1/(sqrt 14)) (2/(sqrt (14 :: Double))) (3/sqrt 14)) (normalize (vector 1 2 3))</span></span>
+<span class="lineno">   27 </span><span class="decl"><span class="istickedoff">testCase21 = assertEqual <span class="nottickedoff">&quot;magnitude(normalize(vector (1,2,3))&quot;</span> 1 (magnitude (normalize (vector 1 2 3)))</span></span>
+<span class="lineno">   28 </span><span class="decl"><span class="istickedoff">testCase22 = assertEqual <span class="nottickedoff">&quot;dot(a,b) = 20&quot;</span> 20 (dot (vector 1 2 3) (vector 2 3 4))</span></span>
+<span class="lineno">   29 </span><span class="decl"><span class="istickedoff">testCase23 = assertEqual <span class="nottickedoff">&quot;cross(a,b) = vector(-1,2,-1)&quot;</span> (vector (-1) 2 (-1 ::Double)) (cross (vector 1 2 3) (vector 2 3 4))</span></span>
+<span class="lineno">   30 </span><span class="decl"><span class="istickedoff">testCase24 = assertEqual <span class="nottickedoff">&quot;cross(b,a) = vector(1,-2,1)&quot;</span> (vector 1 (-2 ::Double) 1) (cross (vector 2 3 4) (vector 1 2 3))</span></span>
+<span class="lineno">   31 </span>
+<span class="lineno">   32 </span>{- 
+<span class="lineno">   33 </span>Scenario: A tuple with w = 1.0 is a point
+<span class="lineno">   34 </span>    Given a &lt;- tuple (4.3, -4.2, 3.1, 1.0)
+<span class="lineno">   35 </span>    Then a.x = 4.3
+<span class="lineno">   36 </span>         a.y = -4.2
+<span class="lineno">   37 </span>         a.z = 3.1
+<span class="lineno">   38 </span>         a.w = 1.0
+<span class="lineno">   39 </span>         a is a point
+<span class="lineno">   40 </span>         a is not a vector
+<span class="lineno">   41 </span>
+<span class="lineno">   42 </span>Scenario: point x y z creates tuple with w = 1
+<span class="lineno">   43 </span>    Given p &lt;- point (4.3, -4.2, 3.1)
+<span class="lineno">   44 </span>    Then p = tuple (4.3, -4.2, 3.1, 1.0)
+<span class="lineno">   45 </span>-}
+<span class="lineno">   46 </span>prop_Point :: TupleInput -&gt; Bool
+<span class="lineno">   47 </span><span class="decl"><span class="istickedoff">prop_Point (x, y, z, w) = Tuples.isPoint t &amp;&amp; predicate &amp;&amp; not (Tuples.isVector t)</span>
+<span class="lineno">   48 </span><span class="spaces">     </span><span class="istickedoff">where predicate = </span>
+<span class="lineno">   49 </span><span class="spaces">                   </span><span class="istickedoff">let wPredicate = Tuples.getW t == 1</span>
+<span class="lineno">   50 </span><span class="spaces">                       </span><span class="istickedoff">xPredicate = Tuples.getX t == x</span>
+<span class="lineno">   51 </span><span class="spaces">                       </span><span class="istickedoff">yPredicate = Tuples.getY t == y</span>
+<span class="lineno">   52 </span><span class="spaces">                       </span><span class="istickedoff">zPredicate = Tuples.getZ t == z</span>
+<span class="lineno">   53 </span><span class="spaces">                    </span><span class="istickedoff">in all (==True) [wPredicate, xPredicate, yPredicate, zPredicate]</span>
+<span class="lineno">   54 </span><span class="spaces">           </span><span class="istickedoff">t = Tuples.point x y z</span></span>
+<span class="lineno">   55 </span>{- 
+<span class="lineno">   56 </span>Scenario: A tuple with w = 0.0 is a vector
+<span class="lineno">   57 </span>    Given a &lt;- tuple (4.3, -4.2, 3.1, 1.0)
+<span class="lineno">   58 </span>    Then a.x = 4.3
+<span class="lineno">   59 </span>         a.y = -4.2
+<span class="lineno">   60 </span>         a.z = 3.1
+<span class="lineno">   61 </span>         a.w = 0.0
+<span class="lineno">   62 </span>         a is not a point
+<span class="lineno">   63 </span>         a is a vector
+<span class="lineno">   64 </span>Scenario: vector x y z creates tuple with w = 0.0
+<span class="lineno">   65 </span>    Given p &lt;- vector (4.3, -4.2, 3.1)
+<span class="lineno">   66 </span>    Then p = tuple (4.3, -4.2, 3.1, 0.0)
+<span class="lineno">   67 </span>-}
+<span class="lineno">   68 </span>prop_Vector :: TupleInput -&gt; Bool
+<span class="lineno">   69 </span><span class="decl"><span class="istickedoff">prop_Vector (x, y, z, w) = Tuples.isVector t &amp;&amp; predicate &amp;&amp; not (Tuples.isPoint t)</span>
+<span class="lineno">   70 </span><span class="spaces"> </span><span class="istickedoff">where predicate = </span>
+<span class="lineno">   71 </span><span class="spaces">                   </span><span class="istickedoff">let wPredicate = Tuples.getW t == 0</span>
+<span class="lineno">   72 </span><span class="spaces">                       </span><span class="istickedoff">xPredicate = Tuples.getX t == x</span>
+<span class="lineno">   73 </span><span class="spaces">                       </span><span class="istickedoff">yPredicate = Tuples.getY t == y</span>
+<span class="lineno">   74 </span><span class="spaces">                       </span><span class="istickedoff">zPredicate = Tuples.getZ t == z</span>
+<span class="lineno">   75 </span><span class="spaces">                    </span><span class="istickedoff">in all (==True) [wPredicate, xPredicate, yPredicate, zPredicate]</span>
+<span class="lineno">   76 </span><span class="spaces">       </span><span class="istickedoff">t = Tuples.vector x y z</span></span>
+<span class="lineno">   77 </span>
+<span class="lineno">   78 </span>prop_Tuple_Equal :: TupleInput -&gt; TupleInput -&gt; Bool
+<span class="lineno">   79 </span><span class="decl"><span class="istickedoff">prop_Tuple_Equal (x1, y1, z1, w1) (x2, y2, z2, w2) = let xPredicate = predicate x1 x2</span>
+<span class="lineno">   80 </span><span class="spaces">                                                         </span><span class="istickedoff">yPredicate = predicate y1 y2</span>
+<span class="lineno">   81 </span><span class="spaces">                                                         </span><span class="istickedoff">zPredicate = predicate z1 z2</span>
+<span class="lineno">   82 </span><span class="spaces">                                                         </span><span class="istickedoff">wPredicate = predicate w1 w2</span>
+<span class="lineno">   83 </span><span class="spaces">                                                      </span><span class="istickedoff">in if (all (==True) [xPredicate, yPredicate, zPredicate, wPredicate])</span>
+<span class="lineno">   84 </span><span class="spaces">                                                           </span><span class="istickedoff">then tuple x1 y1 z1 w1 == tuple x2 y2 z2 w2</span>
+<span class="lineno">   85 </span><span class="spaces">                                                           </span><span class="istickedoff">else tuple x1 <span class="nottickedoff">y1</span> <span class="nottickedoff">z1</span> <span class="nottickedoff">w1</span> /= tuple x2 <span class="nottickedoff">y2</span> <span class="nottickedoff">z2</span> <span class="nottickedoff">w2</span></span>
+<span class="lineno">   86 </span><span class="spaces"> </span><span class="istickedoff">where predicate a b = (abs (a - b) &lt; 0.00001)</span></span>
+<span class="lineno">   87 </span>
+<span class="lineno">   88 </span>prop_Tuple_Addition :: TupleInput -&gt; TupleInput -&gt; Bool
+<span class="lineno">   89 </span><span class="decl"><span class="istickedoff">prop_Tuple_Addition (x1, y1, z1, w1) (x2, y2, z2, w2) = (t1 + t2) == predicate</span>
+<span class="lineno">   90 </span><span class="spaces">    </span><span class="istickedoff">where t1 = Tuples.tuple x1 y1 z1 w1</span>
+<span class="lineno">   91 </span><span class="spaces">          </span><span class="istickedoff">t2 = Tuples.tuple x2 y2 z2 w2</span>
+<span class="lineno">   92 </span><span class="spaces">          </span><span class="istickedoff">predicate = Tuples.tuple (x1 + x2) (y1 + y2) (z1 + z2) (w1 + w2)</span></span>
+<span class="lineno">   93 </span>
+<span class="lineno">   94 </span>prop_Tuple_Subtraction :: TupleInput -&gt; TupleInput -&gt; Bool
+<span class="lineno">   95 </span><span class="decl"><span class="istickedoff">prop_Tuple_Subtraction (x1, y1, z1, w1) (x2, y2, z2, w2) = (t1 - t2) == predicate</span>
+<span class="lineno">   96 </span><span class="spaces">    </span><span class="istickedoff">where t1 = Tuples.tuple x1 y1 z1 w1</span>
+<span class="lineno">   97 </span><span class="spaces">          </span><span class="istickedoff">t2 = Tuples.tuple x2 y2 z2 w2</span>
+<span class="lineno">   98 </span><span class="spaces">          </span><span class="istickedoff">predicate = Tuples.tuple (x1 - x2) (y1 - y2) (z1 - z2) (w1 - w2)</span></span>
+<span class="lineno">   99 </span>
+<span class="lineno">  100 </span>prop_Tuple_Negate :: TupleInput -&gt; Bool
+<span class="lineno">  101 </span><span class="decl"><span class="istickedoff">prop_Tuple_Negate (x, y, z, w) = (negate t) == predicate</span>
+<span class="lineno">  102 </span><span class="spaces"> </span><span class="istickedoff">where t = Tuples.tuple x y z w</span>
+<span class="lineno">  103 </span><span class="spaces">       </span><span class="istickedoff">predicate = Tuples.vector 0 0 0 - Tuples.tuple x y z w</span></span>
+<span class="lineno">  104 </span>
+<span class="lineno">  105 </span>prop_Tuple_Scalar_Multiplication :: TupleInput -&gt; Double -&gt; Bool
+<span class="lineno">  106 </span><span class="decl"><span class="istickedoff">prop_Tuple_Scalar_Multiplication (x,y,z,w) s = t * (pure s) == predicate</span>
+<span class="lineno">  107 </span><span class="spaces"> </span><span class="istickedoff">where t = Tuples.tuple x y z w</span>
+<span class="lineno">  108 </span><span class="spaces">       </span><span class="istickedoff">predicate = Tuples.tuple (x * s) (y * s) (z * s) (w * s)</span></span>
+<span class="lineno">  109 </span>
+<span class="lineno">  110 </span>prop_Tuple_Scalar_Division :: TupleInput -&gt; Double -&gt; Bool
+<span class="lineno">  111 </span><span class="decl"><span class="istickedoff">prop_Tuple_Scalar_Division (x,y,z,w) s = skipIfNull || (t / (pure s) == predicate)</span>
+<span class="lineno">  112 </span><span class="spaces"> </span><span class="istickedoff">where skipIfNull = isNull x || isNull y || isNull z || isNull w &amp;&amp; <span class="nottickedoff">isNull s</span></span>
+<span class="lineno">  113 </span><span class="spaces">       </span><span class="istickedoff">isNull a = a == 0</span>
+<span class="lineno">  114 </span><span class="spaces">       </span><span class="istickedoff">t = Tuples.tuple x y z w</span>
+<span class="lineno">  115 </span><span class="spaces">       </span><span class="istickedoff">predicate = Tuples.tuple (x / s) (y / s) (z / s) (w / s)</span></span>
+<span class="lineno">  116 </span>
+<span class="lineno">  117 </span>prop_Tuple_Magnitude :: TupleInput -&gt; Bool
+<span class="lineno">  118 </span><span class="decl"><span class="istickedoff">prop_Tuple_Magnitude (x,y,z,w) = Tuples.magnitude v == predicate</span>
+<span class="lineno">  119 </span><span class="spaces">    </span><span class="istickedoff">where v = Tuples.vector x y z</span>
+<span class="lineno">  120 </span><span class="spaces">          </span><span class="istickedoff">predicate = sqrt ((x^2) + (y^2) + (z^2))</span></span> 
+<span class="lineno">  121 </span>
+<span class="lineno">  122 </span>prop_Tuple_Normalize :: TupleInput -&gt; Bool
+<span class="lineno">  123 </span><span class="decl"><span class="istickedoff">prop_Tuple_Normalize (x,y,z,w) = skipIf || normalize v == predicate</span>
+<span class="lineno">  124 </span><span class="spaces">    </span><span class="istickedoff">where skipIf = isNullAndNegative x || isNullAndNegative y || isNullAndNegative z || isNullAndNegative w</span>
+<span class="lineno">  125 </span><span class="spaces">          </span><span class="istickedoff">isNullAndNegative a = a &lt;= 0</span>
+<span class="lineno">  126 </span><span class="spaces">          </span><span class="istickedoff">v = Tuples.tuple x y z w</span>
+<span class="lineno">  127 </span><span class="spaces">          </span><span class="istickedoff">predicate = Tuples.tuple (x / Tuples.magnitude v) (y / Tuples.magnitude v) (z / Tuples.magnitude v) (w / Tuples.magnitude v)</span></span>
+<span class="lineno">  128 </span>
+<span class="lineno">  129 </span>prop_Tuple_Dot_Product :: TupleInput -&gt; TupleInput -&gt; Bool
+<span class="lineno">  130 </span><span class="decl"><span class="istickedoff">prop_Tuple_Dot_Product (x1,y1,z1,w1) (x2,y2,z2,w2) = dot t1 t2 == predicate</span>
+<span class="lineno">  131 </span><span class="spaces">    </span><span class="istickedoff">where t1 = Tuples.tuple x1 y1 z1 w1</span>
+<span class="lineno">  132 </span><span class="spaces">          </span><span class="istickedoff">t2 = Tuples.tuple x2 y2 z2 w2</span>
+<span class="lineno">  133 </span><span class="spaces">          </span><span class="istickedoff">predicate = (x1 * x2) + (y1 * y2) + (z1 * z2) + (w1 * w2)</span></span>
+<span class="lineno">  134 </span>
+<span class="lineno">  135 </span>prop_Vector_Cross_Product :: TupleInput -&gt; TupleInput -&gt; Bool
+<span class="lineno">  136 </span><span class="decl"><span class="istickedoff">prop_Vector_Cross_Product (x1,y1,z1,_) (x2,y2,z2,_) = Tuples.cross t1 t2 == predicate</span>
+<span class="lineno">  137 </span><span class="spaces">  </span><span class="istickedoff">where t1 = Tuples.vector x1 y1 z1 </span>
+<span class="lineno">  138 </span><span class="spaces">        </span><span class="istickedoff">t2 = Tuples.vector x2 y2 z2</span>
+<span class="lineno">  139 </span><span class="spaces">        </span><span class="istickedoff">predicate = Tuples.vector ((y1 * z2) - (z1 * y2)) ((z1 * x2) - (x1 * z2)) ((x1 * y2) - (y1 * x2))</span></span> 
+
+</pre>
+</body>
+</html>
