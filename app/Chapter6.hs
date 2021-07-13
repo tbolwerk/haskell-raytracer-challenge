@@ -48,9 +48,9 @@ main = do
         mShape = Spheres.setTransform' shape scalingMatrix (0.5, 0.5,0.5) 
         sShape = Spheres.setTransform shape (shearingMatrix (1,0,0,0,0,0) * scalingMatrix (0.5, 1, 1))
         rShape = Spheres.setTransform shape ((rotateZMatrix (radians 90)) * (scalingMatrix (1, 0.5,0.5)))
-    i1 <-forkIO (createPPM (eval (foldM (\c p -> return (writePixel c ((fst . getPosition) p) ((snd . getPosition) p) (getColor p))) (canvas 100 100) (generateCanvas shape)) []) "chapter6.ppm")
-    i2 <-forkIO (createPPM (eval (foldM (\c p -> return (writePixel c ((fst . getPosition) p) ((snd . getPosition) p) (getColor p))) (canvas 100 100) (generateCanvas mShape)) []) "chapter6_2.ppm")
-    i3 <-forkIO (createPPM (eval (foldM (\c p -> return (writePixel c ((fst . getPosition) p) ((snd . getPosition) p) (getColor p))) (canvas 100 100) (generateCanvas sShape)) []) "chapter6_3.ppm")
-    i4 <-forkIO (createPPM (eval (foldM (\c p -> return (writePixel c ((fst . getPosition) p) ((snd . getPosition) p) (getColor p))) (canvas 100 100) (generateCanvas rShape)) []) "chapter6_4.ppm")
+    i1 <-forkIO (createPPM (eval (foldM (\c p -> return ((uncurry (writePixel c) (getPosition p)) (getColor p))) (canvas 100 100) (generateCanvas shape)) []) "chapter6.ppm")
+    i2 <-forkIO (createPPM (eval (foldM (\c p -> return ((uncurry (writePixel c) (getPosition p)) (getColor p))) (canvas 100 100) (generateCanvas mShape)) []) "chapter6_2.ppm")
+    i3 <-forkIO (createPPM (eval (foldM (\c p -> return ((uncurry (writePixel c) (getPosition p)) (getColor p))) (canvas 100 100) (generateCanvas sShape)) []) "chapter6_3.ppm")
+    i4 <-forkIO (createPPM (eval (foldM (\c p -> return ((uncurry (writePixel c) (getPosition p)) (getColor p))) (canvas 100 100) (generateCanvas rShape)) []) "chapter6_4.ppm")
     return [i1,i2,i3,i4]
  where generateCanvas s =  (eval (run'' s) [])
