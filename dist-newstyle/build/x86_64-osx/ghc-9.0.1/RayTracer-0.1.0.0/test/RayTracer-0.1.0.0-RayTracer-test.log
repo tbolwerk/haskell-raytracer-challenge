@@ -53,17 +53,24 @@ Canvas:
   testCase34: Height of canvas is correctly set: [OK]
   testCase35: Pixel_at(c,2,3) = red: [OK]
 Matrices:
-  Construction and inspecting a 4x4 matrix M[0,0] = 1: [OK]
-  Construction and inspecting a 4x4 matrix M[0,3] = 4: [OK]
-  Construction and inspecting a 4x4 matrix M[1,0] = 5.5: [OK]
-  Construction and inspecting a 4x4 matrix M[1,2] = 7.5: [OK]
-  Construction and inspecting a 4x4 matrix M[2,2] = 11: [OK]
-  Construction and inspecting a 4x4 matrix M[3,0] = 13.5: [OK]
-  Construction and inspecting a 4x4 matrix M[3,2] = 15.5: [OK]
+  Construction and inspecting a 4x4 matrix M1[0,0] = 1: [OK]
+  Construction and inspecting a 4x4 matrix M1[0,3] = 4: [OK]
+  Construction and inspecting a 4x4 matrix M1[1,0] = 5.5: [OK]
+  Construction and inspecting a 4x4 matrix M1[1,2] = 7.5: [OK]
+  Construction and inspecting a 4x4 matrix M1[2,2] = 11: [OK]
+  Construction and inspecting a 4x4 matrix M1[3,0] = 13.5: [OK]
+  Construction and inspecting a 4x4 matrix M1[3,2] = 15.5: [OK]
+  Construction and inspecting a 4x4 matrix M2[0,0] = 1: [OK]
+  Construction and inspecting a 4x4 matrix M2[0,3] = 4: [OK]
+  Construction and inspecting a 4x4 matrix M2[1,0] = 5.5: [OK]
+  Construction and inspecting a 4x4 matrix M2[1,2] = 7.5: [OK]
+  Construction and inspecting a 4x4 matrix M2[2,2] = 11: [OK]
+  Construction and inspecting a 4x4 matrix M2[3,0] = 13.5: [OK]
+  Construction and inspecting a 4x4 matrix M2[3,2] = 15.5: [OK]
 
          Properties   Test Cases   Total       
- Passed  16           42           58          
+ Passed  16           49           65          
  Failed  0            0            0           
- Total   16           42           58          
+ Total   16           49           65          
 Test suite RayTracer-test: PASS
 Test suite logged to: /Users/twanbolwerk/Documents/dev/the-raytracer-challenge-by-twan-bolwerk/dist-newstyle/build/x86_64-osx/ghc-9.0.1/RayTracer-0.1.0.0/test/RayTracer-0.1.0.0-RayTracer-test.log

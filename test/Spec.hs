@@ -65,13 +65,20 @@ tests = [
                 , testCase "testCase35: Pixel_at(c,2,3) = red" testCase35
             ],
         testGroup "Matrices" [
-              testCase "Construction and inspecting a 4x4 matrix M[0,0] = 1" testCase36
-            , testCase "Construction and inspecting a 4x4 matrix M[0,3] = 4" testCase37
-            , testCase "Construction and inspecting a 4x4 matrix M[1,0] = 5.5" testCase38
-            , testCase "Construction and inspecting a 4x4 matrix M[1,2] = 7.5" testCase39
-            , testCase "Construction and inspecting a 4x4 matrix M[2,2] = 11" testCase40
-            , testCase "Construction and inspecting a 4x4 matrix M[3,0] = 13.5" testCase41
-            , testCase "Construction and inspecting a 4x4 matrix M[3,2] = 15.5" testCase42
+              testCase "Construction and inspecting a 4x4 matrix M1[0,0] = 1" testCase36
+            , testCase "Construction and inspecting a 4x4 matrix M1[0,3] = 4" testCase37
+            , testCase "Construction and inspecting a 4x4 matrix M1[1,0] = 5.5" testCase38
+            , testCase "Construction and inspecting a 4x4 matrix M1[1,2] = 7.5" testCase39
+            , testCase "Construction and inspecting a 4x4 matrix M1[2,2] = 11" testCase40
+            , testCase "Construction and inspecting a 4x4 matrix M1[3,0] = 13.5" testCase41
+            , testCase "Construction and inspecting a 4x4 matrix M1[3,2] = 15.5" testCase42
+            , testCase "Construction and inspecting a 4x4 matrix M2[0,0] = 1" testCase43
+            , testCase "Construction and inspecting a 4x4 matrix M2[0,3] = 4" testCase44
+            , testCase "Construction and inspecting a 4x4 matrix M2[1,0] = 5.5" testCase45
+            , testCase "Construction and inspecting a 4x4 matrix M2[1,2] = 7.5" testCase46
+            , testCase "Construction and inspecting a 4x4 matrix M2[2,2] = 11" testCase47
+            , testCase "Construction and inspecting a 4x4 matrix M2[3,0] = 13.5" testCase48
+            , testCase "Construction and inspecting a 4x4 matrix M2[3,2] = 15.5" testCase49
         ]
     ]
 
