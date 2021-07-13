@@ -14,31 +14,35 @@ https://www.haskell.org/downloads/
 
  Chapter 1
 
-> ghci> :l app/Scene
+> ghci> :l app/Chapter1
+
+* enter velocity of projectile (for example use 11.5)
+
+> ghci> 11.5
 
 > ghci> :main
 
 Chapter 4
 
-> ghci> :l app/Clock
+> ghci> :l app/Chapter4
 
 > ghci> :main
 
 
 Chapter 5
 
-> ghci> :l app/SphereRaycasting
+> ghci> :l app/Chapter5
 
-> ghci> mapToCanvas
+> ghci> :main
 
 
 Chapter 6
 
 * note this is gonna take some time.
 
-> ghci> :l app/SphereRaycasting
+> ghci> :l app/Chapter6
 
-> ghci> mapToCanvas'
+> ghci> :main
 
 ## How to test:
 

@@ -1,4 +1,4 @@
-module Scene where
+module Chapter1 where
 {- 
 This module is part of chapter 1 of The Ray Tracer Challenge
 

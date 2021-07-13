@@ -1,4 +1,4 @@
-module Clock where
+module Chapter4 where
 {-
 Part of the putting it all together of chapter 4 matrix transformations
 
