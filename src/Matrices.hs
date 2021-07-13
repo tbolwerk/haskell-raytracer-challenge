@@ -71,17 +71,6 @@ get m (i,j) = (getArray m) ! (j,i)
 set :: Matrix a -> (Row, Column) -> a -> Matrix a
 set m (i,j) v = Matrix  (getNRows m) (getNCols m) ((getArray m) // [((i, j), v)])
 
-myM :: Matrix Double
-myM = matrix 4 4 (\(i,j) -> case j of
-                                0 -> fromIntegral i + 1
-                                1 -> fromIntegral i + 5.5
-                                2 -> fromIntegral i + 9
-                                3 -> fromIntegral i + 13.5
-                                _ -> fromIntegral i)
-
-myM' :: Matrix Double
-myM' = matrix 4 4 (\(i,j) -> fromIntegral i)
-
 prettyPrint :: (Show a) => Matrix a -> IO ()
 prettyPrint m = foldMap print (matrixList m)
 
@@ -103,16 +92,6 @@ listToMatrix :: [a] -> Matrix a
 listToMatrix xs = matrix bound bound (\(i, j) -> (((chunkOf bound xs) !! j) !! i)) 
  where bound = round (sqrt (fromIntegral (length xs)))
 
-a4 :: Matrix Double
-a4 = listToMatrix [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
-b4 :: Matrix Double
-b4 = listToMatrix [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
-
-a3 :: Matrix Double
-a3 = listToMatrix [7,8,9,8,7,6,5,4,3,2]
-
-b3 :: Matrix Double
-b3 = listToMatrix [-2, -1,-2 ,3,3,2,-1,-1,-4]
 
 matrixVectorMultiply :: (Num a, Floating a) => Matrix a -> Tuple a -> Tuple a
 matrixVectorMultiply m t =  listToTuple (map (\row -> dot row t) [ listToTuple (getRow m i 0) | i <- [0..getNCols m -1]])
@@ -121,10 +100,6 @@ listToTuple :: Num a => [a] -> Tuple a
 listToTuple (x:y:z:w:[]) = tuple x y z w
 
 
-calc = matrixVectorMultiply a1 b1
-
-a1 = listToMatrix [1,2,3,4,2,4,4,2,8,6,4,1,0,0,0,1]
-b1 = listToTuple [1,2,3,1]
 
 identityMatrix :: Matrix Double
 identityMatrix = matrix 4 4 (\(i,j) -> if i == j then 1.0 else 0.0)
@@ -180,8 +155,3 @@ a10 = listToMatrix [-5,2,6,-8,1,-5,1,8,7,7,-6,-7,1,-3,7,4]
 inverse :: (Num a, Show a, Fractional a) => Matrix a -> Matrix a
 inverse m = matrix (getNRows m) (getNCols m) (\(i,j) -> (cofactor m i j) / determinant m)
 
-
-inverseTest :: Bool
-inverseTest = a4 == a4'
-  where  c4 = a4 * b4
-         a4' = c4 * (inverse b4)

@@ -12,6 +12,20 @@ m2 = matrix 4 4 (\(i,j) -> case j of
                                 3 -> fromIntegral i + 13.5
                                 _ -> fromIntegral i)
 
+a4 :: Matrix Double
+a4 = listToMatrix [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
+b4 :: Matrix Double
+b4 = listToMatrix [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
+a3 :: Matrix Double
+a3 = listToMatrix [7,8,9,8,7,6,5,4,3,2]
+b3 :: Matrix Double
+b3 = listToMatrix [-2, -1,-2 ,3,3,2,-1,-1,-4]
+
+
+
+
+
+
 testCase36 = assertEqual "given matrix M1[0,0] = 1" 1 (get m1 (0,0))
 testCase37 = assertEqual "given matrix M1[0,3] = 4" 4 (get m1 (0,3))
 testCase38 = assertEqual "given matrix M1[1,0] = 5.5" 5.5 (get m1 (1,0))
@@ -27,3 +41,6 @@ testCase46 = assertEqual "given matrix M2[1,2] = 7.5" 7.5 (get m2 (1,2))
 testCase47 = assertEqual "given matrix M2[2,2] = 11" 11 (get m2 (2,2))
 testCase48 = assertEqual "given matrix M2[3,0] = 13.5" 13.5 (get m2 (3,0))
 testCase49 = assertEqual "given matrix M2[3,2] = 15.5" 15.5 (get m2 (3,2))
+testCase50 = assertBool "(a4 * b4) * (inverse b4) = a4'" (a4 == a4')
+  where  c4 = a4 * b4
+         a4' = c4 * (inverse b4)
