@@ -5,13 +5,11 @@ exec m s = snd (getState m s)
 eval :: State s a -> s -> a
 eval m s = fst (getState m s)
 
-
 ask :: State a a 
 ask =  State $ \s -> (s,s)
 
 put :: Monoid s => s -> State s ()
 put s = State $ \s0 -> ((), s <> s0)
-
 
 newtype State s a = State { getState :: s -> (a, s)}
 

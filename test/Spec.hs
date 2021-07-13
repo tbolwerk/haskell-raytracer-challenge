@@ -2,6 +2,7 @@ import TuplesTest
 import CanvasTest
 import ColorsTest
 import MatricesTest
+import StateTest
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2 (testProperty)
@@ -80,6 +81,9 @@ tests = [
             , testCase "Construction and inspecting a 4x4 matrix M2[3,0] = 13.5" testCase48
             , testCase "Construction and inspecting a 4x4 matrix M2[3,2] = 15.5" testCase49
             , testCase "Inversion of matrix a' == b * c' = a" testCase50
+        ],
+        testGroup "State" [
+          testCase "State ask" testCase51
         ]
     ]
 

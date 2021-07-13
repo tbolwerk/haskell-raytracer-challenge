@@ -1,6 +1,18 @@
 module Main where
 
-import Lib
 
-main :: IO ()
-main = someFunc
+import qualified Chapter1
+import qualified Chapter4
+import qualified Chapter5
+import qualified Chapter6
+
+main = do
+    chapter1
+    chapter4
+    chapter5
+    chapter6
+
+chapter1 = Chapter1.main
+chapter4 = Chapter4.main
+chapter5 = Chapter5.main
+chapter6 = Chapter6.main
