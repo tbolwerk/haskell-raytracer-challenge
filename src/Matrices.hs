@@ -14,9 +14,10 @@ https://www.wisfaq.nl/show3archive.asp?id=23989&j=2004
 module Matrices where
 import Data.Array
 import Tuples
-data Matrix a = Matrix { getNRows :: Row,
-                         getNCols :: Column,                        
-                         getArray :: Array (Row, Column) a}
+data Matrix a = Matrix { getNRows :: !Row
+                       , getNCols :: !Column                        
+                       , getArray :: !(Array (Row, Column) a)
+                         }
  deriving Show
 
     
@@ -37,7 +38,7 @@ instance Functor Matrix where
 
 instance Applicative Matrix where
     pure x = matrix 4 4 (\_ -> x)
-    (<*>) = undefined
+    (<*>) = error "not defined"
 
 celCalc :: (Num a, Fractional a) => Matrix a -> Matrix a -> Int -> Int -> a
 celCalc a b i j = sum (zipWith (*) (getRow a i 0) (getCol b j 0))

@@ -5,11 +5,11 @@ type Diffuse = Double
 type Specular = Double
 type Shininess = Double
 data Material = Material   {
-                            color :: Color,
-                            ambient :: Ambient,
-                            diffuse :: Diffuse, 
-                            specular :: Specular, 
-                            shininess :: Shininess
+                            color :: !Color,
+                            ambient :: !Ambient,
+                            diffuse :: !Diffuse, 
+                            specular :: !Specular, 
+                            shininess :: !Shininess
                             }
                     deriving Show
 

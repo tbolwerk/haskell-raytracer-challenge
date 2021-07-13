@@ -1,3 +1,4 @@
+{-# LANGUAGE StrictData #-}
 module Spheres where
 import Rays
 import Tuples
@@ -6,14 +7,17 @@ import qualified Data.List as List
 import Transformations
 import Materials
 import State
-data Sphere = Sphere {getId :: Int, 
-                      getPos :: Tuple Double, 
-                      getR :: Double, 
-                      getTransform :: Matrix Double,
-                      getMaterial :: Material}
+data Sphere = Sphere {getId :: !Int, 
+                      getPos :: !(Tuple Double), 
+                      getR :: !Double, 
+                      getTransform :: !(Matrix Double),
+                      getMaterial :: !Material}
  deriving Show
 
-data Intersection = Intersection {time :: Time, object :: Sphere}
+data Intersection = Intersection {
+                                   time :: !Time
+                                 , object :: !Sphere
+                                 }
  deriving Show
 instance Eq Intersection where
     (==) a b = time a == time b && (getId . object) a == (getId . object) b

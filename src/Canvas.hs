@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE StrictData #-}
 module Canvas where
 import Colors
 import Tuples
@@ -11,7 +12,10 @@ type Position = (Int, Int)
 pixel :: Int -> Int -> Color -> Pixel
 pixel x y col = Pixel (x,y) col
 
-data Pixel = Pixel { getPosition :: Position , getColor :: Color }
+data Pixel = Pixel { 
+                     getPosition :: !Position 
+                   , getColor :: !Color 
+                   }
  deriving Show
 
 -- Probably should be a monad for canvas
@@ -19,7 +23,11 @@ data Pixel = Pixel { getPosition :: Position , getColor :: Color }
 --- s = Pixels
 --- a = Canvas
 
-data Canvas a = Canvas { getWidth :: a, getHeight :: a, pixels :: Array (Int,Int) Pixel } 
+data Canvas a = Canvas { 
+                          getWidth :: !a
+                        , getHeight :: !a
+                        , pixels :: !(Array (Int,Int) Pixel)
+                        } 
  deriving Show
 
 canvas :: Int -> Int -> Canvas Int 

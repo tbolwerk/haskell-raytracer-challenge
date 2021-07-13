@@ -48,7 +48,12 @@ cross (Tuple x1 y1 z1 0) (Tuple x2 y2 z2 0) = vector ((y1 * z2) - (z1 * y2)) ((z
 reflect :: (Tuple Double, Tuple Double) -> Tuple Double
 reflect (v,n) = v - n * pure (2 * dot v n)
 
-data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a }
+data Tuple a = Tuple { 
+                       getX :: !a
+                     , getY :: !a
+                     , getZ :: !a
+                     , getW :: !a 
+                     }
  deriving (Show)
 
 instance Eq (Tuple Double) where

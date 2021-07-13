@@ -2,7 +2,10 @@ module Lights where
 import Tuples
 import Colors
 import Materials
-data PointLight = PointLight { position :: Tuple Double, intensity :: Tuple Double}
+data PointLight = PointLight { 
+                               position :: !(Tuple Double)
+                               , intensity :: !(Tuple Double)
+                               }
  deriving Show
 
 type EyeVector = Tuple Double

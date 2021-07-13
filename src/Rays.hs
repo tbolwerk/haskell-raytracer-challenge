@@ -8,7 +8,9 @@ type Vector = Tuple Double
 type Point = Tuple Double
 type Time = Double
 
-data Ray = Ray {origin :: Point, direction :: Vector}
+data Ray = Ray {
+                 origin :: !Point
+               , direction :: !Vector}
  deriving Show
 
 
