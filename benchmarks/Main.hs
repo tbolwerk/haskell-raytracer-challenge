@@ -9,17 +9,17 @@ vectorA = vector 3 3 3
 vectorB = vector 2 2 2
 
 matrixA4 :: Matrix Double
-matrixA4 = listToMatrix [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
+matrixA4 = listToMatrix 4 4 [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
 matrixB4 :: Matrix Double
-matrixB4 = listToMatrix [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
+matrixB4 = listToMatrix 4 4 [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
 matrixA3 :: Matrix Double
-matrixA3 = listToMatrix [7,8,9,8,7,6,5,4,3,2]
+matrixA3 = listToMatrix 3 3 [7,8,9,8,7,6,5,4,3,2]
 matrixB3 :: Matrix Double
-matrixB3 = listToMatrix [-2, -1,-2 ,3,3,2,-1,-1,-4]
+matrixB3 = listToMatrix 3 3 [-2, -1,-2 ,3,3,2,-1,-1,-4]
 matrixA2 :: Matrix Double
-matrixA2 = listToMatrix [7,8,9,8,7]
+matrixA2 = listToMatrix 2 2 [7,8,9,8,7]
 matrixB2 :: Matrix Double
-matrixB2 = listToMatrix [-2, -1,-2 ,3]
+matrixB2 = listToMatrix 2 2 [-2, -1,-2 ,3]
 
 main = defaultMain [
   (bgroup "tuples" [
@@ -44,5 +44,8 @@ main = defaultMain [
          , bench "inverse_Matrix3x3" $ (whnf (inverse) (matrixB3))
          , bench "inverse_Matrix2x2" $ (whnf (inverse) (matrixB2)) 
          , bench "matrixVectorMultiply" $ (whnf (matrixVectorMultiply matrixB4) (tupleB))
+         , bench "listToMatrix" $ whnf (listToMatrix 4 4) [1..16]
+         , bench "matrixToList" $ whnf matrixList matrixA4
+         , bench "horizontalIter" $ whnf horizontalIter (getArray matrixA4)
    ])
   ]

@@ -70,3 +70,25 @@ Use stan for static code analysis
 https://github.com/kowainik/stan
 
 > stan report
+
+## Profiling
+
+install profiteur for tree view
+
+https://github.com/jaspervdj/profiteur
+
+cabal configure --enable-profiling
+
+cabal build 
+
+in build directory find Raytracer-exe
+
+execute
+
+./RayTracer.exe +RTS -p -RTS
+
+open in browser: Raytracer-exe.prof.html
+
+## Easy setup
+
+cabal configure --enable-library-profiling --enable-executable-profiling --enable-tests --enable-benchmarks --enable-coverage --enable-library-coverage --enable-profiling

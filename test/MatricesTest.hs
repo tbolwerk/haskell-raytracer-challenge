@@ -3,23 +3,23 @@ import Matrices
 import qualified Test.QuickCheck as T
 import Test.HUnit
 m1 :: Matrix Double
-m1 = (Matrices.listToMatrix [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5])
+m1 = (Matrices.listToMatrix 4 4 [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5])
 m2 :: Matrix Double
-m2 = matrix 4 4 (\(i,j) -> case j of
-                                0 -> fromIntegral i + 1
-                                1 -> fromIntegral i + 5.5
-                                2 -> fromIntegral i + 9
-                                3 -> fromIntegral i + 13.5
-                                _ -> fromIntegral i)
+m2 = matrix 4 4 (\(i,j) -> case i of
+                                0 -> fromIntegral j + 1
+                                1 -> fromIntegral j + 5.5
+                                2 -> fromIntegral j + 9
+                                3 -> fromIntegral j + 13.5
+                                _ -> fromIntegral j)
 
 a4 :: Matrix Double
-a4 = listToMatrix [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
+a4 = listToMatrix 4 4 [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]
 b4 :: Matrix Double
-b4 = listToMatrix [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
+b4 = listToMatrix 4 4 [-2, 1,2 ,3,3,2,1,-1,4,3,6,5,1,2,7,8]
 a3 :: Matrix Double
-a3 = listToMatrix [7,8,9,8,7,6,5,4,3,2]
+a3 = listToMatrix 3 3 [7,8,9,8,7,6,5,4,3,2]
 b3 :: Matrix Double
-b3 = listToMatrix [-2, -1,-2 ,3,3,2,-1,-1,-4]
+b3 = listToMatrix 3 3 [-2, -1,-2 ,3,3,2,-1,-1,-4]
 
 
 

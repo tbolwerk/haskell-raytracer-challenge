@@ -9,7 +9,7 @@ shearing :: (Scalar, Scalar, Scalar, Scalar,Scalar,Scalar) -> (Tuple Scalar) -> 
 shearing (x1,x2,y0,y2,z0,z1) = matrixVectorMultiply (shearingMatrix (x1,x2,y0,y2,z0,z1))
 
 shearingMatrix :: (Scalar, Scalar, Scalar,Scalar,Scalar,Scalar) -> Matrix Scalar
-shearingMatrix (x1,x2,y0,y2,z0,z1) = listToMatrix (concat [
+shearingMatrix (x1,x2,y0,y2,z0,z1) = listToMatrix 4 4 (concat [
     [1,x1,x2,0],
     [y0,1,y2,0],
     [z0,z1,1,0],
@@ -20,7 +20,7 @@ rotateZ :: Radians -> Tuple Scalar -> Tuple Scalar
 rotateZ r = matrixVectorMultiply (rotateZMatrix r)
 
 rotateZMatrix :: Radians -> Matrix Scalar
-rotateZMatrix r = listToMatrix (concat [
+rotateZMatrix r = listToMatrix 4 4 (concat [
      [cos r, negate (sin r), 0, 0],
      [sin r, cos r, 0, 0],
      [0,0,1,0],
@@ -31,7 +31,7 @@ rotateY :: Radians -> Tuple Scalar -> Tuple Scalar
 rotateY r = matrixVectorMultiply (rotateYMatrix r)
 
 rotateYMatrix :: Radians -> Matrix Scalar
-rotateYMatrix r = listToMatrix (concat [
+rotateYMatrix r = listToMatrix 4 4 (concat [
      [cos r, 0, sin r, 0],
      [0, 1, 0, 0],
      [negate (sin r),0, cos r, 0],
@@ -42,7 +42,7 @@ rotateX :: Radians -> Tuple Scalar -> Tuple Scalar
 rotateX r = matrixVectorMultiply (rotateXMatrix r)
 
 rotateXMatrix :: Radians -> Matrix Scalar
-rotateXMatrix r = listToMatrix (concat [
+rotateXMatrix r = listToMatrix 4 4 (concat [
      [1,0,0,0],
      [0, cos r, negate (sin r), 0],
      [0,sin r, cos r, 0],
@@ -56,7 +56,7 @@ translation :: (Scalar, Scalar,Scalar) -> Tuple Scalar -> Tuple Scalar
 translation (x,y,z) = matrixVectorMultiply (translationMatrix (x,y,z))
 
 translationMatrix :: (Scalar, Scalar, Scalar) -> Matrix Scalar
-translationMatrix (x,y,z) = listToMatrix (concat [
+translationMatrix (x,y,z) = listToMatrix 4 4 (concat [
     [1,0,0,x],
     [0,1,0,y],
     [0,0,1,z],
@@ -66,7 +66,7 @@ translationMatrix (x,y,z) = listToMatrix (concat [
 scaling :: (Scalar, Scalar, Scalar) -> Tuple Scalar -> Tuple Scalar
 scaling (x,y,z) = matrixVectorMultiply (scalingMatrix (x,y,z))
 scalingMatrix :: (Scalar, Scalar, Scalar) -> Matrix Scalar
-scalingMatrix (x,y,z) = listToMatrix (concat [
+scalingMatrix (x,y,z) = listToMatrix 4 4 (concat [
     [x,0,0,0],
     [0,y,0,0],
     [0,0,z,0],
