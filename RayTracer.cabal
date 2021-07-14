@@ -66,8 +66,6 @@ executable RayTracer-exe
    -fwrite-ide-info 
    -hiedir=.hie 
    -funbox-strict-fields
-   -fprof-auto
-   -prof
    -fspecialise-aggressively
    -fexpose-all-unfoldings
   build-depends:
