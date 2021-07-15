@@ -37,10 +37,8 @@ setTransform' s f a = sphere (getId s, getPos s, getR s, f a, getMaterial s )
 setTransform :: Sphere -> Matrix Double -> Sphere
 setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s )
 
-hit :: State [Intersection] (Maybe Intersection)
-hit = do
-    xs <- ask
-    return (headOr ((List.sort . filter (\x -> time x >= 0)) xs))
+hit :: [Intersection] -> Maybe Intersection
+hit xs= headOr ((List.sort . filter (\x -> time x >= 0)) xs)
     --  
 
 headOr :: [a] ->  Maybe a
@@ -114,10 +112,10 @@ eval (intersect (s, r1)) []
 [Intersection {time = 5.0, object = Sphere {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}},Intersection {time = 5.0, object = Sphere {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}}]
 -}
 
-intersect :: (Sphere, Ray) -> State [Intersection] (Maybe [Intersection])
+intersect :: (Sphere, Ray) -> State [Intersection] (Maybe Intersection)
 intersect (s,r') = let d = (discriminant a b c) 
                   in if d < 0 then return Nothing
-                              else return (Just (quadraticEquation d))
+                              else return (hit (quadraticEquation d))
  where r = transform ((inverse . getTransform) s) r'
        sphereToRay = origin r - (getPos s)
        a = dot (direction r) (direction r)

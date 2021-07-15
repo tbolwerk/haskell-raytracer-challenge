@@ -14,11 +14,12 @@ https://www.wisfaq.nl/show3archive.asp?id=23989&j=2004
 module Matrices where
 import Data.Array
 import Tuples
-data Matrix a = Matrix { getNRows :: {-# UNPACK #-} !Row
-                       , getNCols :: {-# UNPACK #-} !Column                        
-                       , getArray :: {-# UNPACK #-} !(Array (Row, Column) a)
+data Matrix a = Matrix { getNRows ::  !Row
+                       , getNCols ::  !Column                        
+                       , getArray ::  !(Array (Row, Column) a)
                          }
- deriving Show
+instance Show a => Show (Matrix a) where
+    show m@(Matrix r c _) = "Matrix" ++ show r ++ "x" ++ show c ++ foldMap (\xs -> '\n' : show xs) (matrixList m)
 
 instance Eq (Matrix Double) where
     a == b = predicate
@@ -40,14 +41,14 @@ instance Applicative Matrix where
 celCalc :: (Num a, Fractional a) => Matrix a -> Matrix a -> Int -> Int -> a
 celCalc a b i j = sum (zipWith (*) (getRow a i 0) (getCol b j 0))
 
-getRow :: Matrix a -> Int -> Int -> [a]
-getRow m rowNumber index | bound /= index -1 = (arr ! (index,rowNumber)) : getRow m rowNumber (index+1)
+getCol :: Matrix a -> Int -> Int -> [a]
+getCol m rowNumber index | bound /= index -1 = (arr ! (index,rowNumber)) : getCol m rowNumber (index+1)
                          | otherwise = []
     where arr = getArray m
           (_,(_,bound)) = bounds arr
 
-getCol :: Matrix a -> Int -> Int -> [a]
-getCol m colNumber index | bound /= index -1 = (arr ! (colNumber,index)) : getCol m colNumber (index+1)
+getRow :: Matrix a -> Int -> Int -> [a]
+getRow m colNumber index | bound /= index -1 = (arr ! (colNumber,index)) : getRow m colNumber (index+1)
                          | otherwise = []
     where arr = getArray m
           (_,(_,bound)) = bounds arr
@@ -96,12 +97,10 @@ listToMatrix' xs = matrix bound bound (\(i, j) -> (((chunkOf bound xs) !! j) !! 
  where bound = round (sqrt (fromIntegral (length xs)))
 
 matrixVectorMultiply :: (Num a, Floating a) => Matrix a -> Tuple a -> Tuple a
-matrixVectorMultiply m t =  listToTuple (map (\row -> dot row t) [ listToTuple (getRow m i 0) | i <- [0..getNCols m -1]])
+matrixVectorMultiply m t =  listToTuple (map (\row -> dot row t) [ listToTuple (getRow m i 0) | i <- [0..getNRows m -1]])
 
 listToTuple :: Num a => [a] -> Tuple a
 listToTuple (x:y:z:w:[]) = tuple x y z w
-
-
 
 identityMatrix :: Matrix Double
 identityMatrix = matrix 4 4 (\(i,j) -> if i == j then 1.0 else 0.0)

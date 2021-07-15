@@ -14,7 +14,7 @@ rayOrigin = point 0 0 (-5)
 wallZ = 10
 wallSize = 7
 canvasPixels :: Int
-canvasPixels = 512
+canvasPixels = 300
 pixelSize :: Double
 pixelSize = wallSize / (fromIntegral canvasPixels)
 half = wallSize / 2
@@ -31,11 +31,11 @@ pos x y = point (worldX x) (worldY y) wallZ
 
 light' = pointLight (point (-10) (10) (-10), color 1 1 1 1)
 
-run'' :: Spheres.Sphere -> State [Spheres.Intersection] [Pixel]
-run'' shape = foldM (\xs i -> foldM (\ys j -> do
+render :: Spheres.Sphere -> State [Spheres.Intersection] [Pixel]
+render shape = foldM (\xs i -> foldM (\ys j -> do
     hit' <- (Spheres.intersect (shape, ray' i j))
     case hit' of
-         Just (hit'':_) -> let   point'' = Rays.position ((ray' i j), (Spheres.time) (hit''))  
+         Just hit'' -> let       point'' = Rays.position ((ray' i j), (Spheres.time) (hit''))  
                                  normal'' = Spheres.normalsAt (Spheres.object hit'', point'')
                                  eye'' = negate (direction (ray' i j)) 
                                  color' = lightning ((Spheres.getMaterial . Spheres.object) hit'', light', point'', eye'', normal'')
@@ -55,4 +55,4 @@ main = mapConcurrently execute [(shape, "chapter6.ppm"), (mShape, "chapter6_1.pp
 
 
 execute (shape, name)= (createPPM (eval (foldM (\c p -> return ((uncurry (writePixel c) (getPosition p)) (getColor p))) (canvas canvasPixels canvasPixels) (generateCanvas shape)) []) name)
- where generateCanvas s =  (eval (run'' s) [])
+ where generateCanvas s =  (eval (render s) [])

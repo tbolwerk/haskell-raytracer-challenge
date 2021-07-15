@@ -15,7 +15,7 @@ rayOrigin = point 0 0 (-5)
 wallZ = 10
 wallSize = 7
 canvasPixels :: Int
-canvasPixels = 512
+canvasPixels = 100
 pixelSize :: Double
 pixelSize = wallSize / (fromIntegral canvasPixels)
 half = wallSize / 2
