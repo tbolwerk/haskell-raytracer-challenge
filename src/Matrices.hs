@@ -155,6 +155,5 @@ matrixScalarMultiply m s = Matrix (getNRows m) (getNCols m) (accum (\e a -> a e)
 * note reverse order row column switched index on purpose.
 -}
 inverse :: (Num a, Show a, Fractional a) => Matrix a -> Matrix a
-inverse m = Matrix w h (array ((0,0),(w-1,h-1)) [((col,row), ((cofactor m row col) / determinant m)) | col <- [0..w-1], row <- [0..h-1]])
- where h =  (getNRows m)
-       w = (getNCols m)
+inverse m = transpose $ matrix (getNRows m) (getNCols m) (\(row, col) -> cofactor m row col / determinant m)
+
