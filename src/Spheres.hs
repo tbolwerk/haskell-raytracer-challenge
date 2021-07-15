@@ -54,10 +54,11 @@ There are 4 vectors calculated after an intersection:
 -}
 
 normalsAt :: (Sphere, Tuple Double) -> Tuple Double
-normalsAt (s,p) = vector (getX wordNormal) (getY wordNormal) (getZ wordNormal)
+normalsAt (s,p) = normalize worldNormal
     where objectPoint = matrixVectorMultiply (inverse (getTransform s)) p
-          objectNormal = objectPoint - (getPos s)
-          wordNormal = matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
+          objectNormal = objectPoint - getPos s --TODO: World point
+          Tuple x y z _ = matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
+          worldNormal = vector x y z
 
 
 

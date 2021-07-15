@@ -41,17 +41,23 @@ instance Applicative Matrix where
 celCalc :: (Num a, Fractional a) => Matrix a -> Matrix a -> Int -> Int -> a
 celCalc a b i j = sum (zipWith (*) (getRow a i 0) (getCol b j 0))
 
+-- getCol :: Matrix a -> Int -> Int -> [a]
+-- getCol m currentIndex index | bound /= index -1 = (arr ! (index,currentIndex)) : getCol m currentIndex (index+1)
 getCol :: Matrix a -> Int -> Int -> [a]
-getCol m rowNumber index | bound /= index -1 = (arr ! (index,rowNumber)) : getCol m rowNumber (index+1)
+getCol m colNumber index | bound /= index -1 = (arr ! (index, colNumber)) : getCol m colNumber (index+1)
                          | otherwise = []
     where arr = getArray m
           (_,(_,bound)) = bounds arr
 
+-- getRow :: Matrix a -> Int -> Int -> [a]
+-- getRow m currentIndex index | bound /= index -1 = (arr ! (currentIndex,index)) : getRow m currentIndex (index+1)
 getRow :: Matrix a -> Int -> Int -> [a]
-getRow m colNumber index | bound /= index -1 = (arr ! (colNumber,index)) : getRow m colNumber (index+1)
+getRow m rowNumber index | bound /= index -1 = (arr ! (index, rowNumber)) : getRow m rowNumber (index+1)
                          | otherwise = []
     where arr = getArray m
-          (_,(_,bound)) = bounds arr
+          (_,(bound,_)) = bounds arr
+
+
 
 type Column = Int
 type Row = Int
@@ -141,9 +147,14 @@ minor m i j = determinant (submatrix m i j)
 cofactor :: (Num a, Show a, Fractional a)=> Matrix a -> Row -> Column -> a
 cofactor m i j | even (i + j) = minor m i j
                | otherwise = negate (minor m i j) 
-
+ 
 matrixScalarMultiply :: (Num a,Fractional a) => Matrix a -> a -> Matrix a
 matrixScalarMultiply m s = Matrix (getNRows m) (getNCols m) (accum (\e a -> a e) (getArray m) [((i,j), (*s)) | j <- [0..getNCols m -1], i <- [0..getNRows m -1]])
 
+{-
+* note reverse order row column switched index on purpose.
+-}
 inverse :: (Num a, Show a, Fractional a) => Matrix a -> Matrix a
-inverse m = matrix (getNRows m) (getNCols m) (\(i,j) -> (cofactor m j i) / determinant m)
+inverse m = Matrix w h (array ((0,0),(w-1,h-1)) [((col,row), ((cofactor m row col) / determinant m)) | col <- [0..w-1], row <- [0..h-1]])
+ where h =  (getNRows m)
+       w = (getNCols m)
