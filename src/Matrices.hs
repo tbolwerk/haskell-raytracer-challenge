@@ -29,7 +29,7 @@ instance Eq (Matrix Double) where
                    where compare a b = abs (a - b) < Tuples.epsilon
 
 instance (Num a, Fractional a) => Num (Matrix a) where
-   a * b = listToMatrix (getNRows a) (getNCols a) [ celCalc a b i j | j <- [0..getNCols a-1], i <- [0..getNRows a-1]]
+   a * b = listToMatrix (getNRows a) (getNCols a) [ celCalc a b j i | j <- [0..getNCols a-1], i <- [0..getNRows a-1]]
 
 instance Functor Matrix where
     fmap f m = listToMatrix (getNRows m) (getNCols m) (map f (elems $ getArray m))
@@ -52,7 +52,7 @@ getCol m colNumber index | bound /= index -1 = (arr ! (index, colNumber)) : getC
 -- getRow :: Matrix a -> Int -> Int -> [a]
 -- getRow m currentIndex index | bound /= index -1 = (arr ! (currentIndex,index)) : getRow m currentIndex (index+1)
 getRow :: Matrix a -> Int -> Int -> [a]
-getRow m rowNumber index | bound /= index -1 = (arr ! (index, rowNumber)) : getRow m rowNumber (index+1)
+getRow m rowNumber index | bound /= index -1 = (arr ! (rowNumber, index)) : getRow m rowNumber (index+1)
                          | otherwise = []
     where arr = getArray m
           (_,(bound,_)) = bounds arr

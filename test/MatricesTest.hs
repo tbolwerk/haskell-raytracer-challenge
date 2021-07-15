@@ -41,6 +41,8 @@ testCase46 = assertEqual "given matrix M2[1,2] = 7.5" 7.5 (get m2 (1,2))
 testCase47 = assertEqual "given matrix M2[2,2] = 11" 11 (get m2 (2,2))
 testCase48 = assertEqual "given matrix M2[3,0] = 13.5" 13.5 (get m2 (3,0))
 testCase49 = assertEqual "given matrix M2[3,2] = 15.5" 15.5 (get m2 (3,2))
-testCase50 = assertBool "(a4 * b4) * (inverse b4) = a4'" (a4 == a4')
+testCase50 = assertEqual "(a4 * b4) * (inverse b4) = a4'" a4 a4'
   where  c4 = a4 * b4
          a4' = c4 * (inverse b4)
+
+testCase52 = assertEqual "Matrix4x4 A" ((Matrices.listToMatrix 4 4 ([0.21805,0.45113,0.24060,-0.04511,-0.80827,-1.45677,-0.44361,0.52068,-0.07895,-0.22368,-0.05263,0.19737,-0.52256,-0.81391,-0.30075,0.30639] :: [Double]))) (inverse $ Matrices.listToMatrix 4 4 [-5,2,6,-8,1,-5,1,8,7,7,-6,-7,1,-3,7,4])
