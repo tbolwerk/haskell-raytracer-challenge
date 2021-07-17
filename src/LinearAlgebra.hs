@@ -1,7 +1,5 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DatatypeContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
-module Main where
+module LinearAlgebra where
 import qualified Data.List as L
 
 
@@ -44,7 +42,6 @@ tuple3 (x,y,z) = Tuple3 (x,y,z)
 tuple2 :: (Double,Double) -> Tuple Double
 tuple2 (x,y) = Tuple2 (x,y)
 
- 
 vector :: VectorInput -> Tuple Double
 vector (x,y,z) = Tuple (x, y, z, 0)
 
@@ -52,9 +49,9 @@ point :: PointInput -> Tuple Double
 point (x,y,z) = Tuple (x, y, z, 1)
 
 instance VectorMath (Tuple Double) where
- magnitude (Tuple (x, y, z, w)) = sqrt ((x^2) + (y^2) + (z^2) + (w^2))
- normalize t@(Tuple (x, y, z, w)) = tuple ((x / magnitude t), (y / magnitude t), (z / magnitude t), (w / magnitude t))
- dot (Tuple (x1, y1, z1, w1)) (Tuple (x2, y2, z2, w2)) = (x1 * x2) + (y1 * y2) + (z1 * z2) + (w1 * w2)
+ magnitude tuple = sqrt (foldr (\x r -> (x^2) + r) 0 tuple) 
+ normalize t = fmap (\a -> a / magnitude t) t
+ dot a b = sum (a * b)
  cross (Tuple (x1, y1, z1, w1)) (Tuple (x2, y2, z2, w2)) = vector (((y1 * z2) - (z1 * y2)), ((z1*x2) - (x1 *z2)), ((x1*y2) - (y1*x2)))
 
 instance Eq (Tuple Double) where
@@ -98,6 +95,8 @@ instance Matrix4Math (Matrix Double) where
  matrix *|>> s = matrix * pure s
  Matrix4 tuples *|> tuple = listToTuple (fmap (\x -> dot x tuple) tuples)
  inverse m@(Matrix4 _) = matrix (map listToTuple (chunkOf 4 ([(cofactor m i j / determinant m) | j <- [0..3], i <- [0..3]])))
+ inverse m@(Matrix3 _) = matrix (map listToTuple (chunkOf 3 ([(cofactor m i j / determinant m) | j <- [0..2], i <- [0..2]])))
+ inverse m@(Matrix2 _) = matrix (map listToTuple (chunkOf 2 ([(cofactor m i j / determinant m) | j <- [0..1], i <- [0..1]])))
  determinant (Matrix2 array) = (a * d) - (b * c)
     where Tuple2 (a,_) = array !! 0
           Tuple2 (_,b) = array !! 0
@@ -108,17 +107,17 @@ instance Matrix4Math (Matrix Double) where
           dfgi = cofactor m 0 1
           degh = cofactor m 0 2
           Tuple3 (a,_,_) = array !! 0
-          Tuple3 (_,b,_) = array !! 1
-          Tuple3 (_,_,c) = array !! 2
+          Tuple3 (_,b,_) = array !! 0
+          Tuple3 (_,_,c) = array !! 0
  determinant m@(Matrix4 array) = a * a0 + b * a1 + c * a2 + d * a3
    where a0 = cofactor m 0 0
          a1 = cofactor m 0 1
          a2 = cofactor m 0 2
          a3 = cofactor m 0 3
          Tuple (a,_,_,_) = array !! 0
-         Tuple (_,b,_,_) = array !! 1
-         Tuple (_,_,c,_) = array !! 2
-         Tuple (_,_,_,d) = array !! 3
+         Tuple (_,b,_,_) = array !! 0
+         Tuple (_,_,c,_) = array !! 0
+         Tuple (_,_,_,d) = array !! 0
  cofactor m i j | even (i + j) = minor m i j
                 | otherwise = negate (minor m i j) 
  minor m i j = determinant (submatrix m i j)
@@ -129,7 +128,7 @@ instance Matrix4Math (Matrix Double) where
            xs'' = take j xs' ++ drop (j + 1) xs'
 
 data Matrix a =  Matrix4 { 
-                          row :: [Tuple a]
+                         row :: [Tuple a]
                          }
                | Matrix3 {
                          row :: [Tuple a]
@@ -137,17 +136,25 @@ data Matrix a =  Matrix4 {
                | Matrix2 {
                          row :: [Tuple a]
                          }
-instance Num a => Num (Matrix a) where
- a * b = fmap (*) a <*> b
+
+
+instance Eq (Matrix Double) where
+    a == b = all (==True) $ zipWith (==) (row a) (row b)
+
+instance Num (Matrix Double) where
+ a * b = matrix (map (\r -> (*|>) (transpose b) r) (row a))
+
 
 instance Functor Matrix where
  fmap f (Matrix4 xs) = Matrix4 (fmap (fmap f) xs)
+ fmap f (Matrix3 xs) = Matrix3 (fmap (fmap f) xs)
+ fmap f (Matrix2 xs) = Matrix2 (fmap (fmap f) xs)
 
 instance Applicative Matrix where
  pure a = Matrix4 (replicate 4 (pure a))
- (Matrix4 fs) <*> (Matrix4 as) = Matrix4 (zipWith (\(Tuple (f1, f2, f3, f4)) (Tuple (a, b, c, d)) -> Tuple ((f1 a), (f2 b), (f3 c), (f4 d))) fs as)
- (Matrix3 fs) <*> (Matrix3 as) = Matrix3 (zipWith (\(Tuple3 (f1, f2, f3)) (Tuple3 (a, b, c)) -> Tuple3 ((f1 a), (f2 b), (f3 c))) fs as)
- (Matrix2 fs) <*> (Matrix2 as) = Matrix2 (zipWith (\(Tuple2 (f1, f2)) (Tuple2 (a, b)) -> Tuple2 ((f1 a), (f2 b))) fs as)
+ (Matrix4 fs) <*> (Matrix4 as) = Matrix4 (zipWith (<*>) fs as)
+ (Matrix3 fs) <*> (Matrix3 as) = Matrix3 (zipWith (<*>) fs as)
+ (Matrix2 fs) <*> (Matrix2 as) = Matrix2 (zipWith (<*>) fs as)
 instance Show a => Show (Matrix a) where
  show m = "Matrix" ++ d ++"x"++d ++ foldr (\a b ->'\n': show a++ b) "" (row m)
   where d = ((show . length . row) m)
@@ -177,4 +184,15 @@ chunkOf n xs
  | n > 0 = (take n xs) : (chunkOf n (drop n xs))
  | otherwise = error "Only positive numbers allowed"
 
-main = putStrLn "Hello, World"
+getX,getY,getZ,getW :: Tuple a -> a
+getX (Tuple (x,_,_,_)) = x
+getY (Tuple (_,y,_,_)) = y
+getZ (Tuple (_,_,z,_)) = z
+getW (Tuple (_,_,_,w)) = w
+
+get :: Matrix a -> (Int, Int) -> a
+get m (i,j) = let tupl = (row m !! i) in case j of
+    0 -> getX tupl
+    1 -> getY tupl
+    2 -> getZ tupl
+    3 -> getW tupl

@@ -1,7 +1,8 @@
 import TuplesTest
 import CanvasTest
 import ColorsTest
-import MatricesTest
+-- import MatricesTest
+import LinearAlgebraTest
 import StateTest
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit

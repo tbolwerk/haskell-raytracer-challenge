@@ -39,6 +39,7 @@ library
       , State
       , Lights
       , Materials
+      , LinearAlgebra
   other-modules:
       Paths_RayTracer
   hs-source-dirs:
