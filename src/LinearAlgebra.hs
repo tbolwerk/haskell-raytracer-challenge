@@ -91,9 +91,11 @@ class Matrix4Math a where
  infixl 7 *|>
  infixl 7 *|>>
 
+
+
 instance Matrix4Math (Matrix Double) where
  matrix *|>> s = matrix * pure s
- Matrix4 tuples *|> tuple = listToTuple (fmap (\x -> dot x tuple) tuples)
+ matrix *|> tuple = listToTuple (map (dot tuple) (row matrix))
  inverse m@(Matrix4 _) = matrix (map listToTuple (chunkOf 4 ([(cofactor m i j / determinant m) | j <- [0..3], i <- [0..3]])))
  inverse m@(Matrix3 _) = matrix (map listToTuple (chunkOf 3 ([(cofactor m i j / determinant m) | j <- [0..2], i <- [0..2]])))
  inverse m@(Matrix2 _) = matrix (map listToTuple (chunkOf 2 ([(cofactor m i j / determinant m) | j <- [0..1], i <- [0..1]])))
