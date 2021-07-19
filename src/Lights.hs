@@ -1,9 +1,9 @@
 module Lights where
-import Tuples
-import Colors
-import Materials
-data PointLight = PointLight { 
-                               position :: !(Tuple Double)
+import           Colors
+import           Materials
+import           Tuples
+data PointLight = PointLight {
+                               position    :: !(Tuple Double)
                                , intensity :: !(Tuple Double)
                                }
  deriving Show
@@ -37,4 +37,4 @@ lightning (m, light, p, ev, nv) = if lightDotNormal < 0
                                                     else intensity light * pure (specular m) * pure (reflectDotEye ** shininess m)
 
 
-pl = pointLight (point 0 0 10, Colors.color 1 1 1 1)
+pl = pointLight (point (0, 0, 10), Colors.color 1 1 1 1)

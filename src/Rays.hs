@@ -1,15 +1,15 @@
 module Rays where
 
-import Tuples
-import Matrices
-import Transformations
+import           Matrices
+import           Transformations
+import           Tuples
 
 type Vector = Tuple Double
 type Point = Tuple Double
 type Time = Double
 
 data Ray = Ray {
-                 origin :: !Point
+                 origin    :: !Point
                , direction :: !Vector}
  deriving Show
 
@@ -30,5 +30,5 @@ transform' scaling (2,3,4) r
 transform' :: (a -> Tuple Scalar -> Tuple Scalar) -> a -> Ray -> Ray
 transform' f a r = ray ((f a (origin r)), (f a (direction r)))
 
-r = ray ((point 1 2 3), (vector 0 1 0))
+r = ray ((point (1, 2, 3)), (vector (0, 1, 0)))
 m = scaling (2,3,4)

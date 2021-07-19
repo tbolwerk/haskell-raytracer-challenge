@@ -3,10 +3,10 @@ import Criterion.Main
 import Tuples
 import Matrices
 
-tupleA = tuple 3 3 3 3
-tupleB = tuple 2 2 2 2
-vectorA = vector 3 3 3
-vectorB = vector 2 2 2
+tupleA = tuple (3, 3, 3, 3)
+tupleB = tuple (2, 2, 2, 2)
+vectorA = vector (3, 3, 3)
+vectorB = vector (2, 2, 2)
 
 matrixA4 :: Matrix Double
 matrixA4 = listToMatrix 4 4 [1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2]

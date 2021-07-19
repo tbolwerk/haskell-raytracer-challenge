@@ -1,7 +1,7 @@
 module MatricesTest where
-import Matrices
+import           Matrices
+import           Test.HUnit
 import qualified Test.QuickCheck as T
-import Test.HUnit
 m1 :: Matrix Double
 m1 = (Matrices.listToMatrix 4 4 [1,2,3,4,5.5,6.5,7.5,8.5,9,10,11,12,13.5,14.5,15.5,16.5])
 m2 :: Matrix Double

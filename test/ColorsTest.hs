@@ -1,7 +1,7 @@
 module ColorsTest where
-import Colors
+import           Colors
+import           Test.HUnit
 import qualified Test.QuickCheck as T
-import Test.HUnit
 testCase25 = assertEqual "c.red = -0.5" (-0.5) (getRed (color (-0.5) 0.4 1.7 1))
 testCase26 = assertEqual "c.green = 0.4" 0.4 (getGreen (color (-0.5) 0.4 1.7 1))
 testCase27 = assertEqual "c.blue = 1.7" 1.7 (getBlue (color (-0.5) 0.4 1.7 1))

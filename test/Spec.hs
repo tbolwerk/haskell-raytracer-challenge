@@ -1,11 +1,13 @@
-import TuplesTest
-import CanvasTest
-import ColorsTest
-import MatricesTest
-import StateTest
-import Test.Framework (defaultMain, testGroup)
-import Test.Framework.Providers.HUnit
-import Test.Framework.Providers.QuickCheck2 (testProperty)
+import           CanvasTest
+import           ColorsTest
+import           MatricesTest
+import           StateTest
+import           Test.Framework                       (defaultMain, testGroup)
+import           Test.Framework.Providers.HUnit
+import           Test.Framework.Providers.QuickCheck2 (testProperty)
+import           TuplesTest
+import           LinearAlgebraTest
+
 
 main = defaultMain tests
 
@@ -82,6 +84,24 @@ tests = [
             , testCase "Construction and inspecting a 4x4 matrix M2[3,2] = 15.5" testCase49
             , testCase "Inversion of matrix a' == b * c' = a" testCase50
             , testCase "Inversion of matrix a" testCase52
+        ],
+        testGroup "LinearAlgebra" [
+           testCase "Construction and inspection of a 4x4 get (0,0) = 1"  testCase53
+          , testCase "Construction and inspection of a 4x4 get (0,3) = 4" testCase54
+          , testCase "Construction and inspection of a 4x4 get (1,0) = 5.5" testCase55
+          , testCase "Construction and inspection of a 4x4 get (1,2) = 7.5" testCase56
+          , testCase "Construction and inspection of a 4x4 get (2,2) = 11" testCase57
+          , testCase "Construction and inspection of a 4x4 get (3,0) = 13.5" testCase58
+          , testCase "Construction and inspection of a 4x4 get (3,2) = 15.5" testCase59
+          , testCase "Construction and inspection of a 4x4 get m2 (0,0) = 1" testCase60
+          , testCase "Construction and inspection of a 4x4 get m2 (0,3) = 4" testCase61
+          , testCase "Construction and inspection of a 4x4 get m2 (1,0) = 5.5" testCase62
+          , testCase "Construction and inspection of a 4x4 get m2 (1,2) = 7.5" testCase63
+          , testCase "Construction and inspection of a 4x4 get m2 (2,2) = 11" testCase64
+          , testCase "Construction and inspection of a 4x4 get m2 (3,0) = 13.5" testCase65
+          , testCase "Construction and inspection of a 4x4 get (3,2) = 15.5" testCase66
+          , testCase "Inversion of matrix a'' == b * c' = a" testCase67
+          , testCase "Inversion of matrix a'" testCase68
         ],
         testGroup "State" [
           testCase "State ask" testCase51

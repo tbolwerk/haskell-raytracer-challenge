@@ -1,9 +1,9 @@
 module CanvasTest where
-import Canvas
-import Colors
-import Data.Array
+import           Canvas
+import           Colors
+import           Data.Array
+import           Test.HUnit
 import qualified Test.QuickCheck as T
-import Test.HUnit
 type CanvasInput = (Int, Int)
 
 testCase32 = assertBool "every pixel of canvas is black" (all (\x -> Canvas.getColor x == (color 0 0 0 1)) (elems (Canvas.pixels (Canvas.canvas 10 20))))
@@ -16,7 +16,7 @@ testCase35 = assertBool "pixel at (2,3) = red" (let c = Canvas.canvas 10 20
 
 
 prop_Canvas_Create :: CanvasInput -> Bool
-prop_Canvas_Create (width, height) = ((getWidth c == width -1) && 
+prop_Canvas_Create (width, height) = ((getWidth c == width -1) &&
                                      (getHeight c == height -1) &&
                                      predicate)
   where c = canvas width height
@@ -31,14 +31,14 @@ prop_Canvas_PixelAt (width, height) = (width <= 0 || height <= 0) || isBlack (ge
 prop_Canvas_WritePixel :: CanvasInput -> Bool
 prop_Canvas_WritePixel (width, height) = (width <= 0 || height <= 0) || (black /= actualColor) && (actualColor == red)
     where c = canvas width height
-          nc = writePixel c 0 0 red 
+          nc = writePixel c 0 0 red
           red = color 1 0 0 0
           black = color 0 0 0 0
           actualColor = getColor (pixelAt nc 0 0)
 
 prop_Canvas_PPM_EndsWithNewLine :: CanvasInput -> Bool
 prop_Canvas_PPM_EndsWithNewLine (width, height) = (width <= 0 || height <= 0) || predicate
- where c = canvas width height 
+ where c = canvas width height
        predicate = last (canvasToString c) == '\n'
 
 

@@ -1,20 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE StrictData #-}
+{-# LANGUAGE Strict            #-}
+{-# LANGUAGE StrictData        #-}
 module Canvas where
-import Colors
-import Tuples
-import Control.Monad
-import Data.Array
-import System.IO
-import State
+import           Colors
+import           Control.Monad
+import           Data.Array
+import           State
+import           System.IO
+import           Tuples
 type Position = (Int, Int)
 
 pixel :: Int -> Int -> Color -> Pixel
 pixel x y col = Pixel (x,y) col
 
-data Pixel = Pixel { 
-                     getPosition :: !Position 
-                   , getColor :: !Color 
+data Pixel = Pixel {
+                     getPosition :: !Position
+                   , getColor    :: !Color
                    }
  deriving Show
 
@@ -23,14 +24,14 @@ data Pixel = Pixel {
 --- s = Pixels
 --- a = Canvas
 
-data Canvas a = Canvas { 
-                          getWidth :: !a
+data Canvas a = Canvas {
+                          getWidth  :: !a
                         , getHeight :: !a
-                        , pixels :: !(Array (Int,Int) Pixel)
-                        } 
+                        , pixels    :: !(Array (Int,Int) Pixel)
+                        }
  deriving Show
 
-canvas :: Int -> Int -> Canvas Int 
+canvas :: Int -> Int -> Canvas Int
 canvas width height = Canvas w h (pixelArray ((0,0), (w,h)) [ pixel x y (color 0 0 0 1) | x <- [0..w], y <- [0..h] ])
  where w = width - 1
        h = height - 1
@@ -49,7 +50,7 @@ writePixel' p= do
   return (writePixel c' ((fst . getPosition) p) ((snd . getPosition) p) (getColor p))
 
 writePixel :: Canvas Int -> Int -> Int -> Color -> Canvas Int
-writePixel c x y col = if isInBounds ((0,0),(getWidth c,getHeight c)) (x,y) 
+writePixel c x y col = if isInBounds ((0,0),(getWidth c,getHeight c)) (x,y)
    then Canvas (getWidth c) (getHeight c) ((pixels c) // [((x,y), pixel x y col)])
    else c
 
@@ -60,7 +61,7 @@ type Bounds = ((Int, Int), (Int, Int))
 
 isInBounds :: Bounds -> (Int, Int) -> Bool
 isInBounds bounds (x,y) = x >= lx && y >= ly && x <= hx && y <= hy
-    where ((lx, ly), (hx, hy)) = bounds 
+    where ((lx, ly), (hx, hy)) = bounds
 
 writePixels :: Canvas Int -> [(Int, Int)] -> Color -> Canvas Int
 writePixels c cords col = Canvas (getWidth c) (getHeight c) ((pixels c) // (map (\cord@(x,y) -> (cord, pixel x y col))) (filterOutOfBound ((0,0), (getWidth c, getHeight c)) cords))
@@ -74,11 +75,11 @@ writePixels' :: Canvas Int -> Array (Int, Int) Pixel -> Canvas Int
 writePixels' c ps = Canvas (getWidth c) (getHeight c) ((pixels c) // (filterOutOfBound' ps))
 
 pixelAtCord :: Array (Int, Int) Pixel -> (Int , Int) -> Pixel
-pixelAtCord pixels (x,y) = (!) pixels (x,y) 
+pixelAtCord pixels (x,y) = (!) pixels (x,y)
 
 
 pixelAt :: Canvas Int -> Int -> Int -> Pixel
-pixelAt c x y  = (!) (pixels c) (x,y) 
+pixelAt c x y  = (!) (pixels c) (x,y)
 
 pixelArray :: ((Int, Int), (Int, Int)) -> [Pixel] -> Array (Int,Int) Pixel
 pixelArray bounds pixels = array bounds [(getPosition p, p) | p <- pixels, isInBounds bounds (getPosition p)]
@@ -118,8 +119,8 @@ space = " "
 
 replace :: String -> String
 replace ('"':'"':xs) = '\n' : replace xs
-replace (x:xs) = x : replace xs
-replace "" = ""
+replace (x:xs)       = x : replace xs
+replace ""           = ""
 
 format :: String -> String
 format input = filter (/= '"') doubleQuoted

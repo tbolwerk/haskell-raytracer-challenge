@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
-
+{-# LANGUAGE Strict            #-}
+{-# LANGUAGE StrictData        #-}
 
 {-
 Part of chapter 3 of the raytracer challenge.
@@ -12,18 +13,18 @@ https://www.wisfaq.nl/show3archive.asp?id=23989&j=2004
 -}
 
 module Matrices where
-import Data.Array
-import Tuples
+import           Data.Array
+import           Tuples
 data Matrix a = Matrix { getNRows ::  !Row
-                       , getNCols ::  !Column                        
+                       , getNCols ::  !Column
                        , getArray ::  !(Array (Row, Column) a)
-                         }
+                        }
 instance Show a => Show (Matrix a) where
     show m@(Matrix r c _) = "Matrix" ++ show r ++ "x" ++ show c ++ foldMap (\xs -> '\n' : show xs) (matrixList m)
 
 instance Eq (Matrix Double) where
     a == b = predicate
-        where predicate = (getNCols a) == (getNCols b) && 
+        where predicate = (getNCols a) == (getNCols b) &&
                           (getNRows a) == (getNRows b) &&
                           (all (==True) (zipWith compare (elems (getArray a)) (elems (getArray b))))
                    where compare a b = abs (a - b) < Tuples.epsilon
@@ -62,7 +63,7 @@ getRow m rowNumber index | bound /= index -1 = (arr ! (rowNumber, index)) : getR
 type Column = Int
 type Row = Int
 
-{- 
+{-
 i increments row
 j increments column
 -}
@@ -99,19 +100,19 @@ listToMatrix r c xs = Matrix r c (listArray ((0,0),(br,bc)) xs)
        bc = r -1
 
 listToMatrix' :: [a] -> Matrix a
-listToMatrix' xs = matrix bound bound (\(i, j) -> (((chunkOf bound xs) !! j) !! i)) 
+listToMatrix' xs = matrix bound bound (\(i, j) -> (((chunkOf bound xs) !! j) !! i))
  where bound = round (sqrt (fromIntegral (length xs)))
 
 matrixVectorMultiply :: (Num a, Floating a) => Matrix a -> Tuple a -> Tuple a
 matrixVectorMultiply m t =  listToTuple (map (\row -> dot row t) [ listToTuple (getRow m i 0) | i <- [0..getNRows m -1]])
 
 listToTuple :: Num a => [a] -> Tuple a
-listToTuple (x:y:z:w:[]) = tuple x y z w
+listToTuple (x:y:z:w:[]) = tuple (x, y, z,w)
 
 identityMatrix :: Matrix Double
 identityMatrix = matrix 4 4 (\(i,j) -> if i == j then 1.0 else 0.0)
 
-transpose :: Matrix a -> Matrix a 
+transpose :: Matrix a -> Matrix a
 transpose m = matrix (getNRows m) (getNCols m) (\(i,j) -> getArray m ! (j,i))
 
 determinant :: (Show a, Num a, Fractional a) => Matrix a -> a
@@ -120,7 +121,7 @@ determinant (Matrix 2 2 array) = (a * d) - (b * c)
           b = array ! (0,1)
           c = array ! (1,0)
           d = array ! (1,1)
-determinant m@(Matrix 3 3 array) = a * efhi + b * dfgi + c * degh 
+determinant m@(Matrix 3 3 array) = a * efhi + b * dfgi + c * degh
     where efhi = cofactor m 0 0
           dfgi = cofactor m 0 1
           degh = cofactor m 0 2
@@ -146,8 +147,8 @@ minor m i j = determinant (submatrix m i j)
 
 cofactor :: (Num a, Show a, Fractional a)=> Matrix a -> Row -> Column -> a
 cofactor m i j | even (i + j) = minor m i j
-               | otherwise = negate (minor m i j) 
- 
+               | otherwise = negate (minor m i j)
+
 matrixScalarMultiply :: (Num a,Fractional a) => Matrix a -> a -> Matrix a
 matrixScalarMultiply m s = Matrix (getNRows m) (getNCols m) (accum (\e a -> a e) (getArray m) [((i,j), (*s)) | j <- [0..getNCols m -1], i <- [0..getNRows m -1]])
 

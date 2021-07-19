@@ -5,7 +5,7 @@ exec m s = snd (getState m s)
 eval :: State s a -> s -> a
 eval m s = fst (getState m s)
 
-ask :: State a a 
+ask :: State a a
 ask =  State $ \s -> (s,s)
 
 put :: Monoid s => s -> State s ()
@@ -23,5 +23,5 @@ instance Applicative (State s) where
                                                    in (f a, s2)
 instance Monad (State a) where
     return = pure
-    ma >>= f = State $ \s0  -> let (a ,s1) = getState ma s0 
+    ma >>= f = State $ \s0  -> let (a ,s1) = getState ma s0
                                 in getState (f a) s1

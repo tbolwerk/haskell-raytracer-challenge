@@ -1,21 +1,21 @@
 {-# LANGUAGE StrictData #-}
 module Spheres where
-import Rays
-import Tuples
-import Matrices
-import qualified Data.List as List
-import Transformations
-import Materials
-import State
-data Sphere = Sphere {getId :: !Int, 
-                      getPos :: !(Tuple Double), 
-                      getR :: !Double, 
+import qualified Data.List       as List
+import           Materials
+import           Matrices
+import           Rays
+import           State
+import           Transformations
+import           Tuples
+data Sphere = Sphere {getId        :: !Int,
+                      getPos       :: !(Tuple Double),
+                      getR         :: !Double,
                       getTransform :: !(Matrix Double),
-                      getMaterial :: !Material}
+                      getMaterial  :: !Material}
  deriving Show
 
 data Intersection = Intersection {
-                                   time :: !Time
+                                   time   :: !Time
                                  , object :: !Sphere
                                  }
  deriving Show
@@ -26,10 +26,10 @@ instance Ord Intersection where
     (<=) a b = time a <= time b && time a >= 0
 
 sphere :: (Int, Tuple Double, Double, Matrix Double, Material) -> Sphere
-sphere (id, pos, r, t, m) = Sphere id pos r t m 
+sphere (id, pos, r, t, m) = Sphere id pos r t m
 
 defaultSphere :: Int -> Sphere
-defaultSphere id = sphere (id, (point 0 0 0), 1, identityMatrix, defaultMaterial)
+defaultSphere id = sphere (id, (point (0, 0, 0)), 1, identityMatrix, defaultMaterial)
 
 setTransform' :: Sphere -> (a -> Matrix Double) -> a -> Sphere
 setTransform' s f a = sphere (getId s, getPos s, getR s, f a, getMaterial s )
@@ -39,10 +39,10 @@ setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s )
 
 hit :: [Intersection] -> Maybe Intersection
 hit xs= headOr ((List.sort . filter (\x -> time x >= 0)) xs)
-    --  
+    --
 
 headOr :: [a] ->  Maybe a
-headOr [] = Nothing
+headOr []    = Nothing
 headOr (x:_) = Just x
 
 {-
@@ -58,7 +58,7 @@ normalsAt (s,p) = normalize worldNormal
     where objectPoint = matrixVectorMultiply (inverse (getTransform s)) p
           objectNormal = objectPoint - getPos s --TODO: World point
           Tuple x y z _ = matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
-          worldNormal = vector x y z
+          worldNormal = vector (x, y, z)
 
 
 
@@ -71,12 +71,12 @@ it5 = intersection (-2.5, s)
 it6 = intersection (-3.5, s)
 
 intersection :: (Time, Sphere) -> Intersection
-intersection (t, s) = Intersection t s 
+intersection (t, s) = Intersection t s
 
 intersections :: Intersection -> State [Intersection] [Intersection]
-intersections is = do 
+intersections is = do
     put [is]
-    ask 
+    ask
 
 
 {-
@@ -94,7 +94,7 @@ main = do
     put [it5]
     put [it6]
     ask
-        
+
 
 {-
 abc formula
@@ -114,7 +114,7 @@ eval (intersect (s, r1)) []
 -}
 
 intersect :: (Sphere, Ray) -> State [Intersection] (Maybe Intersection)
-intersect (s,r') = let d = (discriminant a b c) 
+intersect (s,r') = let d = (discriminant a b c)
                   in if d < 0 then return Nothing
                               else return (hit (quadraticEquation d))
  where r = transform ((inverse . getTransform) s) r'
@@ -122,9 +122,9 @@ intersect (s,r') = let d = (discriminant a b c)
        a = dot (direction r) (direction r)
        b = 2 * dot (direction r) sphereToRay
        c = dot sphereToRay sphereToRay - 1
-       quadraticEquation d = map (\x -> intersection (x / (2 * a), s)) ((negate b) ± (sqrt d)) 
+       quadraticEquation d = map (\x -> intersection (x / (2 * a), s)) ((negate b) ± (sqrt d))
 
-r1 = ray ((point 0 0 (-5)), vector 0 0 1)
+r1 = ray ((point (0, 0, (-5))), vector (0, 0, 1))
 
 s = defaultSphere 1
 

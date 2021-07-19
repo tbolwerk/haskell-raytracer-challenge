@@ -1,42 +1,195 @@
--- {-# LANGUAGE TypeFamilies #-}
--- {-# LANGUAGE StandaloneKindSignatures #-}
--- {-# LANGUAGE TypeSynonymInstances #-}
--- module LinearAlgebra where
--- -- import qualified Prelude as P
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE Strict            #-}
+{-# LANGUAGE StrictData        #-}
+module LinearAlgebra where
+import qualified Data.List as L
 
--- type R = Double
--- type Z = Integer
+class VectorMath a where
+    magnitude :: a -> Double
+    normalize :: a -> a
+    dot :: a -> a -> Double
+    cross :: a -> a -> a
 
--- type Scalar a = R
--- type Vector a = [R]
--- type Matrix a = [[R]]
+type TupleInput = (Double, Double, Double, Double)
+type VectorInput = (Double,Double,Double)
+type PointInput = VectorInput
 
--- data family LinearAlgebra a
--- data instance LinearAlgebra R = Scalar R
--- data instance LinearAlgebra [R] = Vector [(Scalar R)]
--- data instance LinearAlgebra [[R]] = Matrix [(Vector R)]
+data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a } | Tuple3 {getX :: a, getY :: a, getZ :: a} | Tuple2 {getX :: a, getY :: a}
 
--- nonsense :: LinearAlgebra R -> R
--- nonsense (Scalar a) = a
+getTuple :: Tuple a -> (a,a,a,a)
+getTuple (Tuple a b c d) = (a,b,c,d)
+getTuple3 :: Tuple a -> (a,a,a)
+getTuple3 (Tuple3 a b c) = (a,b,c)
+getTuple2 :: Tuple a -> (a,a)
+getTuple2 (Tuple2 a b) = (a,b)
 
--- nonsense' :: LinearAlgebra [R] -> [R]
--- nonsense' (Vector a) =  a
+getTupleList :: Tuple a -> [a]
+getTupleList (Tuple a b c d) = a:b:c:d:[]
+getTupleList (Tuple3 a b c)  = a:b:c:[]
+getTupleList (Tuple2 a b)    = a:b:[]
 
--- nonsense'' :: LinearAlgebra [[R]] -> [[R]]
--- nonsense'' (Matrix a) = a
+instance Foldable Tuple where
+ foldMap f (Tuple a b c d) = f a <> f b <> f c <> f d
+ foldMap f (Tuple3 a b c ) = f a <> f b <> f c
+ foldMap f (Tuple2 a b   ) = f a <> f b
 
--- matrixVectorMultiply :: LinearAlgebra [[R]] -> LinearAlgebra [R] -> LinearAlgebra [R]
--- matrixVectorMultiply (Matrix a) (Vector b) = Vector [1..4]
+instance Show a => Show (Tuple a) where
+ show tuple = "Tuple (" ++ foldMap (\a -> show a ++ " ") tuple ++ ")"
 
--- ex1 = nonsense (Scalar 1)
--- ex2 = nonsense' (Vector [1..4])
--- ex3 = nonsense'' (Matrix [[1..4],[1..4],[1..4],[1..4]])
+tuple :: TupleInput -> Tuple Double
+tuple (x, y, z, w) = Tuple x y z w
+tuple3 :: (Double, Double, Double) -> Tuple Double
+tuple3 (x,y,z) = Tuple3 x y z
+tuple2 :: (Double,Double) -> Tuple Double
+tuple2 (x,y) = Tuple2 x y
 
--- instance Num (Scalar a) where
---     (Scalar a) + (Scalar b) = Scalar (a + b)
+vector :: VectorInput -> Tuple Double
+vector (x,y,z) = Tuple x y z 0
 
--- instance Num a => Num (LinearAlgebra a) where
---  (+) a b = Scalar (a + b)
---  (*) a b = a * b
+point :: PointInput -> Tuple Double
+point (x,y,z) = Tuple x y z 1
 
- 
+instance VectorMath (Tuple Double) where
+ magnitude tuple = sqrt (foldr (\x r -> (x^2) + r) 0 tuple)
+ normalize t = fmap (\a -> a / magnitude t) t
+ dot a b = sum (a * b)
+ cross (Tuple x1 y1 z1 w1) (Tuple x2 y2 z2 w2) = vector (((y1 * z2) - (z1 * y2)), ((z1*x2) - (x1 *z2)), ((x1*y2) - (y1*x2)))
+
+instance Eq (Tuple Double) where
+ Tuple x1 y1 z1 w1 == Tuple x2 y2 z2 w2 = (compare x1 x2) && (compare y1 y2) && (compare z1 z2) && (compare w1 w2)
+  where epsilon = 0.0001
+        compare a b = abs (a - b) < epsilon
+
+instance Functor Tuple where
+ fmap f (Tuple x y z w) = Tuple (f x) (f y) (f z) (f w)
+
+instance Applicative Tuple where
+ pure x = Tuple x x x x
+ (Tuple x1 y1 z1 w1) <*> (Tuple x2 y2 z2 w2) = Tuple (x1 x2) (y1 y2) (z1 z2) (w1 w2)
+
+instance  Num (Tuple Double) where
+ a + b = (fmap (+) a) <*> b
+ a - b = (fmap (-) a) <*> b
+ negate a = vector (0, 0, 0) - a
+ a * b = (fmap (*) a) <*> b
+
+instance Fractional (Tuple Double) where
+ a / b = (fmap (/) a) <*> b
+
+type Row = Int
+type Column = Int
+
+class MatrixMath a where
+ determinant :: a -> Double
+ transpose :: a -> a
+ inverse :: a -> a
+ cofactor :: a -> Row -> Column -> Double
+ minor :: a -> Row -> Column -> Double
+ submatrix :: a -> Row -> Column -> a
+ (*|>) :: a -> Tuple Double -> Tuple Double
+ (*|>>) :: a -> Double -> a
+
+ infixl 7 *|>
+ infixl 7 *|>>
+
+
+
+instance MatrixMath (Matrix Double) where
+ matrix *|>> s = matrix * pure s
+ matrix *|> tuple = listToTuple (map (dot tuple) (row matrix))
+ inverse m@(Matrix4 _) = matrix (map listToTuple (chunkOf 4 ([(cofactor m i j / determinant m) | j <- [0..3], i <- [0..3]])))
+ inverse m@(Matrix3 _) = matrix (map listToTuple (chunkOf 3 ([(cofactor m i j / determinant m) | j <- [0..2], i <- [0..2]])))
+ inverse m@(Matrix2 _) = matrix (map listToTuple (chunkOf 2 ([(cofactor m i j / determinant m) | j <- [0..1], i <- [0..1]])))
+ determinant (Matrix2 array) = (a * d) - (b * c)
+    where Tuple2 a _ = array !! 0
+          Tuple2 _ b = array !! 0
+          Tuple2 c _ = array !! 1
+          Tuple2 _ d  = array !! 1
+ determinant m@(Matrix3 array) = a * efhi + b * dfgi + c * degh
+    where efhi = cofactor m 0 0
+          dfgi = cofactor m 0 1
+          degh = cofactor m 0 2
+          Tuple3 a _ _ = array !! 0
+          Tuple3 _ b _ = array !! 0
+          Tuple3 _ _ c  = array !! 0
+ determinant m@(Matrix4 array) = a * a0 + b * a1 + c * a2 + d * a3
+   where a0 = cofactor m 0 0
+         a1 = cofactor m 0 1
+         a2 = cofactor m 0 2
+         a3 = cofactor m 0 3
+         Tuple a _ _ _ = array !! 0
+         Tuple _ b _ _ = array !! 0
+         Tuple _ _ c _ = array !! 0
+         Tuple _ _ _ d = array !! 0
+ cofactor m i j | even (i + j) = minor m i j
+                | otherwise = negate (minor m i j)
+ minor m i j = determinant (submatrix m i j)
+ transpose = matrix . map listToTuple . L.transpose . map getTupleList . row
+ submatrix m i j = matrix (map listToTuple xs'')
+    where  xs = map getTupleList (row m)
+           xs' = L.transpose (take i xs ++ drop (i + 1) xs)
+           xs'' = take j xs' ++ drop (j + 1) xs'
+
+data Matrix a =  Matrix4 {
+                         row :: [Tuple a]
+                         }
+               | Matrix3 {
+                         row :: [Tuple a]
+                         }
+               | Matrix2 {
+                         row :: [Tuple a]
+                         }
+
+
+instance Eq (Matrix Double) where
+    a == b = all (==True) $ zipWith (==) (row a) (row b)
+
+instance Num (Matrix Double) where
+ a * b = matrix (map (\r -> (*|>) (transpose b) r) (row a))
+
+
+instance Functor Matrix where
+ fmap f (Matrix4 xs) = Matrix4 (fmap (fmap f) xs)
+ fmap f (Matrix3 xs) = Matrix3 (fmap (fmap f) xs)
+ fmap f (Matrix2 xs) = Matrix2 (fmap (fmap f) xs)
+
+instance Applicative Matrix where
+ pure a = Matrix4 (replicate 4 (pure a))
+ (Matrix4 fs) <*> (Matrix4 as) = Matrix4 (zipWith (<*>) fs as)
+ (Matrix3 fs) <*> (Matrix3 as) = Matrix3 (zipWith (<*>) fs as)
+ (Matrix2 fs) <*> (Matrix2 as) = Matrix2 (zipWith (<*>) fs as)
+instance Show a => Show (Matrix a) where
+ show m = "Matrix" ++ d ++"x"++d ++ foldr (\a b ->'\n': show a++ b) "" (row m)
+  where d = ((show . length . row) m)
+
+matrix :: [Tuple a] -> Matrix a
+matrix tuples@((Tuple2 _ _ ):_)    =    Matrix2 tuples
+matrix tuples@((Tuple3 _ _ _):_)   =  Matrix3 tuples
+matrix tuples@((Tuple  _ _ _ _):_) = Matrix4 tuples
+
+fromListM :: [Double] -> Matrix Double
+fromListM xs = matrix ((listToTuple x:fromListT d ys))
+ where x  = take d xs
+       ys = drop d xs
+       d = (truncate . sqrt . fromIntegral . length) xs
+
+fromListT :: Int -> [Double] -> [Tuple Double]
+fromListT d xs = map listToTuple (chunkOf d xs)
+
+listToTuple :: [Double] -> Tuple Double
+listToTuple (x:y:z:w:_) = tuple (x,y,z,w)
+listToTuple (x:y:z:_)   = tuple3 (x,y,z)
+listToTuple (x:y:_)     = tuple2 (x,y)
+
+chunkOf :: Int -> [a] -> [[a]]
+chunkOf _ [] = []
+chunkOf n xs
+ | n > 0 = (take n xs) : (chunkOf n (drop n xs))
+ | otherwise = error "Only positive numbers allowed"
+
+get :: Matrix a -> (Int, Int) -> a
+get m (i,j) = let tupl = (row m !! i) in case j of
+    0 -> getX tupl
+    1 -> getY tupl
+    2 -> getZ tupl
+    3 -> getW tupl

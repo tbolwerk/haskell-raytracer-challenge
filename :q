@@ -1,0 +1,12 @@
+import Data.Array.ST
+import Control.Monad
+import Control.Monad.ST
+
+listToSTUArray :: [Int] -> ST s (STUArray s Int Int)
+listToSTUArray vals = do
+    let end =  length vals - 1
+    stArray <- newArray (0,end) 0
+    return stArray
+
+
+

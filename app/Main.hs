@@ -7,7 +7,7 @@ import qualified Chapter5
 import qualified Chapter6
 
 main = do
-    -- chapter1
+    chapter1
     chapter4
     chapter5
     chapter6

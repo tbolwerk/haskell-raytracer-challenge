@@ -1,3 +1,4 @@
+{-# LANGUAGE Strict #-}
 module Chapter4 where
 {-
 Part of the putting it all together of chapter 4 matrix transformations
@@ -5,14 +6,14 @@ Part of the putting it all together of chapter 4 matrix transformations
 drawing a clock using matrix transformations.
 and write it to a ppm file
 -}
-import Transformations
-import Matrices
-import Tuples
-import Canvas
-import Colors
+import           Canvas
+import           Colors
+import           Matrices
+import           Transformations
+import           Tuples
 
 origin :: Tuple Scalar
-origin = point 0 0 0
+origin = point (0, 0, 0)
 
 twelveOClock :: Tuple Scalar
 twelveOClock =  (translation (0,0,1) origin)

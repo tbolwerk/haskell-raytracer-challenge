@@ -1,6 +1,6 @@
 module Transformations where
-import Matrices
-import Tuples
+import           Matrices
+import           Tuples
 type Scalar = Double
 type Degree = Double
 type Radians = Double
@@ -49,7 +49,7 @@ rotateXMatrix r = listToMatrix 4 4 (concat [
      [0,0,0,1]
                                    ])
 
-radians :: Degree -> Radians 
+radians :: Degree -> Radians
 radians deg = (deg / 180) * pi
 
 translation :: (Scalar, Scalar,Scalar) -> Tuple Scalar -> Tuple Scalar
