@@ -8,9 +8,8 @@ and write it to a ppm file
 -}
 import           Canvas
 import           Colors
-import           Matrices
 import           Transformations
-import           Tuples
+import           LinearAlgebra
 
 origin :: Tuple Scalar
 origin = point (0, 0, 0)

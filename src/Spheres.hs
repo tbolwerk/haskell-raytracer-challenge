@@ -1,12 +1,12 @@
 {-# LANGUAGE StrictData #-}
+{-# LANGUAGE Strict            #-}
 module Spheres where
 import qualified Data.List       as List
 import           Materials
-import           Matrices
 import           Rays
 import           State
 import           Transformations
-import           Tuples
+import           LinearAlgebra
 data Sphere = Sphere {getId        :: !Int,
                       getPos       :: !(Tuple Double),
                       getR         :: !Double,
@@ -39,7 +39,7 @@ setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s )
 
 hit :: [Intersection] -> Maybe Intersection
 hit xs= headOr ((List.sort . filter (\x -> time x >= 0)) xs)
-    --
+{-# INLINE hit #-}
 
 headOr :: [a] ->  Maybe a
 headOr []    = Nothing
@@ -59,7 +59,7 @@ normalsAt (s,p) = normalize worldNormal
           objectNormal = objectPoint - getPos s --TODO: World point
           Tuple x y z _ = matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
           worldNormal = vector (x, y, z)
-
+{-# INLINE normalsAt #-}
 
 
 it0 = intersection (3.5, s)
@@ -103,7 +103,7 @@ discriminant = b^2 - 4*a*c)
 -}
 discriminant :: Double -> Double -> Double -> Double
 discriminant a b c = b^2 - 4 * a * c
-
+{-# INLINE discriminant #-}
 {-
 usage of intersect:
 
@@ -117,12 +117,20 @@ intersect :: (Sphere, Ray) -> State [Intersection] (Maybe Intersection)
 intersect (s,r') = let d = (discriminant a b c)
                   in if d < 0 then return Nothing
                               else return (hit (quadraticEquation d))
- where r = transform ((inverse . getTransform) s) r'
+ where r :: Ray
+       r = transform ((inverse . getTransform) s) r'
+       sphereToRay :: Tuple Double
        sphereToRay = origin r - (getPos s)
+       a :: Double
        a = dot (direction r) (direction r)
+       b :: Double
        b = 2 * dot (direction r) sphereToRay
+       c :: Double
        c = dot sphereToRay sphereToRay - 1
+       quadraticEquation :: Double -> [Intersection]
        quadraticEquation d = map (\x -> intersection (x / (2 * a), s)) ((negate b) ± (sqrt d))
+{-# INLINE intersect #-}
+
 
 r1 = ray ((point (0, 0, (-5))), vector (0, 0, 1))
 

@@ -1,14 +1,15 @@
 build:
 	cabal clean
-	# cabal v2-build -O2 --enable-profiling  --enable-executable-profiling
-	# cabal v2-build -O2 --verbose=3
-	cabal v2-build -O2
+	# cabal new-build -O2 --enable-profiling  --enable-executable-profiling
+	# cabal new-build -O2 --verbose=3
+	cabal new-build -O2
 
 render:
-	rm -f image.ppm
-	cabal v2-build
-	time ./ray-tracers >> image.ppm
-	open image.ppm
+	rm -f *.ppm
+	cabal new-build
+	#time cabal new-run RayTracer-exe +RTS -p -s -RTS
+	time cabal new-run RayTracer-exe +RTS -s -RTS
+	open *.ppm
 
 format:
 	stylish-haskell -i src/*.hs *.hs test/*.hs app/*.hs

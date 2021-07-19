@@ -1,6 +1,5 @@
 module Transformations where
-import           Matrices
-import           Tuples
+import           LinearAlgebra
 type Scalar = Double
 type Degree = Double
 type Radians = Double

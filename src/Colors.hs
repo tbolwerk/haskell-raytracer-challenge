@@ -1,6 +1,5 @@
 module Colors where
-import           Tuples
-
+import           LinearAlgebra
 type Red = Double
 type Green = Double
 type Blue = Double

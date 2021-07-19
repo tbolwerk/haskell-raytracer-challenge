@@ -1,5 +1,6 @@
 {-# LANGUAGE Strict     #-}
 {-# LANGUAGE StrictData #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Chapter1 where
 {-
 This module is part of chapter 1 of The Ray Tracer Challenge
@@ -9,7 +10,7 @@ It's goal is too show how tuples can be used in order to calculate projectiles i
 import           Canvas
 import           Colors
 import           Data.Array
-import           Tuples
+import           LinearAlgebra
 
 data Projectile a = Projectile { position :: !(Tuple a), velocity :: !(Tuple a)}
  deriving Show

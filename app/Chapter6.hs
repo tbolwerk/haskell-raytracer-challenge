@@ -9,7 +9,7 @@ import           Rays
 import qualified Spheres
 import           State
 import           Transformations
-import           Tuples
+import           LinearAlgebra
 import Data.Array as A
 rayOrigin :: Tuple Double
 rayOrigin = point (0, 0, (-5))

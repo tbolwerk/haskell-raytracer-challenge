@@ -4,6 +4,14 @@
 module LinearAlgebra where
 import qualified Data.List as L
 
+-- backward compatibility
+matrixVectorMultiply m v = (*|>) m v
+listToMatrix _ _ m = fromListM m
+identityMatrix = matrix [ tuple (1,0,0,0)
+                         ,tuple (0,1,0,0)
+                         ,tuple (0,0,1,0)
+                         ,tuple (0,0,0,1)]
+
 class VectorMath a where
     magnitude :: a -> Double
     normalize :: a -> a
@@ -13,6 +21,9 @@ class VectorMath a where
 type TupleInput = (Double, Double, Double, Double)
 type VectorInput = (Double,Double,Double)
 type PointInput = VectorInput
+
+reflect :: (Tuple Double, Tuple Double) -> Tuple Double
+reflect (v,n) = v - n * pure (2 * dot v n)
 
 data Tuple a = Tuple { getX :: a, getY :: a, getZ :: a, getW :: a } | Tuple3 {getX :: a, getY :: a, getZ :: a} | Tuple2 {getX :: a, getY :: a}
 
@@ -62,6 +73,8 @@ instance Eq (Tuple Double) where
 
 instance Functor Tuple where
  fmap f (Tuple x y z w) = Tuple (f x) (f y) (f z) (f w)
+ fmap f (Tuple3 x y z) = Tuple3 (f x) (f y) (f z) 
+ fmap f (Tuple2 x y) = Tuple2 (f x) (f y)
 
 instance Applicative Tuple where
  pure x = Tuple x x x x
@@ -91,8 +104,6 @@ class MatrixMath a where
 
  infixl 7 *|>
  infixl 7 *|>>
-
-
 
 instance MatrixMath (Matrix Double) where
  matrix *|>> s = matrix * pure s
