@@ -7,6 +7,7 @@ import           Test.Framework                       (defaultMain, testGroup)
 import           Test.Framework.Providers.HUnit
 import           Test.Framework.Providers.QuickCheck2 (testProperty)
 import           TuplesTest
+import           WorldsTest
 
 
 main = defaultMain tests
@@ -105,6 +106,9 @@ tests = [
         ],
         testGroup "State" [
           testCase "State ask" testCase51
+        ],
+        testGroup "Worlds" [
+          testCase "Intersect a world with a ray" testCase69
         ]
     ]
 

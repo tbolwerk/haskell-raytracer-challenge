@@ -1,5 +1,6 @@
 {-# LANGUAGE Strict     #-}
 {-# LANGUAGE StrictData #-}
+{-# LANGUAGE InstanceSigs #-}
 module Spheres where
 import qualified Data.List       as List
 import           LinearAlgebra
@@ -7,43 +8,55 @@ import           Materials
 import           Rays
 import           State
 import           Transformations
+import Shape
 data Sphere = Sphere {getId        :: !Int,
                       getPos       :: !(Tuple Double),
                       getR         :: !Double,
                       getTransform :: !(Matrix Double),
                       getMaterial  :: !Material}
- deriving Show
+ deriving (Show)
 
-data Intersection = Intersection {
-                                   time   :: !Time
-                                 , object :: !Sphere
-                                 }
- deriving Show
-instance Eq Intersection where
-    (==) a b = time a == time b && (getId . object) a == (getId . object) b
--- We are looking for the lowest non-negative value of t (time)
-instance Ord Intersection where
-    (<=) a b = time a <= time b && time a >= 0
+instance Shape_ Sphere where
+    identifier = getId
+    position = getPos
+    perimeter = getR 
+    transformation = getTransform
+    material = getMaterial
+    -- intersect :: (Shape, Ray) -> State [Intersection] (Maybe Intersection)
+    {-# INLINE intersect #-}
+    intersect (s,r') = let d = (discriminant a b c)
+                  in if d < 0 then return []
+                              else return (hit (quadraticEquation d))
+      where r :: Ray
+            r = transform ((inverse . Shape.transformation) s) r'
+            sphereToRay :: Tuple Double
+            sphereToRay = origin r - (Shape.position s)
+            a :: Double
+            a = dot (direction r) (direction r)
+            b :: Double
+            b = 2 * dot (direction r) sphereToRay
+            c :: Double
+            c = dot sphereToRay sphereToRay - 1
+            quadraticEquation :: Double -> [Intersection]
+            quadraticEquation d = map (\x -> intersection (x / (2 * a), (Shape s))) ((negate b) ± (sqrt d))
 
-sphere :: (Int, Tuple Double, Double, Matrix Double, Material) -> Sphere
-sphere (id, pos, r, t, m) = Sphere id pos r t m
 
-defaultSphere :: Int -> Sphere
+sphere :: (Int, Tuple Double, Double, Matrix Double, Material) -> Shape
+sphere (id, pos, r, t, m) = (Shape (Sphere id pos r t m))
+
+defaultSphere :: Int -> Shape
 defaultSphere id = sphere (id, (point (0, 0, 0)), 1, identityMatrix, defaultMaterial)
 
-setTransform' :: Sphere -> (a -> Matrix Double) -> a -> Sphere
-setTransform' s f a = sphere (getId s, getPos s, getR s, f a, getMaterial s )
+setTransform' :: Shape -> (a -> Matrix Double) -> a -> Shape
+setTransform' s f a = sphere ((Shape.identifier) s, (Shape.position) s, (Shape.perimeter) s, f a, (Shape.material) s )
 
-setTransform :: Sphere -> Matrix Double -> Sphere
-setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s )
+setTransform :: Shape -> Matrix Double -> Shape
+setTransform s a = sphere ((Shape.identifier) s, (Shape.position) s, (Shape.perimeter) s, a, (Shape.material) s )
 
-hit :: [Intersection] -> Maybe Intersection
-hit xs= headOr ((List.sort . filter (\x -> time x >= 0)) xs)
+
+hit :: [Intersection] -> [Intersection]
+hit xs= ((List.sort . filter (\x -> time x >= 0)) xs)
 {-# INLINE hit #-}
-
-headOr :: [a] ->  Maybe a
-headOr []    = Nothing
-headOr (x:_) = Just x
 
 {-
 There are 4 vectors calculated after an intersection:
@@ -53,11 +66,11 @@ There are 4 vectors calculated after an intersection:
 * (R) the reflection vector, pointing in the directioin that incoming light would go.
 -}
 
-normalsAt :: (Sphere, Tuple Double) -> Tuple Double
+normalsAt :: (Shape, Tuple Double) -> Tuple Double
 normalsAt (s,p) = normalize worldNormal
-    where objectPoint = matrixVectorMultiply (inverse (getTransform s)) p
-          objectNormal = objectPoint - getPos s --TODO: World point
-          Tuple x y z _ = matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
+    where objectPoint = matrixVectorMultiply (inverse (Shape.transformation s)) p
+          objectNormal = objectPoint - (Shape.position) s --TODO: World point
+          Tuple x y z _ = matrixVectorMultiply (transpose (inverse (Shape.transformation s))) objectNormal
           worldNormal = vector (x, y, z)
 {-# INLINE normalsAt #-}
 
@@ -70,7 +83,7 @@ it4 = intersection (-1.5, s)
 it5 = intersection (-2.5, s)
 it6 = intersection (-3.5, s)
 
-intersection :: (Time, Sphere) -> Intersection
+intersection :: (Time, Shape) -> Intersection
 intersection (t, s) = Intersection t s
 
 intersections :: Intersection -> State [Intersection] [Intersection]
@@ -110,26 +123,9 @@ usage of intersect:
 example:
 
 eval (intersect (s, r1)) []
-[Intersection {time = 5.0, object = Sphere {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}},Intersection {time = 5.0, object = Sphere {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}}]
+[Intersection {time = 5.0, object = Shape {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}},Intersection {time = 5.0, object = Shape {getId = 1, getPos = Tuple {getX = 0.0, getY = 0.0, getZ = 0.0, getW = 1.0}, getR = 1.0}}]
 -}
 
-intersect :: (Sphere, Ray) -> State [Intersection] (Maybe Intersection)
-intersect (s,r') = let d = (discriminant a b c)
-                  in if d < 0 then return Nothing
-                              else return (hit (quadraticEquation d))
- where r :: Ray
-       r = transform ((inverse . getTransform) s) r'
-       sphereToRay :: Tuple Double
-       sphereToRay = origin r - (getPos s)
-       a :: Double
-       a = dot (direction r) (direction r)
-       b :: Double
-       b = 2 * dot (direction r) sphereToRay
-       c :: Double
-       c = dot sphereToRay sphereToRay - 1
-       quadraticEquation :: Double -> [Intersection]
-       quadraticEquation d = map (\x -> intersection (x / (2 * a), s)) ((negate b) ± (sqrt d))
-{-# INLINE intersect #-}
 
 
 r1 = ray ((point (0, 0, (-5))), vector (0, 0, 1))

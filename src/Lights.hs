@@ -1,17 +1,19 @@
+{-# LANGUAGE DeriveAnyClass #-}
 module Lights where
 import           Colors
 import           LinearAlgebra
 import           Materials
-data PointLight = PointLight {
+import Rays
+data Light = PointLight {
                                position    :: !(Tuple Double)
                                , intensity :: !(Tuple Double)
                                }
- deriving Show
+ deriving (Show)
 
 type EyeVector = Tuple Double
 type NormalVector = Tuple Double
 
-pointLight :: (Tuple Double, Tuple Double) -> PointLight
+pointLight :: (Tuple Double, Tuple Double) -> Light
 pointLight (p, i) = PointLight p i
 
 black = Colors.color 0 0 0 0
@@ -21,12 +23,12 @@ lightning (defaultMaterial, pl, point 0 0 0, vector 0 0 (-1), vector 0 0 (-1))
 Tuple {getX = 0.1, getY = 0.1, getZ = 0.1, getW = 0.1}
 -}
 
-lightning :: (Material, PointLight, Tuple Double, EyeVector, NormalVector) -> Color
+lightning :: (Material, Light, Tuple Double, EyeVector, NormalVector) -> Color
 lightning (m, light, p, ev, nv) = if lightDotNormal < 0
                                           then ambient' + black + black
                                           else ambient' + diffuse' + specular'
                             where effectiveColor = Materials.color m * intensity light
-                                  lightVector = normalize (position light - p)
+                                  lightVector = normalize (Lights.position light - p)
                                   ambient' = effectiveColor * pure (ambient m)
                                   lightDotNormal = dot lightVector nv
                                   diffuse' = effectiveColor * pure (diffuse m) * pure lightDotNormal

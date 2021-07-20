@@ -1,4 +1,12 @@
+
 module Rays where
+
+{-
+Literaly the example
+
+https://wiki.haskell.org/Existential_type
+
+-}
 
 import           LinearAlgebra
 import           Transformations
@@ -11,6 +19,9 @@ data Ray = Ray {
                  origin    :: !Point
                , direction :: !Vector}
  deriving Show
+
+
+
 
 
 ray :: (Point, Vector) -> Ray
