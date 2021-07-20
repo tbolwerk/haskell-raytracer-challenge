@@ -3,7 +3,7 @@ module Lights where
 import           Colors
 import           LinearAlgebra
 import           Materials
-import Rays
+import           Rays
 data Light = PointLight {
                                position    :: !(Tuple Double)
                                , intensity :: !(Tuple Double)

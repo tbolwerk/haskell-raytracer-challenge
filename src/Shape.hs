@@ -1,9 +1,9 @@
 {-# LANGUAGE ExistentialQuantification #-}
 module Shape where
-import Materials
-import LinearAlgebra
-import State
-import Rays
+import           LinearAlgebra
+import           Materials
+import           Rays
+import           State
 
 
 data Intersection = Intersection {

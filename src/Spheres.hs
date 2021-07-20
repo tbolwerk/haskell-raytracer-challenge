@@ -1,14 +1,14 @@
-{-# LANGUAGE Strict     #-}
-{-# LANGUAGE StrictData #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE Strict       #-}
+{-# LANGUAGE StrictData   #-}
 module Spheres where
 import qualified Data.List       as List
 import           LinearAlgebra
 import           Materials
 import           Rays
+import           Shape
 import           State
 import           Transformations
-import Shape
 data Sphere = Sphere {getId        :: !Int,
                       getPos       :: !(Tuple Double),
                       getR         :: !Double,
@@ -19,10 +19,10 @@ data Sphere = Sphere {getId        :: !Int,
 instance Shape_ Sphere where
     identifier = getId
     position = getPos
-    perimeter = getR 
+    perimeter = getR
     transformation = getTransform
     material = getMaterial
-    -- intersect :: (Shape, Ray) -> State [Intersection] (Maybe Intersection)
+    intersect :: (Sphere, Ray) -> State [Intersection] [Intersection]
     {-# INLINE intersect #-}
     intersect (s,r') = let d = (discriminant a b c)
                   in if d < 0 then return []

@@ -8,10 +8,10 @@ import           Data.Array               as A
 import           Lights
 import           LinearAlgebra
 import           Rays
+import           Shape
 import qualified Spheres
 import           State
 import           Transformations
-import Shape 
 
 rayOrigin :: Tuple Double
 rayOrigin = point (0, 0, (-5))

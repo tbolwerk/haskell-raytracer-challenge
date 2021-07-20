@@ -1,10 +1,10 @@
 module WorldsTest where
 
-import           Worlds
-import LinearAlgebra
-import Rays
+import           LinearAlgebra
+import           Rays
 import           Test.HUnit
 import qualified Test.QuickCheck as T
+import           Worlds
 
 r2 ::  Ray
 r2  = ray (rayOrigin, vector (0,0,1))
