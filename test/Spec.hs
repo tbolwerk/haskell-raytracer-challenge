@@ -7,6 +7,7 @@ import           Test.Framework                       (defaultMain, testGroup)
 import           Test.Framework.Providers.HUnit
 import           Test.Framework.Providers.QuickCheck2 (testProperty)
 import           TuplesTest
+import           HitableTest
 
 
 main = defaultMain tests
@@ -105,6 +106,11 @@ tests = [
         ],
         testGroup "State" [
           testCase "State ask" testCase51
+        ],
+        testGroup "Hitable" [
+          testCase "69" testCase69
+         ,testCase "70" testCase70
+         ,testCase "71" testCase71
         ]
     ]
 

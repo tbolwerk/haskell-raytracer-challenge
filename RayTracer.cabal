@@ -40,6 +40,8 @@ library
       , Lights
       , Materials
       , LinearAlgebra
+      , Hitable
+      , World
   other-modules:
       Paths_RayTracer
   hs-source-dirs:

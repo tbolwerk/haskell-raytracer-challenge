@@ -11,6 +11,7 @@ import           Rays
 import qualified Spheres
 import           State
 import           Transformations
+import           Hitable
 rayOrigin :: Tuple Double
 rayOrigin = point (0, 0, (-5))
 wallZ = 10
@@ -33,19 +34,20 @@ pos x y = point ((worldX x), (worldY y), wallZ)
 
 light' = pointLight (point ((-10), (10), (-10)), color 1 1 1 1)
 
-render :: Spheres.Sphere -> State [Spheres.Intersection] [Pixel]
+render :: Hitable a => a -> State [Hitable.Intersection] [Pixel]
 render shape = foldM (\xs i -> foldM (\ys j -> do
-    hit' <- (Spheres.intersect (shape, ray' i j))
+    hit' <- (Hitable.intersect (shape, ray' i j))
     case hit' of
-         Just hit'' -> let       point'' = Rays.position ((ray' i j), (Spheres.time) (hit''))
-                                 normal'' = Spheres.normalsAt (Spheres.object hit'', point'')
+          (hit'':_) -> let       point'' = Rays.position ((ray' i j), (Hitable.time) (hit''))
+                                 normal'' = Hitable.normalsAt (Hitable.object hit'', point'')
                                  eye'' = negate (direction (ray' i j))
-                                 color' = lightning ((Spheres.getMaterial . Spheres.object) hit'', light', point'', eye'', normal'')
+                                 color' = lightning ((Hitable.getMaterial . Hitable.object) hit'', light', point'', eye'', normal'')
                      in return ((pixel (round i) (round j) color') : ys)
-         Nothing -> return ((pixel (round i) (round j) (color 0 0 0 1)) : ys)) xs (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])) [] (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])
+          [] -> return ((pixel (round i) (round j) (color 0 0 0 1)) : ys)) xs (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])) [] (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])
  where
      ray' :: Double -> Double -> Ray
      ray' x y = ray (rayOrigin, (normalize ((pos x y) - rayOrigin)))
+     
 
 -- Fork four threads
 
@@ -57,7 +59,7 @@ main = mapConcurrently execute [(shape, "chapter6.ppm"), (mShape, "chapter6_1.pp
        sShape = Spheres.setTransform shape (shearingMatrix (1,0,0,0,0,0) * scalingMatrix (0.5, 1, 1))
        rShape = Spheres.setTransform shape ((rotateZMatrix (radians 90)) * (scalingMatrix (1, 0.5,0.5)))
 
-execute :: (Spheres.Sphere, String) -> IO ()
+execute :: Hitable a => (a, String) -> IO ()
 execute (shape, name)= (createPPM (generateCanvas shape) name)
  where generateCanvas s =  Canvas (canvasPixels-1) (canvasPixels -1) (A.listArray ((0,0), (canvasPixels-1,canvasPixels-1)) (eval (render s) []))
 
