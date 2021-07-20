@@ -1,12 +1,12 @@
+{-# LANGUAGE Strict     #-}
 {-# LANGUAGE StrictData #-}
-{-# LANGUAGE Strict            #-}
 module Spheres where
 import qualified Data.List       as List
+import           LinearAlgebra
 import           Materials
 import           Rays
 import           State
 import           Transformations
-import           LinearAlgebra
 data Sphere = Sphere {getId        :: !Int,
                       getPos       :: !(Tuple Double),
                       getR         :: !Double,

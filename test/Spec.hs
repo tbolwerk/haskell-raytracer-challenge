@@ -1,12 +1,12 @@
 import           CanvasTest
 import           ColorsTest
+import           LinearAlgebraTest
 import           MatricesTest
 import           StateTest
 import           Test.Framework                       (defaultMain, testGroup)
 import           Test.Framework.Providers.HUnit
 import           Test.Framework.Providers.QuickCheck2 (testProperty)
 import           TuplesTest
-import           LinearAlgebraTest
 
 
 main = defaultMain tests

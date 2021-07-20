@@ -1,7 +1,7 @@
 module Rays where
 
-import           Transformations
 import           LinearAlgebra
+import           Transformations
 
 type Vector = Tuple Double
 type Point = Tuple Double

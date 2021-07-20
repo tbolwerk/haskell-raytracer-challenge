@@ -5,13 +5,13 @@ import           Colors
 import           Control.Concurrent
 import           Control.Concurrent.Async
 import           Control.Monad
+import           Data.Array               as A
 import           Lights
+import           LinearAlgebra
 import           Rays
 import qualified Spheres
 import           State
 import           Transformations
-import           LinearAlgebra
-
 rayOrigin :: Tuple Double
 rayOrigin = point (0, 0, (-5))
 wallZ = 10
@@ -29,22 +29,6 @@ worldX x = negate half + pixelSize * x
 pos :: Double -> Double -> Tuple Double
 pos x y = point ((worldX x), (worldY y), wallZ)
 
-
-mr x y = ray (rayOrigin, (normalize ((pos x y) - rayOrigin)))
-
-xs x y s= Spheres.intersect (s, mr x y)
-{-
-TODO: fix so it is looping inside the state monad
-
-change shape to get a different image
--}
-run shape =
-    [ ((x,y), xs x y shape) | x <- map fromIntegral [0..canvasPixels], y <- map fromIntegral [0..canvasPixels]]
-
-result :: Spheres.Sphere -> [(Int, Int)]
-result shape = map (uncurry (\a b -> (round a, round b)). fst) (filter (\(_,xs) -> length xs /= 0) (map (\s -> (fst s, (eval (snd s) []))) (run shape)))
-
-
 main :: IO [()]
 main = mapConcurrently execute [(shape, "chapter5.ppm"), (mShape, "chapter5_1.ppm"), (sShape,"chapter5_2.ppm"), (rShape,"chapter5_3.ppm")]
  where shape = Spheres.defaultSphere 1
@@ -53,4 +37,18 @@ main = mapConcurrently execute [(shape, "chapter5.ppm"), (mShape, "chapter5_1.pp
        rShape = Spheres.setTransform shape ((rotateZMatrix (radians 90)) * (scalingMatrix (1, 0.5,0.5)))
 
 
-execute (shape, name)= (createPPM (writePixels (canvas canvasPixels canvasPixels) (result shape) (color 1 0 0 1) ) name)
+execute :: (Spheres.Sphere, String) -> IO ()
+execute (shape, name)= (createPPM (generateCanvas shape) name)
+ where generateCanvas s =  Canvas (canvasPixels-1) (canvasPixels -1) (A.listArray ((0,0), (canvasPixels-1,canvasPixels-1)) (eval (render s) []))
+
+
+
+render :: Spheres.Sphere -> State [Spheres.Intersection] [Pixel]
+render shape = foldM (\xs i -> foldM (\ys j -> do
+    hit' <- (Spheres.intersect (shape, ray' i j))
+    case hit' of
+         Just hit'' ->  return ((pixel (round i) (round j) (color 1 0 0 1)) : ys)
+         Nothing    -> return ((pixel (round i) (round j) (color 0 0 0 1)) : ys)) xs (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])) [] (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])
+ where
+     ray' :: Double -> Double -> Ray
+     ray' x y = ray (rayOrigin, (normalize ((pos x y) - rayOrigin)))

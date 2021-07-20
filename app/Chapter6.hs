@@ -4,13 +4,13 @@ import           Canvas
 import           Colors
 import           Control.Concurrent.Async
 import           Control.Monad
+import           Data.Array               as A
 import           Lights
+import           LinearAlgebra
 import           Rays
 import qualified Spheres
 import           State
 import           Transformations
-import           LinearAlgebra
-import Data.Array as A
 rayOrigin :: Tuple Double
 rayOrigin = point (0, 0, (-5))
 wallZ = 10
@@ -43,7 +43,9 @@ render shape = foldM (\xs i -> foldM (\ys j -> do
                                  color' = lightning ((Spheres.getMaterial . Spheres.object) hit'', light', point'', eye'', normal'')
                      in return ((pixel (round i) (round j) color') : ys)
          Nothing -> return ((pixel (round i) (round j) (color 0 0 0 1)) : ys)) xs (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])) [] (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])
- where ray' x y = ray (rayOrigin, (normalize ((pos x y) - rayOrigin)))
+ where
+     ray' :: Double -> Double -> Ray
+     ray' x y = ray (rayOrigin, (normalize ((pos x y) - rayOrigin)))
 
 -- Fork four threads
 

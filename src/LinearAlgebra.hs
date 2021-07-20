@@ -73,8 +73,8 @@ instance Eq (Tuple Double) where
 
 instance Functor Tuple where
  fmap f (Tuple x y z w) = Tuple (f x) (f y) (f z) (f w)
- fmap f (Tuple3 x y z) = Tuple3 (f x) (f y) (f z) 
- fmap f (Tuple2 x y) = Tuple2 (f x) (f y)
+ fmap f (Tuple3 x y z)  = Tuple3 (f x) (f y) (f z)
+ fmap f (Tuple2 x y)    = Tuple2 (f x) (f y)
 
 instance Applicative Tuple where
  pure x = Tuple x x x x
