@@ -1,7 +1,7 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE InstanceSigs              #-}
-{-# LANGUAGE Strict     #-}
-{-# LANGUAGE StrictData #-}
+{-# LANGUAGE Strict                    #-}
+{-# LANGUAGE StrictData                #-}
 module Hitable where
 
 import qualified Data.List     as List
@@ -11,7 +11,7 @@ import           Rays
 import qualified Spheres       as S
 import           State
 
-data 
+data
      Computation  =
   Computation
     { computationTime   :: Double
@@ -19,13 +19,13 @@ data
     , computationPoint  :: Tuple Double
     , computationEye    :: Tuple Double
     , computationNormal :: Tuple Double
-    , inside :: Bool
+    , inside            :: Bool
     }
   deriving (Show)
 
 prepareComputation :: (Intersection, Ray) -> Computation
-prepareComputation (i,r) = 
-    let (isInside, cNormal') = if dot cNormal cEye < 0 
+prepareComputation (i,r) =
+    let (isInside, cNormal') = if dot cNormal cEye < 0
                                then (True, negate cNormal)
                                else (False,cNormal)
     in Computation {
@@ -41,9 +41,9 @@ prepareComputation (i,r) =
         cObject = object i
         cNormal = normalsAt (cObject, cPoint)
         cEye = negate (direction r)
-         
-        
-         
+
+
+
 
 class Hitable a where
   getId :: a -> Int

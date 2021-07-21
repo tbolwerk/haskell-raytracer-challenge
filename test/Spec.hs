@@ -1,5 +1,6 @@
 import           CanvasTest
 import           ColorsTest
+import           HitableTest
 import           LinearAlgebraTest
 import           MatricesTest
 import           StateTest
@@ -7,7 +8,6 @@ import           Test.Framework                       (defaultMain, testGroup)
 import           Test.Framework.Providers.HUnit
 import           Test.Framework.Providers.QuickCheck2 (testProperty)
 import           TuplesTest
-import           HitableTest
 
 
 main = defaultMain tests
@@ -111,6 +111,8 @@ tests = [
           testCase "69" testCase69
          ,testCase "70" testCase70
          ,testCase "71" testCase71
+         ,testCase "72" testCase72
+         ,testCase "73" testCase73
         ]
     ]
 

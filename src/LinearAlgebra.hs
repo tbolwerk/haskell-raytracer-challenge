@@ -45,7 +45,9 @@ instance Foldable Tuple where
  foldMap f (Tuple2 a b   ) = f a <> f b
 
 instance Show a => Show (Tuple a) where
- show tuple = "Tuple (" ++ foldMap (\a -> show a ++ " ") tuple ++ ")"
+ show (Tuple a b c d) = "Tuple (" ++ show a ++", " ++ show b ++ ", " ++ show c ++ ", " ++ show d ++ ")"
+ show (Tuple3 a b c) = "Tuple3 (" ++ show a ++", " ++ show b ++ ", " ++ show c ++ ")"
+ show (Tuple2 a b ) = "Tuple2 (" ++ show a ++", " ++ show b ++ ", " ++ ")"
 
 tuple :: TupleInput -> Tuple Double
 tuple (x, y, z, w) = Tuple x y z w
@@ -61,9 +63,13 @@ point :: PointInput -> Tuple Double
 point (x,y,z) = Tuple x y z 1
 
 instance VectorMath (Tuple Double) where
- magnitude tuple = sqrt (foldr (\x r -> (x^2) + r) 0 tuple)
+ magnitude (Tuple x y z w) = sqrt ((x^2) + (y^2) + (z^2) + (w^2))
+ magnitude (Tuple3 x y z)  = sqrt ((x^2) + (y^2) + (z^2) )
+ magnitude (Tuple2 x y)    = sqrt ((x^2) + (y^2))
  normalize t = fmap (\a -> a / magnitude t) t
- dot a b = sum (a * b)
+ dot (Tuple x1 y1 z1 w1) (Tuple x2 y2 z2 w2) = (x1 * x2) + (y1 * y2) + (z1 * z2) + (w1 * w2)
+ dot (Tuple3 x1 y1 z1) (Tuple3 x2 y2 z2) = (x1 * x2) + (y1 * y2) + (z1 * z2)
+ dot (Tuple2 x1 y1) (Tuple2 x2 y2) = (x1 * x2) + (y1 * y2)
  cross (Tuple x1 y1 z1 w1) (Tuple x2 y2 z2 w2) = vector (((y1 * z2) - (z1 * y2)), ((z1*x2) - (x1 *z2)), ((x1*y2) - (y1*x2)))
 
 instance Eq (Tuple Double) where
@@ -204,3 +210,8 @@ get m (i,j) = let tupl = (row m !! i) in case j of
     1 -> getY tupl
     2 -> getZ tupl
     3 -> getW tupl
+
+isPoint :: (Fractional a, Num a, Eq a) => Tuple a -> Bool
+isPoint tuple = getW tuple == 1.0
+isVector :: (Num a,Fractional a, Eq a) => Tuple a -> Bool
+isVector tuple = getW tuple == 0.0

@@ -29,8 +29,8 @@ setTransform' s f a = sphere (getId s, getPos s, getR s, f a, getMaterial s )
 setTransform :: Sphere -> Matrix Double -> Sphere
 setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s )
 
-
-
+setMaterial :: Sphere -> Material -> Sphere
+setMaterial s m = sphere (getId s, getPos s, getR s, getTransform s, m)
 {-
 There are 4 vectors calculated after an intersection:
 * (E) the eye vector (negate the ray's direction)

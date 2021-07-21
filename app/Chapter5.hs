@@ -1,5 +1,4 @@
 {-# LANGUAGE Strict #-}
-{-# LANGUAGE Strict #-}
 module Chapter5 where
 import           Canvas
 import           Colors
@@ -7,13 +6,13 @@ import           Control.Concurrent
 import           Control.Concurrent.Async
 import           Control.Monad
 import           Data.Array               as A
+import           Hitable
 import           Lights
 import           LinearAlgebra
 import           Rays
 import qualified Spheres
 import           State
 import           Transformations
-import Hitable
 rayOrigin :: Tuple Double
 rayOrigin = point (0, 0, (-5))
 wallZ = 10
@@ -50,7 +49,7 @@ render shape = foldM (\xs i -> foldM (\ys j -> do
     hit' <- (Hitable.intersect (shape, ray' i j))
     case hit' of
          (hit'':_) ->  return ((pixel (round i) (round j) (color 1 0 0 1)) : ys)
-         []    -> return ((pixel (round i) (round j) (color 0 0 0 1)) : ys)) xs (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])) [] (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])
+         []        -> return ((pixel (round i) (round j) (color 0 0 0 1)) : ys)) xs (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])) [] (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])
  where
      ray' :: Double -> Double -> Ray
      ray' x y = ray (rayOrigin, (normalize ((pos x y) - rayOrigin)))

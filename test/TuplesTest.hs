@@ -1,8 +1,8 @@
 module TuplesTest where
+import           LinearAlgebra
 import           Test.HUnit
 import qualified Test.QuickCheck as T
-import           Tuples
-type TupleInput = (Double,Double,Double,Double)
+-- type TupleInput = (Double,Double,Double,Double)
 
 tupleIsPoint :: Tuple Double
 tupleIsPoint = (tuple (4.3 ,(-4.2), 3.1 ,1.0))
