@@ -18,4 +18,4 @@ material :: (Color,Ambient, Diffuse, Specular, Shininess) -> Material
 material (col,a, d, sp, sh) = Material col a d sp sh
 
 
-defaultMaterial = material (Colors.color 1 1 1 1, 1, 0.9,0.9,200.0)
+defaultMaterial = material (Colors.color 1 1 1 1, 0.1, 0.9,0.9,200.0)

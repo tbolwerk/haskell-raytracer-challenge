@@ -118,7 +118,7 @@ pixelAt :: Canvas Int -> Int -> Int -> Pixel
 pixelAt c x y = (!) (pixels c) (x, y)
 
 pixelArray :: ((Int, Int), (Int, Int)) -> [Pixel] -> Array (Int, Int) Pixel
-pixelArray b pxs = listArray b pxs
+pixelArray b pxs = listArray b (horizontalIter (listArray b pxs))
 
 createPPM :: Canvas Int -> FilePath -> IO ()
 createPPM c path = writeFile path content
