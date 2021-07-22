@@ -1,3 +1,5 @@
+{-# LANGUAGE Strict #-}
+{-# LANGUAGE StrictData #-}
 module World where
 
 import           Colors
@@ -23,7 +25,7 @@ intersectWorld' :: (World, Ray) -> [Intersection]
 intersectWorld' (w, r) = List.sort $ (foldr (\s xs -> (eval (intersect (s,r)) []) <> xs) [] (objects w))
 
 intersectWorld :: (World, Ray) -> [Intersection]
-intersectWorld (w,r) = List.sort $ eval (foldM (\acc o -> do
+intersectWorld (w,r) = hit $ eval (foldM (\acc o -> do
     xs <- intersect (o,r)
     return (xs <> acc) ) [] (objects w)) []
 
@@ -46,7 +48,7 @@ defaultWorld =
              , identityMatrix
              , Material
                  { Materials.color = (Colors.color 0.8 1.0 0.6 0)
-                 , ambient = 0.1
+                 , ambient = 1
                  , diffuse = 0.7
                  , specular = 0.2
                  , shininess = 200.0

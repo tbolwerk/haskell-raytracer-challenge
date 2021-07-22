@@ -42,6 +42,7 @@ library
       , LinearAlgebra
       , Hitable
       , World
+      , Camera
   other-modules:
       Paths_RayTracer
   hs-source-dirs:

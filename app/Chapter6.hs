@@ -35,7 +35,7 @@ pos x y = point ((worldX x), (worldY y), wallZ)
 
 light' = pointLight (point ((-10), (10), (-10)), Colors.color 1 1 1 1)
 
-render :: Hitable a => a -> State [Hitable.Intersection] [Pixel]
+render :: Spheres.Sphere -> State [Hitable.Intersection] [Pixel]
 render shape = foldM (\xs i -> foldM (\ys j -> do
     hit' <- (Hitable.intersect (shape, ray' i j))
     case hit' of
@@ -62,7 +62,7 @@ main = mapConcurrently execute [(shape, "chapter6.ppm"), (mShape, "chapter6_1.pp
        sShape = Spheres.setTransform shape (shearingMatrix (1,0,0,0,0,0) * scalingMatrix (0.5, 1, 1))
        rShape = Spheres.setTransform shape ((rotateZMatrix (radians 90)) * (scalingMatrix (1, 0.5,0.5)))
 
-execute :: Hitable a => (a, String) -> IO ()
+execute ::  (Spheres.Sphere, String) -> IO ()
 execute (shape, name)= (createPPM (generateCanvas shape) name)
  where generateCanvas s =  Canvas (canvasPixels-1) (canvasPixels -1) (A.listArray ((0,0), (canvasPixels-1,canvasPixels-1)) (eval (render s) []))
 
