@@ -118,23 +118,41 @@ pixelAt :: Canvas Int -> Int -> Int -> Pixel
 pixelAt c x y = (!) (pixels c) (x, y)
 
 pixelArray :: ((Int, Int), (Int, Int)) -> [Pixel] -> Array (Int, Int) Pixel
-pixelArray b pxs = listArray b (horizontalIter (listArray b pxs))
+pixelArray bounds pixels =
+  array
+    bounds
+    [(getPosition p, p) | p <- pixels, isInBounds bounds (getPosition p)]
 
 createPPM :: Canvas Int -> FilePath -> IO ()
 createPPM c path = writeFile path content
   where
     content = canvasToString c
+createPPM' :: Canvas Int -> FilePath -> IO ()
+createPPM' c path = writeFile path content
+  where
+    content = canvasToString' c
 
 canvasToString :: Canvas Int -> String
 canvasToString c =
   ("P3\n" ++
    ((show (getWidth c + 1)) ++ " " ++ (show (getHeight c + 1))) ++
    "\n" ++ "255\n" ++ pixelData c ++ "\n")
+canvasToString' :: Canvas Int -> String
+canvasToString' c =
+  ("P3\n" ++
+   ((show (getWidth c + 1)) ++ " " ++ (show (getHeight c + 1))) ++
+   "\n" ++ "255\n" ++ pixelData' c ++ "\n")
 
 colorDepth = 255
 
 pixelData :: Canvas Int -> String
-pixelData c = format (foldMap (\x -> (show (show x))) ( p))
+pixelData c = format (foldMap (\x -> (show (show x))) p)
+  where
+    p = pixels c
+
+
+pixelData' :: Canvas Int -> String
+pixelData' c = format (foldMap (\x -> (show (show x))) (horizontalIter p))
   where
     p = pixels c
 

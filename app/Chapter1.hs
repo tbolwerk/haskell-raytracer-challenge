@@ -11,6 +11,7 @@ import           Canvas
 import           Colors
 import           Data.Array
 import           LinearAlgebra
+import           Control.Monad
 
 data Projectile a = Projectile { position :: !(Tuple a), velocity :: !(Tuple a)}
  deriving Show
@@ -36,9 +37,19 @@ mapProjectile :: Canvas Int -> [Tuple Double] -> [(Int, Int)]
 mapProjectile c tuples = map (\tup -> (round (getX tup), getHeight c - round (getY tup))) tuples
 
 
+
+
+
+-- mapToCanvas = Canvas w h (pixelArray ((0,0),(w,h)) (pixs))
+--    where pixs = foldr (\y ys -> foldr (\x xs -> (pixel x y (color 0 0 0 0) : xs)) ys [w,w-1 .. 0]) [] [h,h-1 .. 0]
+--          w = (getWidth myCanvas) +1
+--          h = (getHeight myCanvas) +1
+--          isHit = find
+
+
 -- TODO: fix pixel array check imediately for out of bound!
-mapProjectile' :: Canvas Int -> [Tuple Double] -> Array (Int, Int) Pixel
-mapProjectile' c tuples = pixelArray ((0,0), (((getWidth c) - 1), ((getHeight c) - 1))) (map (\pos -> pixel (round (getX pos)) (round (getY pos)) (color 1.0 1.0 1.0 1.0)) tuples)
+-- mapProjectile' :: Canvas Int -> [Tuple Double] -> Array (Int, Int) Pixel
+-- mapProjectile' c tuples = pixelArray ((0,0), (((getWidth c) ), ((getHeight c)))) (map (\pos -> pixel (round (getY pos)) (round (getX pos)) (color 1.0 1.0 1.0 1.0)) tuples)
 
 
 main :: IO ()
@@ -55,7 +66,7 @@ main = do
   -- print (mapProjectile myCanvas hit)
   let newCanvas = (writePixels myCanvas (mapProjectile myCanvas hit) (color 1 1 1 1))
 --   let newCanvas' = (writePixels' myCanvas (mapProjectile' myCanvas hit))
-  createPPM newCanvas "projectile.ppm"
+  createPPM' ( newCanvas) "projectile.ppm"
 --   createPPM newCanvas' "projectile2.ppm"
   if getY (last hit) > 0 && length hit == (read n)
       then putStrLn "Try more iterations or higher velocity"
