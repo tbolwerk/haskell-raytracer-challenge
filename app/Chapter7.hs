@@ -56,6 +56,8 @@ world2 = world [(Object floor'), (Object leftWall), (Object rightWall), (Object 
 -- world' = defaultWorld
 cam = setViewTransform (camera (canvasPixels,canvasPixels `div` 2,pi/3)) (viewTransformation (point (0,1.5,negate 5), point (0,1,0), vector (0,1,0)))
 
-main = mapConcurrently execute [(world1, "chapter7.ppm"),(world2, "chapter7_1.ppm")]
+main = mapConcurrently execute [(world1, "chapter7.ppm")]
+-- main = mapConcurrently execute [(world1, "chapter7.ppm"),(world2, "chapter7_1.ppm")]
     
-execute (w,n) = createPPM (Canvas (hSize cam -1 ) (vSize cam-1) (listArray ((0,0),(hSize cam-1,vSize cam-1)) (eval (render (cam, w)) []))) n
+-- execute (w,n) = createPPM (Canvas (hSize cam -1 ) (vSize cam-1) (listArray ((0,0),(hSize cam-1,vSize cam-1)) (eval (render (cam, w)) []))) n
+execute (w,n) = createPPM (Canvas (hSize cam -1 ) (vSize cam-1) (listArray ((0,0),(hSize cam-1,vSize cam-1)) ((render (cam, w))))) n

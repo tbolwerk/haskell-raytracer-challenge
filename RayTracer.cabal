@@ -51,6 +51,7 @@ library
       array >=0.5.4.0
       , base >=4.7 && <5
       , async >=2.2.3
+      , parallel >= 3.2.2.0
   default-language: Haskell2010
 
 executable RayTracer-exe
@@ -78,6 +79,7 @@ executable RayTracer-exe
     , base >=4.7 && <5
     , array >=0.5.4.0
     , async >=2.2.3
+    , parallel >= 3.2.2.0
   default-language: Haskell2010
 
 test-suite RayTracer-test
