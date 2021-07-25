@@ -8,11 +8,21 @@ import qualified Chapter6
 import qualified Chapter7
 
 main = do
+    putStrLn "Start rendering Chapter 1..."
     chapter1
+    putStrLn "Finished render Chapter 1!"
+    putStrLn "Start rendering Chapter 4..."
     chapter4
+    putStrLn "Finished render Chapter 4!"
+    putStrLn "Start rendering Chapter 5..."
     chapter5
+    putStrLn "Finished render Chapter 5!"
+    putStrLn "Start rendering Chapter 6..."
     chapter6
+    putStrLn "Finished render Chapter 6!"
+    putStrLn "Start rendering Chapter 7..."
     chapter7
+    putStrLn "Finished rendering all chapters!"
 
 chapter1 = Chapter1.main
 chapter4 = Chapter4.main
