@@ -42,20 +42,14 @@ prepareComputation (i,r) =
         cNormal = normalsAt (cObject, cPoint)
         cEye = negate (direction r)
 
-
-
-
-class Hitable a where
+class Shape a where
   getId :: a -> Int
   getPos :: a -> Tuple Double
   getR :: a -> Double
   getTransform :: a -> Matrix Double
   getMaterial :: a -> Material
-  intersect :: (a, Ray) -> State [Intersection] [Intersection]
 
-
-
-instance Hitable S.Sphere where
+instance Shape S.Sphere where
   getId :: S.Sphere -> Int
   getId = S.getId
   {-# INLINE getId #-}
@@ -71,6 +65,11 @@ instance Hitable S.Sphere where
   getMaterial :: S.Sphere -> Material
   getMaterial = S.getMaterial
   {-# INLINE getMaterial #-}
+
+class Hitable a where
+  intersect :: (a, Ray) -> State [Intersection] [Intersection]
+
+instance Hitable S.Sphere where
   intersect :: (S.Sphere, Ray) -> State [Intersection] [Intersection]
   {-# INLINE intersect #-}
   intersect (s, r') =
@@ -102,7 +101,7 @@ headOr :: [a] -> Maybe a
 headOr []    = Nothing
 headOr (x:_) = Just x
 
-normalsAt :: (Hitable a, Show a) => (a, Tuple Double) -> Tuple Double
+normalsAt :: (Shape a,Hitable a, Show a) => (a, Tuple Double) -> Tuple Double
 {-# INLINE normalsAt #-}
 normalsAt (s, p) = normalize worldNormal
   where
@@ -121,14 +120,17 @@ infixl 6 ±
 -- ascending order, recommended by book
 (±) a b = [a - b, a + b]
 
-data Object = forall a. (Hitable a, Show a) => Object !a
 
-instance Hitable Object where
+data Object = forall a. (Shape a, Hitable a, Show a) => Object !a
+
+instance Shape Object where
   getId (Object a) = getId a
   getMaterial (Object a) = getMaterial a
   getPos (Object a) = getPos a
   getR (Object a) = getR a
   getTransform (Object a) = getTransform a
+
+instance Hitable Object where
   intersect ((Object a), r) = intersect (a, r)
 
 instance Show Object where
@@ -147,7 +149,7 @@ Difference between 60 seconds run and 260 seconds run
 custom object vs predefined Sphere object in intersection object.
 
 -}
-intersection ::  (Hitable a, Show a) => (Time, a) -> Intersection
+intersection ::  (Shape a,Hitable a, Show a) => (Time, a) -> Intersection
 intersection (t, a) = Intersection t (Object a)
 
 data Intersection =
