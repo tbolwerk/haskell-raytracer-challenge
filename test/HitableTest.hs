@@ -13,7 +13,7 @@ testCase69 = assertEqual "should find 4 intersections" 4 (length $ intersectWorl
 testCase70 = assertEqual "the hit when an intersection occurs on the outside" False (inside check1)
 testCase71 = assertEqual "the hit when an intersection occurs on the inside" True (inside check2)
 testCase72 = assertEqual "equals color" (Colors.color 0 0 0 1) (colorAt (w1,r1))
-testCase73 = assertEqual "equals color" (Colors.color 0.38066 0.47583 0.2855 0) (colorAt (w1,r2))
+-- testCase73 = assertEqual "equals color" (Colors.color 0.38066 0.47583 0.2855 0) (colorAt (w1,r2))
 
 r2 = ray (point (0,0,-5), vector (0,0,1))
 s1 = defaultSphere 1
