@@ -4,6 +4,9 @@
 module LinearAlgebra where
 import qualified Data.List as L
 
+epsilon :: Double
+epsilon = 0.00001
+
 -- backward compatibility
 matrixVectorMultiply m v = (*|>) m v
 listToMatrix _ _ m = fromListM m
@@ -74,8 +77,7 @@ instance VectorMath (Tuple Double) where
 
 instance Eq (Tuple Double) where
  Tuple x1 y1 z1 w1 == Tuple x2 y2 z2 w2 = (compare x1 x2) && (compare y1 y2) && (compare z1 z2) && (compare w1 w2)
-  where epsilon = 0.0001
-        compare a b = abs (a - b) < epsilon
+  where compare a b = abs (a - b) < epsilon
 
 instance Functor Tuple where
  fmap f (Tuple x y z w) = Tuple (f x) (f y) (f z) (f w)

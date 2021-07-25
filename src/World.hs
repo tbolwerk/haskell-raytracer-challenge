@@ -63,9 +63,9 @@ defaultWorld =
 
 
 shadeHit :: (World, Computation) -> Colors.Color
-shadeHit (w, comp) = foldr (\l r -> lighting (m,l,p,e,n) + r) (Colors.color 0 0 0 0) (lights w)
+shadeHit (w, comp) = foldr (\l r -> let s = isShadowed l (w,p) in lighting (m,l,p,e,n,s) + r) (Colors.color 0 0 0 0) (lights w)
  where m = (Hitable.getMaterial . computationObject) comp
-       p = computationPoint comp
+       p = computationOverPoint comp
        e = computationEye comp
        n = computationNormal comp
 
@@ -75,3 +75,16 @@ colorAt (w,r) = case (intersectWorld (w,r)) of
                    (x:_) -> let comp = prepareComputation (x, r)
                             in  shadeHit (w,comp)
 
+
+
+isShadowed :: Light -> (World, Tuple Double) -> Bool
+{-# INLINE isShadowed #-}
+isShadowed l (w, p) = let v = Lights.position l
+                          dists =  magnitude v
+                          dirs =  normalize v
+                          rs = ray (p, dirs)
+                          is = intersectWorld (w,rs)
+                          h = hit is
+                     in case h of
+                          (x:_) -> time x < dists
+                          [] -> False

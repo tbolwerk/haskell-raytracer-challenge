@@ -11,15 +11,14 @@ import           Rays
 import qualified Spheres       as S
 import           State
 
-data
-     Computation  =
-  Computation
-    { computationTime   :: Double
-    , computationObject :: Object
-    , computationPoint  :: Tuple Double
-    , computationEye    :: Tuple Double
-    , computationNormal :: Tuple Double
-    , inside            :: Bool
+data Computation  = Computation
+    { computationTime   :: !Double
+    , computationObject :: !Object
+    , computationPoint  :: !(Tuple Double)
+    , computationEye    :: !(Tuple Double)
+    , computationNormal :: !(Tuple Double)
+    , inside            :: !Bool
+    , computationOverPoint :: !(Tuple Double)
     }
   deriving (Show)
 
@@ -35,6 +34,7 @@ prepareComputation (i,r) =
       , computationEye = cEye
       , computationNormal = cNormal'
       , inside = isInside
+      , computationOverPoint = cPoint + cNormal' * pure epsilon
 } where
         cTime = time i
         cPoint = Rays.position (r,cTime)

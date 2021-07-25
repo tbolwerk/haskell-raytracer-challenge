@@ -18,6 +18,7 @@ Some keynotions are
   vector is used for motions and forcer, hence the w = 0
   point is visable and rather small object, therefore the w = 1
 -}
+epsilon :: Double
 epsilon = 0.00001
 
 isPoint :: (Fractional a, Num a, Eq a) => Tuple a -> Bool

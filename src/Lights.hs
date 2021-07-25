@@ -21,8 +21,8 @@ lighting (defaultMaterial, pl, point 0 0 0, vector 0 0 (-1), vector 0 0 (-1))
 Tuple {getX = 0.1, getY = 0.1, getZ = 0.1, getW = 0.1}
 -}
 
-lighting :: (Material, Light, Tuple Double, EyeVector, NormalVector) -> Color
-lighting (m, light, p, ev, nv) = if lightDotNormal < 0
+lighting :: (Material, Light, Tuple Double, EyeVector, NormalVector, Bool) -> Color
+lighting (m, light, p, ev, nv, inShadow) = if lightDotNormal < 0 || inShadow
                                           then ambient' + black + black
                                           else ambient' + diffuse' + specular'
                             where effectiveColor = Materials.color m * intensity light
