@@ -48,6 +48,7 @@ class Shape a where
   getR :: a -> Double
   getTransform :: a -> Matrix Double
   getMaterial :: a -> Material
+  localIntersect :: (a,Ray) -> State [Intersection] [Intersection]
 
 instance Shape S.Sphere where
   getId :: S.Sphere -> Int
@@ -65,23 +66,15 @@ instance Shape S.Sphere where
   getMaterial :: S.Sphere -> Material
   getMaterial = S.getMaterial
   {-# INLINE getMaterial #-}
-
-class Hitable a where
-  intersect :: (a, Ray) -> State [Intersection] [Intersection]
-
-instance Hitable S.Sphere where
-  intersect :: (S.Sphere, Ray) -> State [Intersection] [Intersection]
-  {-# INLINE intersect #-}
-  intersect (s, r') =
-    let d = (discriminant a b c)
+  localIntersect :: (S.Sphere, Ray) -> State [Intersection] [Intersection]
+  {-# INLINE localIntersect #-}
+  localIntersect (s, r) = let d = (discriminant a b c)
      in if d < 0
           then return []
           else return (hit (quadraticEquation d))
     where
-      r :: Ray
-      r = transform ((inverse . getTransform) s) r'
       sphereToRay :: Tuple Double
-      sphereToRay = origin r - (getPos s)
+      sphereToRay = origin r - getPos s
       a :: Double
       a = dot (direction r) (direction r)
       b :: Double
@@ -90,18 +83,44 @@ instance Hitable S.Sphere where
       c = dot sphereToRay sphereToRay - 1
       quadraticEquation :: Double -> [Intersection]
       quadraticEquation d =
-        map (\x -> intersection (x / (2 * a), s)) ((negate b) ± (sqrt d))
+        map (\x -> intersection ((x / (2 * a)), (Object s))) ((negate b) ± (sqrt d))
+
+class Hitable a where
+  intersect :: (a, Ray) -> State [Intersection] [Intersection]
+
+
+-- instance Hitable S.Sphere where
+--   intersect :: (S.Sphere, Ray) -> State [Intersection] [Intersection]
+--   {-# INLINE intersect #-}
+--   intersect (s, r') =
+--     let d = (discriminant a b c)
+--      in if d < 0
+--           then return []
+--           else return (hit (quadraticEquation d))
+--     where
+--       r :: Ray
+--       r = transform ((inverse . getTransform) s) r'
+--       sphereToRay :: Tuple Double
+--       sphereToRay = origin r - (getPos s)
+--       a :: Double
+--       a = dot (direction r) (direction r)
+--       b :: Double
+--       b = 2 * dot (direction r) sphereToRay
+--       c :: Double
+--       c = dot sphereToRay sphereToRay - 1
+--       quadraticEquation :: Double -> [Intersection]
+--       quadraticEquation d =
+--         map (\x -> intersection (x / (2 * a), s)) ((negate b) ± (sqrt d))
 
 hit :: [Intersection] -> [Intersection]
 {-# INLINE hit #-}
 hit xs =  ((List.sort . filter (\x -> time x >= 0)) xs)
 
-
 headOr :: [a] -> Maybe a
 headOr []    = Nothing
 headOr (x:_) = Just x
 
-normalsAt :: (Shape a,Hitable a, Show a) => (a, Tuple Double) -> Tuple Double
+normalsAt :: (Shape a, Show a) => (a, Tuple Double) -> Tuple Double
 {-# INLINE normalsAt #-}
 normalsAt (s, p) = normalize worldNormal
   where
@@ -110,6 +129,7 @@ normalsAt (s, p) = normalize worldNormal
     Tuple x y z _ =
       matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
     worldNormal = vector (x, y, z)
+    
 discriminant :: Double -> Double -> Double -> Double
 {-# INLINE discriminant #-}
 discriminant a b c = b ^ 2 - 4 * a * c
@@ -121,7 +141,7 @@ infixl 6 ±
 (±) a b = [a - b, a + b]
 
 
-data Object = forall a. (Shape a, Hitable a, Show a) => Object !a
+data Object = forall a. (Shape a, Show a) => Object !a
 
 instance Shape Object where
   getId (Object a) = getId a
@@ -129,9 +149,12 @@ instance Shape Object where
   getPos (Object a) = getPos a
   getR (Object a) = getR a
   getTransform (Object a) = getTransform a
+  localIntersect (Object a,r) = localIntersect (a,r)
 
 instance Hitable Object where
-  intersect ((Object a), r) = intersect (a, r)
+  intersect ((Object a), r) = let localRay = transform ((inverse . getTransform) a) r
+                              in localIntersect (Object a, localRay)
+
 
 instance Show Object where
   show (Object a) = show a

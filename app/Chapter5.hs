@@ -31,20 +31,20 @@ pos :: Double -> Double -> Tuple Double
 pos x y = point ((worldX x), (worldY y), wallZ)
 
 main :: IO [()]
-main = mapConcurrently execute [(shape, "chapter5.ppm"), (mShape, "chapter5_1.ppm"), (sShape,"chapter5_2.ppm"), (rShape,"chapter5_3.ppm")]
+main = mapConcurrently execute [(Object shape, "chapter5.ppm"), (mShape, "chapter5_1.ppm"), (sShape,"chapter5_2.ppm"), (rShape,"chapter5_3.ppm")]
  where shape = Spheres.defaultSphere 1
-       mShape = Spheres.setTransform' shape scalingMatrix (0.5, 0.5,0.5)
-       sShape = Spheres.setTransform shape (shearingMatrix (1,0,0,0,0,0) * scalingMatrix (0.5, 1, 1))
-       rShape = Spheres.setTransform shape ((rotateZMatrix (radians 90)) * (scalingMatrix (1, 0.5,0.5)))
+       mShape = Object (Spheres.setTransform' shape scalingMatrix (0.5, 0.5,0.5))
+       sShape = Object (Spheres.setTransform shape (shearingMatrix (1,0,0,0,0,0) * scalingMatrix (0.5, 1, 1)))
+       rShape = Object (Spheres.setTransform shape ((rotateZMatrix (radians 90)) * (scalingMatrix (1, 0.5,0.5))))
 
 
-execute ::  (Spheres.Sphere, String) -> IO ()
+execute ::  (Object, String) -> IO ()
 execute (shape, name)= (createPPM (generateCanvas shape) name)
  where generateCanvas s =  Canvas (canvasPixels-1) (canvasPixels -1) (A.listArray ((0,0), (canvasPixels-1,canvasPixels-1)) (eval (render s) []))
 
 
 
-render :: Spheres.Sphere-> State [Hitable.Intersection] [Pixel]
+render :: Object -> State [Hitable.Intersection] [Pixel]
 render shape = foldM (\xs i -> foldM (\ys j -> do
     hit' <- (Hitable.intersect (shape, ray' i j))
     case hit' of

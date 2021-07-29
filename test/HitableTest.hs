@@ -17,12 +17,12 @@ testCase72 = assertEqual "equals color" (Colors.color 0 0 0 1) (colorAt (w1,r1))
 
 r2 = ray (point (0,0,-5), vector (0,0,1))
 s1 = defaultSphere 1
-i1 = intersection (4, s1)
+i1 = intersection (4, Object s1)
 check1 = prepareComputation (i1,r2)
 
 r3 = ray (point (0,0,0), vector (0,0,1))
 s2 = defaultSphere 1
-i2 = intersection (1, s2)
+i2 = intersection (1, Object s2)
 check2 = prepareComputation (i2,r3)
 
 

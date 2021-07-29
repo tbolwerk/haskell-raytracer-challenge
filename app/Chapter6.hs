@@ -18,7 +18,7 @@ rayOrigin = point (0, 0, (-5))
 wallZ = 10
 wallSize = 7
 canvasPixels :: Int
-canvasPixels = 500
+canvasPixels = 100
 pixelSize :: Double
 pixelSize = wallSize / (fromIntegral canvasPixels)
 half = wallSize / 2
@@ -35,7 +35,7 @@ pos x y = point ((worldX x), (worldY y), wallZ)
 
 light' = pointLight (point ((-10), (10), (-10)), Colors.color 1 1 1 1)
 
-render :: Spheres.Sphere -> State [Hitable.Intersection] [Pixel]
+render :: Object -> State [Hitable.Intersection] [Pixel]
 render shape = foldM (\xs i -> foldM (\ys j -> do
     hit' <- (Hitable.intersect (shape, ray' i j))
     case hit' of
@@ -56,13 +56,13 @@ materialSphere = material (Colors.color 1 0.2 1 1, 0.1, 0.9, 0.9, 200.0)
 
 
 main :: IO [()]
-main = mapConcurrently execute [(shape, "chapter6.ppm"), (mShape, "chapter6_1.ppm"), (sShape,"chapter6_2.ppm"), (rShape,"chapter6_3.ppm")]
+main = mapConcurrently execute [(Object shape, "chapter6.ppm"), (Object mShape, "chapter6_1.ppm"), (Object sShape,"chapter6_2.ppm"), (Object rShape,"chapter6_3.ppm")]
  where shape = Spheres.setMaterial (Spheres.defaultSphere 1) (materialSphere)
        mShape = Spheres.setTransform' shape scalingMatrix (0.5, 0.5,0.5)
        sShape = Spheres.setTransform shape (shearingMatrix (1,0,0,0,0,0) * scalingMatrix (0.5, 1, 1))
        rShape = Spheres.setTransform shape ((rotateZMatrix (radians 90)) * (scalingMatrix (1, 0.5,0.5)))
 
-execute ::  (Spheres.Sphere, String) -> IO ()
+execute ::  (Object, String) -> IO ()
 execute (shape, name)= (createPPM (generateCanvas shape) name)
  where generateCanvas s =  Canvas (canvasPixels-1) (canvasPixels -1) (A.listArray ((0,0), (canvasPixels-1,canvasPixels-1)) (eval (render s) []))
 
