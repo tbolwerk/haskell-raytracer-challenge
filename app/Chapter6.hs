@@ -42,7 +42,7 @@ render shape = foldM (\xs i -> foldM (\ys j -> do
           (hit'':_) -> let       point'' = Rays.position ((ray' i j), (Hitable.time) (hit''))
                                  normal'' = Hitable.normalsAt (Hitable.object hit'', point'')
                                  eye'' = negate (direction (ray' i j))
-                                 color' = lighting ((Hitable.getMaterial . Hitable.object) hit'', light', point'', eye'', normal'',False)
+                                 color' = lighting ((Hitable.getMaterial . Hitable.object) hit'', Hitable.object hit'',light', point'', eye'', normal'',False)
                      in return ((pixel (round i) (round j) color') : ys)
           [] -> return ((pixel (round i) (round j) (Colors.color 0 0 0 1)) : ys)) xs (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])) [] (map fromIntegral [(canvasPixels-1),(canvasPixels-2)..0])
  where
@@ -52,7 +52,7 @@ render shape = foldM (\xs i -> foldM (\ys j -> do
 
 -- Fork four threads
 
-materialSphere = material (Colors.color 1 0.2 1 1, 0.1, 0.9, 0.9, 200.0)
+materialSphere = defaultMaterial { Materials.color = Colors.color 1 0.2 1 1 }
 
 
 main :: IO [()]

@@ -10,7 +10,8 @@ import           Materials
 import           Rays
 import qualified Spheres       as S
 import           State
-
+import Colors
+import qualified Pattern as Pattern
 data Computation  = Computation
     { computationTime   :: !Double
     , computationObject :: !Object
@@ -202,3 +203,8 @@ data Intersection =
   deriving (Show)
 -}
 
+
+patternAtShape :: Pattern.Pattern -> Object -> Tuple Double -> Color
+patternAtShape p o wp= let objectPoint = matrixVectorMultiply ((inverse . getTransform) o) wp
+                           patternPoint = matrixVectorMultiply ((inverse . Pattern.getTransform) p) objectPoint
+                       in Pattern.patternAt p patternPoint

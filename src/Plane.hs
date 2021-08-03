@@ -26,4 +26,4 @@ instance Hitable.Shape Plane where
   localNormalAt (a, p) = vector (0,1,0)
 
 defaultPlane id = plane (id,point (0,0,0) ,scalingMatrix (10,0.01,10),m)
-    where m = material (Colors.color 1 0.9 0.9 1, 0.1, 0.9, 0.0, 200.0)
+    where m = defaultMaterial

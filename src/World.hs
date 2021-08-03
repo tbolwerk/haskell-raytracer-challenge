@@ -46,7 +46,7 @@ defaultWorld =
              , point (0, 0, 0)
              , 1.0
              , identityMatrix
-             , Material
+             , defaultMaterial
                  { Materials.color = (Colors.color 0.8 1.0 0.6 0)
                  , ambient = 1
                  , diffuse = 0.7
@@ -63,11 +63,12 @@ defaultWorld =
 
 
 shadeHit :: (World, Computation) -> Colors.Color
-shadeHit (w, comp) = foldr (\l r -> let s = isShadowed l (w,p) in lighting (m,l,p,e,n,s) + r) (Colors.color 0 0 0 0) (lights w)
+shadeHit (w, comp) = foldr (\l r -> let s = isShadowed l (w,p) in lighting (m,o,l,p,e,n,s) + r) (Colors.color 0 0 0 0) (lights w)
  where m = (Hitable.getMaterial . computationObject) comp
        p = computationOverPoint comp
        e = computationEye comp
        n = computationNormal comp
+       o = computationObject comp
 
 colorAt :: (World, Ray) -> Colors.Color
 colorAt (w,r) = case (intersectWorld (w,r)) of

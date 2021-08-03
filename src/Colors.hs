@@ -10,6 +10,19 @@ type Color = Tuple Double
 color :: Red -> Green -> Blue -> Alpha -> Color
 color r g b a = tuple (r, g, b, a)
 
+black :: Color
+black = color 0 0 0 1
+
+white :: Color
+white = color 1 1 1 1
+
+red :: Color
+red = color 1 0 0 1
+green :: Color
+green = color 0 1 0 1
+blue :: Color 
+blue = color 0 0 1 1
+
 getRed :: Color -> Double
 getRed c = getX c
 getGreen :: Color -> Double

@@ -18,19 +18,19 @@ canvasPixels :: Int
 canvasPixels = 500
 floor' :: Sphere
 floor' = sphere (1,point (0,0,0) ,1.0 ,scalingMatrix (10,0.01,10),m)
-    where m = material (Colors.color 1 0.9 0.9 1, 0.1, 0.9, 0.0, 200.0)
+    where m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 }
 leftWall :: Sphere
 leftWall = sphere (2,point (0,0,0) ,1.0 , leftWallTransformation ,m)
     where leftWallTransformation :: Matrix Double
           leftWallTransformation = translationMatrix (0,0,5) * rotateYMatrix (((negate pi)/4)) * rotateXMatrix (pi/2) * scalingMatrix (10,0.01,10)
           m :: Material
-          m = material (Colors.color 1 0.9 0.9 1, 0.1, 0.9, 0.0, 200.0)
+          m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 }
 rightWall :: Sphere
 rightWall = sphere (3,point (0,0,0) ,1.0 , rightWallTransformation ,m)
     where rightWallTransformation :: Matrix Double
           rightWallTransformation = translationMatrix (0,0,5) * rotateYMatrix ((pi/4)) * rotateXMatrix (pi/2) * scalingMatrix (10,0.01,10)
           m :: Material
-          m = material (Colors.color 1 0.9 0.9 1, 0.1, 0.9, 0.0, 200.0)
+          m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 }
 middle :: Sphere
 middle = sphere (4, point (0,0,0), 1.0, translationMatrix (negate 0.5, 1,0.5), m)
  where m = defaultMaterial { Materials.color = Colors.color 0.1 1 0.5 1
