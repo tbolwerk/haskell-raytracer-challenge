@@ -2,20 +2,20 @@
 -- {-# LANGUAGE Strict #-}
 {-# LANGUAGE StrictData #-}
 module Camera where
-import qualified Rays as Rays
-import Control.Parallel.Strategies
-import LinearAlgebra
-import Canvas
-import Control.Monad
-import State
-import World
-data Camera = Camera { hSize :: !Int
-                     , vSize :: !Int
-                     , fov :: !Double
-                     , transform :: !(Matrix Double)
-                     , halfWidth :: !Double
+import           Canvas
+import           Control.Monad
+import           Control.Parallel.Strategies
+import           LinearAlgebra
+import qualified Rays                        as Rays
+import           State
+import           World
+data Camera = Camera { hSize      :: !Int
+                     , vSize      :: !Int
+                     , fov        :: !Double
+                     , transform  :: !(Matrix Double)
+                     , halfWidth  :: !Double
                      , halfHeight :: !Double
-                     , pixelSize :: !Double
+                     , pixelSize  :: !Double
                      }
  deriving Show
 
@@ -32,7 +32,7 @@ camera (hsize, vsize, fov) = Camera hsize vsize fov identityMatrix halfWidth hal
                                else
                                  (halfView * aspect, halfView)
      pixelSize = (halfWidth * 2) / (fromIntegral hsize)
-     
+
 rayForPixel :: (Camera, Int, Int) -> Rays.Ray
 rayForPixel (camera, px , py) = Rays.ray (origin', direction')
     where
@@ -45,21 +45,21 @@ rayForPixel (camera, px , py) = Rays.ray (origin', direction')
         direction' = normalize (pixel' - origin')
 
 -- render :: (Camera, World) -> State [Pixel] [Pixel]
--- render (camera, world) = foldM (\ys y -> foldM (\xs x -> 
+-- render (camera, world) = foldM (\ys y -> foldM (\xs x ->
 --                                  let ray' = rayForPixel (camera, x, y)
 --                                      color' = colorAt (world, ray')
 --                                   in return ((pixel x y color') : xs)) ys [width,width-1..0]) [] [height,height-1..0]
 --   where width = (hSize camera) - 1
 --         height = (vSize camera) -1
 render :: (Camera, World) -> [Pixel]
-render (camera, world) = foldl (\ys y -> foldl (\xs x -> 
+render (camera, world) = foldl (\ys y -> foldl (\xs x ->
                                  let ray' = rayForPixel (camera, x, y)
                                      color' = colorAt (world, ray')
                                   in ((pixel x y color') : xs)) ys [width,width-1..0]) [] [height,height-1..0] `using` parListChunk (128) rseq
   where width = (hSize camera) - 1
         height = (vSize camera) -1
 
-                        
+
 
 
 

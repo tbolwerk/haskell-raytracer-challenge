@@ -1,8 +1,8 @@
 {-# LANGUAGE StrictData #-}
 module Materials where
 import           Colors
-import Pattern
-import Transformations
+import           Pattern
+import           Transformations
 type Ambient = Double
 type Diffuse = Double
 type Specular = Double
@@ -13,7 +13,7 @@ data Material = Material   {
                             diffuse   :: !Diffuse,
                             specular  :: !Specular,
                             shininess :: !Shininess,
-                            pattern :: !(Maybe Pattern)
+                            pattern   :: !(Maybe Pattern)
                             }
                     deriving Show
 
@@ -21,4 +21,4 @@ material :: (Color,Ambient, Diffuse, Specular, Shininess, Maybe Pattern) -> Mate
 material (col,a, d, sp, sh,p) = Material col a d sp sh p
 
 
-defaultMaterial = material (Colors.color 1 1 1 1, 0.1, 0.9,0.9,200.0, Just $ (GradientPattern blue green (scalingMatrix (0.1, 0.1, 0.1))))
+defaultMaterial = material (Colors.color 1 1 1 1, 0.1, 0.9,0.9,200.0, Nothing)

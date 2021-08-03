@@ -1,5 +1,5 @@
 {-# LANGUAGE Strict #-}
-module Chapter7 where
+module Chapter10 where
 import Spheres
 import Materials
 import Colors
@@ -14,36 +14,38 @@ import Hitable
 import Camera
 import           Control.Concurrent.Async
 import Plane
+import LinearAlgebra
+import Pattern
 canvasPixels :: Int
-canvasPixels = 100
+canvasPixels = 500
 floor' :: Sphere
 floor' = sphere (1,point (0,0,0) ,1.0 ,scalingMatrix (10,0.01,10),m)
-    where m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 }
+    where m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1, Materials.pattern = Just $ CheckerPattern black white identityMatrix }
 leftWall :: Sphere
 leftWall = sphere (2,point (0,0,0) ,1.0 , leftWallTransformation ,m)
     where leftWallTransformation :: Matrix Double
           leftWallTransformation = translationMatrix (0,0,5) * rotateYMatrix (((negate pi)/4)) * rotateXMatrix (pi/2) * scalingMatrix (10,0.01,10)
           m :: Material
-          m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 }
+          m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 , Materials.pattern = Just $ CheckerPattern (Colors.color 1 0.9 0.9 1) white identityMatrix }
 rightWall :: Sphere
 rightWall = sphere (3,point (0,0,0) ,1.0 , rightWallTransformation ,m)
     where rightWallTransformation :: Matrix Double
           rightWallTransformation = translationMatrix (0,0,5) * rotateYMatrix ((pi/4)) * rotateXMatrix (pi/2) * scalingMatrix (10,0.01,10)
           m :: Material
-          m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 }
+          m = defaultMaterial { Materials.color = Colors.color 1 0.9 0.9 1 , Materials.pattern = Just $ CheckerPattern (Colors.color 1 0.9 0.9 1) white identityMatrix }
 middle :: Sphere
 middle = sphere (4, point (0,0,0), 1.0, translationMatrix (negate 0.5, 1,0.5), m)
  where m = defaultMaterial { Materials.color = Colors.color 0.1 1 0.5 1
   , diffuse = 0.7
   , specular = 0.3
-  }
+  , Materials.pattern = Just $ RingPattern (Colors.color 0.1 1 0.5 1) (Colors.color 0.5 1 0.5 1) (scalingMatrix (0.1,0.1,0.1)) }
 right :: Sphere
 right = sphere (5,point (0,0,0), 1.0, translationMatrix (1.5,0.5,negate 0.5) * scalingMatrix (0.5,0.5,0.5),m)
  where m :: Material
        m = defaultMaterial { Materials.color = Colors.color 0.5 1 0.1 1
   , diffuse = 0.7
   , specular = 0.3
-  }
+  , Materials.pattern = Just $ StripePattern (Colors.color 0.5 1 0.1 1) (Colors.color 0.9 1 0.1 1) (scalingMatrix (0.1, 0.1, 0.1)) }
 
 left :: Sphere
 left = sphere (6, point (0,0,0), 1.0, translationMatrix (negate 1.5, 0.33,negate 0.75) * scalingMatrix (0.33, 0.33, 0.33),m)
@@ -52,7 +54,7 @@ left = sphere (6, point (0,0,0), 1.0, translationMatrix (negate 1.5, 0.33,negate
        m = defaultMaterial { Materials.color = Colors.color 1 0.8 0.1 1
   , diffuse = 0.7
   , specular = 0.3
-  }    
+  , Materials.pattern = Just $ GradientPattern (Colors.color 1 0.8 0.1 1) (Colors.color 1 1 0.1 1) identityMatrix }
  
 
 
@@ -68,6 +70,6 @@ cam = setViewTransform (camera (canvasPixels,canvasPixels `div` 2,pi/3)) (viewTr
 
 main :: IO [()]
 -- main = mapConcurrently execute [(world1, "chapter7.ppm")]
-main = mapConcurrently execute [(world1, "chapter7.ppm"),(world2, "chapter7_1.ppm"), (world3, "chapter8.ppm")]
+main = mapConcurrently execute [(world1, "chapter10.ppm"),(world2, "chapter10_1.ppm"), (world3, "chapter10_2.ppm")]
 execute :: (World, String) -> IO ()
 execute (w,n) = createPPM (Canvas (hSize cam -1 ) (vSize cam-1) (listArray ((0,0),(hSize cam-1,vSize cam-1)) ((render (cam, w))))) n

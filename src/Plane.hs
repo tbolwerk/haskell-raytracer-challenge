@@ -5,6 +5,7 @@ import LinearAlgebra
 import Rays
 import Colors
 import Transformations
+import Pattern
 data Plane = Plane {   getId :: !Int
                      , getPos :: !(Tuple Double)
                      , getTransform :: !(Matrix Double)
@@ -17,7 +18,7 @@ instance Hitable.Shape Plane where
   getId = getId
   getPos = getPos
   getPerimeter a = undefined
-  getTransform = getTransform
+  getTransform = Plane.getTransform
   getMaterial = getMaterial
   localIntersect (a,r) = if abs ((getY . direction) r) < epsilon
                              then return []
@@ -26,4 +27,4 @@ instance Hitable.Shape Plane where
   localNormalAt (a, p) = vector (0,1,0)
 
 defaultPlane id = plane (id,point (0,0,0) ,scalingMatrix (10,0.01,10),m)
-    where m = defaultMaterial
+    where m = defaultMaterial { pattern = Just $ (CheckerPattern black white (scalingMatrix (0.1, 0.1, 0.1)))}

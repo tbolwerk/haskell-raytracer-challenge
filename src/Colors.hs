@@ -20,7 +20,7 @@ red :: Color
 red = color 1 0 0 1
 green :: Color
 green = color 0 1 0 1
-blue :: Color 
+blue :: Color
 blue = color 0 0 1 1
 
 getRed :: Color -> Double

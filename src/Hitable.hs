@@ -4,21 +4,21 @@
 {-# LANGUAGE StrictData                #-}
 module Hitable where
 
+import           Colors
 import qualified Data.List     as List
 import           LinearAlgebra
 import           Materials
+import qualified Pattern       as Pattern
 import           Rays
 import qualified Spheres       as S
 import           State
-import Colors
-import qualified Pattern as Pattern
 data Computation  = Computation
-    { computationTime   :: !Double
-    , computationObject :: !Object
-    , computationPoint  :: !(Tuple Double)
-    , computationEye    :: !(Tuple Double)
-    , computationNormal :: !(Tuple Double)
-    , inside            :: !Bool
+    { computationTime      :: !Double
+    , computationObject    :: !Object
+    , computationPoint     :: !(Tuple Double)
+    , computationEye       :: !(Tuple Double)
+    , computationNormal    :: !(Tuple Double)
+    , inside               :: !Bool
     , computationOverPoint :: !(Tuple Double)
     }
   deriving (Show)

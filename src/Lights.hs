@@ -1,8 +1,8 @@
 module Lights where
 import           Colors
+import           Hitable
 import           LinearAlgebra
 import           Materials
-import Hitable
 data Light = PointLight {
                                position    :: !(Tuple Double)
                                , intensity :: !(Tuple Double)
@@ -25,7 +25,7 @@ lighting (m, o,light, p, ev, nv, inShadow) = if lightDotNormal < 0 || inShadow
                                           then ambient' + black + black
                                           else ambient' + diffuse' + specular'
                             where col = case Materials.pattern m of
-                                               Just x -> patternAtShape x o p
+                                               Just x  -> patternAtShape x o p
                                                Nothing -> Materials.color m
                                   effectiveColor = col * intensity light
                                   lightVector = normalize (position light - p)

@@ -64,6 +64,8 @@ executable RayTracer-exe
     , Chapter4
     , Chapter5
     , Chapter6
+    , Chapter7
+    , Chapter10
   hs-source-dirs:
       app
   ghc-options:
