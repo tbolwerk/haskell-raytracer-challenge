@@ -8,6 +8,7 @@ type Radians = Double
 type From = Tuple Scalar
 type To = Tuple Scalar
 type Up = Tuple Scalar
+
 viewTransformation :: (From,To,Up) -> Matrix Scalar
 viewTransformation (from, to, up) = let forward = normalize (to - from)
                                         upn = normalize up

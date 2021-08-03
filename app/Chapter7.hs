@@ -13,8 +13,9 @@ import Lights
 import Hitable
 import Camera
 import           Control.Concurrent.Async
+import Plane
 canvasPixels :: Int
-canvasPixels = 100
+canvasPixels = 500
 floor' :: Sphere
 floor' = sphere (1,point (0,0,0) ,1.0 ,scalingMatrix (10,0.01,10),m)
     where m = material (Colors.color 1 0.9 0.9 1, 0.1, 0.9, 0.0, 200.0)
@@ -61,12 +62,12 @@ world1 :: World
 world1 = world [(Object floor'),  (Object leftWall), (Object rightWall),(Object middle), (Object left), (Object right)] [(pointLight (point (-10, 10, -10), Colors.color 1 1 1 0))]
 world2 :: World
 world2 = world [(Object floor'), (Object leftWall), (Object rightWall), (Object middle), (Object left), (Object right)] [(pointLight (point (10, 10, 10), Colors.color 0.3 0.3 0.3 0)), (pointLight (point (10, 10, -10), Colors.color 1 1 1 0))]
--- world' = defaultWorld
+world3 = world [(Object middle), (Object left), (Object right),(Object (defaultPlane 1))] [(pointLight (point (-10, 10, -10), Colors.color 1 1 1 0))]
 cam :: Camera
 cam = setViewTransform (camera (canvasPixels,canvasPixels `div` 2,pi/3)) (viewTransformation (point (0,1.5,negate 5), point (0,1,0), vector (0,1,0)))
 
 main :: IO [()]
 -- main = mapConcurrently execute [(world1, "chapter7.ppm")]
-main = mapConcurrently execute [(world1, "chapter7.ppm"),(world2, "chapter7_1.ppm")]
+main = mapConcurrently execute [(world1, "chapter7.ppm"),(world2, "chapter7_1.ppm"), (world3, "chapter8.ppm")]
 execute :: (World, String) -> IO ()
 execute (w,n) = createPPM (Canvas (hSize cam -1 ) (vSize cam-1) (listArray ((0,0),(hSize cam-1,vSize cam-1)) ((render (cam, w))))) n

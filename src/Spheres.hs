@@ -27,7 +27,7 @@ setTransform' :: Sphere -> (a -> Matrix Double) -> a -> Sphere
 setTransform' s f a = sphere (getId s, getPos s, getR s, f a, getMaterial s )
 
 setTransform :: Sphere -> Matrix Double -> Sphere
-setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s )
+setTransform s a = sphere (getId s, getPos s, getR s, a, getMaterial s)
 
 setMaterial :: Sphere -> Material -> Sphere
 setMaterial s m = sphere (getId s, getPos s, getR s, getTransform s, m)

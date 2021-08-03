@@ -45,27 +45,28 @@ prepareComputation (i,r) =
 class Shape a where
   getId :: a -> Int
   getPos :: a -> Tuple Double
-  getR :: a -> Double
+  getPerimeter :: a -> Double
   getTransform :: a -> Matrix Double
   getMaterial :: a -> Material
   localIntersect :: (a,Ray) -> State [Intersection] [Intersection]
+  localNormalAt :: (a, Tuple Double) -> Tuple Double
 
 instance Shape S.Sphere where
   getId :: S.Sphere -> Int
-  getId = S.getId
   {-# INLINE getId #-}
+  getId = S.getId
   getPos :: S.Sphere -> Tuple Double
-  getPos = S.getPos
   {-# INLINE getPos #-}
-  getR :: S.Sphere -> Double
-  getR = S.getR
-  {-# INLINE getR #-}
+  getPos = S.getPos
+  getPerimeter :: S.Sphere -> Double
+  {-# INLINE getPerimeter #-}
+  getPerimeter = S.getR
   getTransform :: S.Sphere -> Matrix Double
-  getTransform = S.getTransform
   {-# INLINE getTransform #-}
+  getTransform = S.getTransform
   getMaterial :: S.Sphere -> Material
-  getMaterial = S.getMaterial
   {-# INLINE getMaterial #-}
+  getMaterial = S.getMaterial
   localIntersect :: (S.Sphere, Ray) -> State [Intersection] [Intersection]
   {-# INLINE localIntersect #-}
   localIntersect (s, r) = let d = (discriminant a b c)
@@ -84,9 +85,15 @@ instance Shape S.Sphere where
       quadraticEquation :: Double -> [Intersection]
       quadraticEquation d =
         map (\x -> intersection ((x / (2 * a)), (Object s))) ((negate b) ± (sqrt d))
+  localNormalAt :: (S.Sphere, Tuple Double) -> Tuple Double
+  localNormalAt (s, p) = worldNormal
+                           where
+                            Tuple x y z _ = p - getPos s --TODO: World point
+                            worldNormal = vector (x, y, z)
 
 class Hitable a where
   intersect :: (a, Ray) -> State [Intersection] [Intersection]
+  normalsAt :: (a, Tuple Double) -> Tuple Double
 
 
 -- instance Hitable S.Sphere where
@@ -120,16 +127,6 @@ headOr :: [a] -> Maybe a
 headOr []    = Nothing
 headOr (x:_) = Just x
 
-normalsAt :: (Shape a, Show a) => (a, Tuple Double) -> Tuple Double
-{-# INLINE normalsAt #-}
-normalsAt (s, p) = normalize worldNormal
-  where
-    objectPoint = matrixVectorMultiply (inverse (getTransform s)) p
-    objectNormal = objectPoint - getPos s --TODO: World point
-    Tuple x y z _ =
-      matrixVectorMultiply (transpose (inverse (getTransform s))) objectNormal
-    worldNormal = vector (x, y, z)
-    
 discriminant :: Double -> Double -> Double -> Double
 {-# INLINE discriminant #-}
 discriminant a b c = b ^ 2 - 4 * a * c
@@ -147,13 +144,20 @@ instance Shape Object where
   getId (Object a) = getId a
   getMaterial (Object a) = getMaterial a
   getPos (Object a) = getPos a
-  getR (Object a) = getR a
+  getPerimeter (Object a) = getPerimeter a
   getTransform (Object a) = getTransform a
   localIntersect (Object a,r) = localIntersect (a,r)
+  localNormalAt (Object a, p) = localNormalAt (a,p)
 
 instance Hitable Object where
   intersect ((Object a), r) = let localRay = transform ((inverse . getTransform) a) r
                               in localIntersect (Object a, localRay)
+  normalsAt ((Object a), p) = let localPoint  = matrixVectorMultiply ((inverse . getTransform) a) p
+                                  localNormal = localNormalAt (a, localPoint)
+                                  (Tuple x y z _) = matrixVectorMultiply (transpose (inverse (getTransform a))) localNormal
+                                  worldNormal = vector (x,y,z)
+                              in normalize worldNormal
+
 
 
 instance Show Object where

@@ -43,6 +43,7 @@ library
       , Hitable
       , World
       , Camera
+      , Plane
   other-modules:
       Paths_RayTracer
   hs-source-dirs:
